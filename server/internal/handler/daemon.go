@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -646,14 +647,16 @@ func (h *Handler) ClaimTaskByRuntime(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Include workspace ID and repos so the daemon can set up worktrees.
+	// Include workspace ID and per-project repo so the daemon can set up a
+	// worktree scoped to the issue's project (not the workspace template).
 	if task.IssueID.Valid {
 		if issue, err := h.Queries.GetIssue(r.Context(), task.IssueID); err == nil {
 			resp.WorkspaceID = uuidToString(issue.WorkspaceID)
-			if ws, err := h.Queries.GetWorkspace(r.Context(), issue.WorkspaceID); err == nil && ws.Repos != nil {
-				var repos []RepoData
-				if json.Unmarshal(ws.Repos, &repos) == nil && len(repos) > 0 {
-					resp.Repos = repos
+			if issue.ProjectID.Valid {
+				if proj, err := h.Queries.GetProject(r.Context(), issue.ProjectID); err == nil {
+					resp.ProjectID = uuidToString(proj.ID)
+					resp.ProjectSlug = projectSlug(proj.Title, proj.ID)
+					resp.Repos = []RepoData{{URL: proj.RepoUrl, Description: proj.Title}}
 				}
 			}
 		}
@@ -1331,4 +1334,27 @@ func (h *Handler) GetIssueGCCheck(w http.ResponseWriter, r *http.Request) {
 		"status":     issue.Status,
 		"updated_at": issue.UpdatedAt.Time,
 	})
+}
+
+// projectSlugRe collapses runs of non-alphanumeric characters to a single
+// separator when building a human-friendly project slug.
+var projectSlugRe = regexp.MustCompile(`[^a-z0-9]+`)
+
+// projectSlug builds a daemon-facing slug for a project — lowercase title
+// collapsed on non-alphanumerics, suffixed with a short UUID fragment for
+// uniqueness. Falls back to the UUID fragment alone when the title reduces
+// to an empty string. Best-effort, not cryptographic.
+func projectSlug(title string, id pgtype.UUID) string {
+	slug := strings.ToLower(strings.TrimSpace(title))
+	slug = projectSlugRe.ReplaceAllString(slug, "-")
+	slug = strings.Trim(slug, "-")
+	idStr := uuidToString(id)
+	shortID := idStr
+	if len(shortID) > 8 {
+		shortID = shortID[:8]
+	}
+	if slug == "" {
+		return shortID
+	}
+	return fmt.Sprintf("%s-%s", slug, shortID)
 }

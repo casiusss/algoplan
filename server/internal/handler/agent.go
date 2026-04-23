@@ -119,6 +119,8 @@ type AgentTaskResponse struct {
 	RuntimeID             string         `json:"runtime_id"`
 	IssueID               string         `json:"issue_id"`
 	WorkspaceID           string         `json:"workspace_id"`
+	ProjectID             string         `json:"project_id,omitempty"`
+	ProjectSlug           string         `json:"project_slug,omitempty"`
 	Status                string         `json:"status"`
 	Priority              int32          `json:"priority"`
 	DispatchedAt          *string        `json:"dispatched_at"`

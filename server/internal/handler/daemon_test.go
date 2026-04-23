@@ -1493,3 +1493,167 @@ func TestCompleteTask_CommentTriggered_SkipsSynthesisWhenAgentAlreadyCommented(t
 		t.Fatalf("expected 1 agent comment (the agent's own reply), got %d — synthesis duplicated", count)
 	}
 }
+
+// TestClaimTask_UsesProjectRepoURL verifies that issue-bound claim responses
+// source Repos[0].URL from the issue's project.repo_url (per-project), not
+// from the workspace-wide repos array. Also verifies ProjectID is populated.
+func TestClaimTask_UsesProjectRepoURL(t *testing.T) {
+	if testHandler == nil {
+		t.Skip("database not available")
+	}
+
+	ctx := context.Background()
+
+	var agentID, runtimeID string
+	if err := testPool.QueryRow(ctx,
+		`SELECT id, runtime_id FROM agent WHERE workspace_id = $1 LIMIT 1`,
+		testWorkspaceID,
+	).Scan(&agentID, &runtimeID); err != nil {
+		t.Fatalf("setup: get agent: %v", err)
+	}
+
+	// Two distinct projects in the same workspace, each with its own repo_url.
+	const repoURLA = "https://github.com/example/project-alpha"
+	const repoURLB = "https://github.com/example/project-beta"
+
+	var projectAID, projectBID string
+	if err := testPool.QueryRow(ctx, `
+		INSERT INTO project (workspace_id, title, description, icon, status, repo_url)
+		VALUES ($1, 'Claim Repo Project Alpha', '', '', 'in_progress', $2)
+		RETURNING id
+	`, testWorkspaceID, repoURLA).Scan(&projectAID); err != nil {
+		t.Fatalf("setup: create project A: %v", err)
+	}
+	t.Cleanup(func() { testPool.Exec(context.Background(), `DELETE FROM project WHERE id = $1`, projectAID) })
+
+	if err := testPool.QueryRow(ctx, `
+		INSERT INTO project (workspace_id, title, description, icon, status, repo_url)
+		VALUES ($1, 'Claim Repo Project Beta', '', '', 'in_progress', $2)
+		RETURNING id
+	`, testWorkspaceID, repoURLB).Scan(&projectBID); err != nil {
+		t.Fatalf("setup: create project B: %v", err)
+	}
+	t.Cleanup(func() { testPool.Exec(context.Background(), `DELETE FROM project WHERE id = $1`, projectBID) })
+
+	// Override workspace.repos to a bogus URL so any accidental workspace-wide
+	// fallback (the pre-fix behavior) would show up as a mismatch.
+	setHandlerTestWorkspaceRepos(t, []map[string]string{
+		{"url": "https://github.com/example/workspace-repo-should-not-leak", "description": "wrong"},
+	})
+
+	// One issue per project, both assigned to the same runtime agent.
+	var issueAID, issueBID string
+	if err := testPool.QueryRow(ctx, `
+		INSERT INTO issue (workspace_id, title, status, priority, creator_id, creator_type, number, position, project_id)
+		VALUES ($1, 'claim-repo-issue-alpha', 'todo', 'medium', $2, 'member', 92001, 0, $3)
+		RETURNING id
+	`, testWorkspaceID, testUserID, projectAID).Scan(&issueAID); err != nil {
+		t.Fatalf("setup: create issue A: %v", err)
+	}
+	t.Cleanup(func() { testPool.Exec(context.Background(), `DELETE FROM issue WHERE id = $1`, issueAID) })
+
+	if err := testPool.QueryRow(ctx, `
+		INSERT INTO issue (workspace_id, title, status, priority, creator_id, creator_type, number, position, project_id)
+		VALUES ($1, 'claim-repo-issue-beta', 'todo', 'medium', $2, 'member', 92002, 0, $3)
+		RETURNING id
+	`, testWorkspaceID, testUserID, projectBID).Scan(&issueBID); err != nil {
+		t.Fatalf("setup: create issue B: %v", err)
+	}
+	t.Cleanup(func() { testPool.Exec(context.Background(), `DELETE FROM issue WHERE id = $1`, issueBID) })
+
+	// Queue two tasks — one per issue. ClaimTaskForRuntime picks by priority,
+	// so set A=2, B=1 to force a deterministic claim order.
+	var taskAID, taskBID string
+	if err := testPool.QueryRow(ctx, `
+		INSERT INTO agent_task_queue (agent_id, runtime_id, issue_id, status, priority)
+		VALUES ($1, $2, $3, 'queued', 2)
+		RETURNING id
+	`, agentID, runtimeID, issueAID).Scan(&taskAID); err != nil {
+		t.Fatalf("setup: create task A: %v", err)
+	}
+	t.Cleanup(func() { testPool.Exec(context.Background(), `DELETE FROM agent_task_queue WHERE id = $1`, taskAID) })
+
+	if err := testPool.QueryRow(ctx, `
+		INSERT INTO agent_task_queue (agent_id, runtime_id, issue_id, status, priority)
+		VALUES ($1, $2, $3, 'queued', 1)
+		RETURNING id
+	`, agentID, runtimeID, issueBID).Scan(&taskBID); err != nil {
+		t.Fatalf("setup: create task B: %v", err)
+	}
+	t.Cleanup(func() { testPool.Exec(context.Background(), `DELETE FROM agent_task_queue WHERE id = $1`, taskBID) })
+
+	type claimedTask struct {
+		IssueID     string `json:"issue_id"`
+		WorkspaceID string `json:"workspace_id"`
+		ProjectID   string `json:"project_id"`
+		ProjectSlug string `json:"project_slug"`
+		Repos       []struct {
+			URL         string `json:"url"`
+			Description string `json:"description"`
+		} `json:"repos"`
+	}
+
+	claim := func() claimedTask {
+		t.Helper()
+		w := httptest.NewRecorder()
+		req := newDaemonTokenRequest("POST", "/api/daemon/runtimes/"+runtimeID+"/claim", nil,
+			testWorkspaceID, "test-daemon-claim-repo")
+		rctx := chi.NewRouteContext()
+		rctx.URLParams.Add("runtimeId", runtimeID)
+		req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+		testHandler.ClaimTaskByRuntime(w, req)
+		if w.Code != http.StatusOK {
+			t.Fatalf("ClaimTaskByRuntime: expected 200, got %d: %s", w.Code, w.Body.String())
+		}
+		var resp struct {
+			Task *claimedTask `json:"task"`
+		}
+		if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+			t.Fatalf("decode claim response: %v", err)
+		}
+		if resp.Task == nil {
+			t.Fatal("expected a task in claim response, got nil")
+		}
+		return *resp.Task
+	}
+
+	// First claim → task A (higher priority) → project A.
+	got := claim()
+	if got.IssueID != issueAID {
+		t.Fatalf("first claim: expected issue A %q, got %q", issueAID, got.IssueID)
+	}
+	if got.ProjectID != projectAID {
+		t.Fatalf("first claim: expected project_id %q (project A), got %q", projectAID, got.ProjectID)
+	}
+	if got.ProjectSlug == "" {
+		t.Fatal("first claim: expected non-empty project_slug")
+	}
+	if len(got.Repos) != 1 || got.Repos[0].URL != repoURLA {
+		t.Fatalf("first claim: expected repos=[{URL=%q}], got %+v", repoURLA, got.Repos)
+	}
+
+	// Free agent capacity so task B can be claimed (agent defaults to
+	// max_concurrent_tasks=1 in the test fixture).
+	if _, err := testPool.Exec(ctx, `
+		UPDATE agent_task_queue SET status = 'completed', completed_at = now()
+		WHERE id = $1
+	`, taskAID); err != nil {
+		t.Fatalf("teardown: complete task A: %v", err)
+	}
+	if _, err := testPool.Exec(ctx, `UPDATE agent SET status = 'idle' WHERE id = $1`, agentID); err != nil {
+		t.Fatalf("teardown: reset agent status: %v", err)
+	}
+
+	// Second claim → task B → project B, distinct repo_url.
+	got = claim()
+	if got.IssueID != issueBID {
+		t.Fatalf("second claim: expected issue B %q, got %q", issueBID, got.IssueID)
+	}
+	if got.ProjectID != projectBID {
+		t.Fatalf("second claim: expected project_id %q (project B), got %q", projectBID, got.ProjectID)
+	}
+	if len(got.Repos) != 1 || got.Repos[0].URL != repoURLB {
+		t.Fatalf("second claim: expected repos=[{URL=%q}], got %+v", repoURLB, got.Repos)
+	}
+}
