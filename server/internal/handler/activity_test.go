@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/jackc/pgx/v5/pgtype"
 	db "github.com/multica-ai/multica/server/pkg/db/generated"
 )
 
@@ -38,6 +39,7 @@ func TestListTimeline_MergedAndSorted(t *testing.T) {
 	_, err := testHandler.Queries.CreateActivity(ctx, db.CreateActivityParams{
 		WorkspaceID: parseUUID(testWorkspaceID),
 		IssueID:     parseUUID(issueID),
+		ProjectID:   pgtype.UUID{},
 		ActorType:   strToText("member"),
 		ActorID:     parseUUID(testUserID),
 		Action:      "created",
@@ -122,6 +124,7 @@ func TestListTimeline_ChronologicalOrder(t *testing.T) {
 	_, err := testHandler.Queries.CreateActivity(ctx, db.CreateActivityParams{
 		WorkspaceID: parseUUID(testWorkspaceID),
 		IssueID:     parseUUID(issueID),
+		ProjectID:   pgtype.UUID{},
 		ActorType:   strToText("member"),
 		ActorID:     parseUUID(testUserID),
 		Action:      "status_changed",

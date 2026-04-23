@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log/slog"
 
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/multica-ai/multica/server/internal/events"
 	"github.com/multica-ai/multica/server/internal/handler"
 	"github.com/multica-ai/multica/server/internal/util"
@@ -33,6 +34,7 @@ func registerActivityListeners(bus *events.Bus, queries *db.Queries) {
 		activity, err := queries.CreateActivity(ctx, db.CreateActivityParams{
 			WorkspaceID: parseUUID(issue.WorkspaceID),
 			IssueID:     parseUUID(issue.ID),
+			ProjectID:   pgtype.UUID{},
 			ActorType:   util.StrToText(e.ActorType),
 			ActorID:     parseUUID(e.ActorID),
 			Action:      "created",
@@ -72,6 +74,7 @@ func registerActivityListeners(bus *events.Bus, queries *db.Queries) {
 			activity, err := queries.CreateActivity(ctx, db.CreateActivityParams{
 				WorkspaceID: parseUUID(issue.WorkspaceID),
 				IssueID:     parseUUID(issue.ID),
+				ProjectID:   pgtype.UUID{},
 				ActorType:   util.StrToText(e.ActorType),
 				ActorID:     parseUUID(e.ActorID),
 				Action:      "status_changed",
@@ -94,6 +97,7 @@ func registerActivityListeners(bus *events.Bus, queries *db.Queries) {
 			activity, err := queries.CreateActivity(ctx, db.CreateActivityParams{
 				WorkspaceID: parseUUID(issue.WorkspaceID),
 				IssueID:     parseUUID(issue.ID),
+				ProjectID:   pgtype.UUID{},
 				ActorType:   util.StrToText(e.ActorType),
 				ActorID:     parseUUID(e.ActorID),
 				Action:      "priority_changed",
@@ -129,6 +133,7 @@ func registerActivityListeners(bus *events.Bus, queries *db.Queries) {
 			activity, err := queries.CreateActivity(ctx, db.CreateActivityParams{
 				WorkspaceID: parseUUID(issue.WorkspaceID),
 				IssueID:     parseUUID(issue.ID),
+				ProjectID:   pgtype.UUID{},
 				ActorType:   util.StrToText(e.ActorType),
 				ActorID:     parseUUID(e.ActorID),
 				Action:      "assignee_changed",
@@ -158,6 +163,7 @@ func registerActivityListeners(bus *events.Bus, queries *db.Queries) {
 			activity, err := queries.CreateActivity(ctx, db.CreateActivityParams{
 				WorkspaceID: parseUUID(issue.WorkspaceID),
 				IssueID:     parseUUID(issue.ID),
+				ProjectID:   pgtype.UUID{},
 				ActorType:   util.StrToText(e.ActorType),
 				ActorID:     parseUUID(e.ActorID),
 				Action:      "due_date_changed",
@@ -180,6 +186,7 @@ func registerActivityListeners(bus *events.Bus, queries *db.Queries) {
 			activity, err := queries.CreateActivity(ctx, db.CreateActivityParams{
 				WorkspaceID: parseUUID(issue.WorkspaceID),
 				IssueID:     parseUUID(issue.ID),
+				ProjectID:   pgtype.UUID{},
 				ActorType:   util.StrToText(e.ActorType),
 				ActorID:     parseUUID(e.ActorID),
 				Action:      "title_changed",
@@ -197,6 +204,7 @@ func registerActivityListeners(bus *events.Bus, queries *db.Queries) {
 			activity, err := queries.CreateActivity(ctx, db.CreateActivityParams{
 				WorkspaceID: parseUUID(issue.WorkspaceID),
 				IssueID:     parseUUID(issue.ID),
+				ProjectID:   pgtype.UUID{},
 				ActorType:   util.StrToText(e.ActorType),
 				ActorID:     parseUUID(e.ActorID),
 				Action:      "description_updated",
@@ -245,6 +253,7 @@ func handleTaskActivity(ctx context.Context, bus *events.Bus, queries *db.Querie
 	activity, err := queries.CreateActivity(ctx, db.CreateActivityParams{
 		WorkspaceID: issue.WorkspaceID,
 		IssueID:     parseUUID(issueID),
+		ProjectID:   issue.ProjectID,
 		ActorType:   util.StrToText("agent"),
 		ActorID:     parseUUID(agentID),
 		Action:      action,
