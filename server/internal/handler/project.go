@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/multica-ai/multica/server/internal/util"
 	db "github.com/multica-ai/multica/server/pkg/db/generated"
 	"github.com/multica-ai/multica/server/pkg/protocol"
 )
@@ -20,6 +21,7 @@ type ProjectResponse struct {
 	ID          string  `json:"id"`
 	WorkspaceID string  `json:"workspace_id"`
 	Title       string  `json:"title"`
+	RepoURL     string  `json:"repo_url"`
 	Description *string `json:"description"`
 	Icon        *string `json:"icon"`
 	Status      string  `json:"status"`
@@ -37,6 +39,7 @@ func projectToResponse(p db.Project) ProjectResponse {
 		ID:          uuidToString(p.ID),
 		WorkspaceID: uuidToString(p.WorkspaceID),
 		Title:       p.Title,
+		RepoURL:     p.RepoUrl,
 		Description: textToPtr(p.Description),
 		Icon:        textToPtr(p.Icon),
 		Status:      p.Status,
@@ -58,6 +61,7 @@ func (h *Handler) loadProjectIssueStats(ctx context.Context, projectID pgtype.UU
 
 type CreateProjectRequest struct {
 	Title       string  `json:"title"`
+	RepoURL     string  `json:"repo_url"`
 	Description *string `json:"description"`
 	Icon        *string `json:"icon"`
 	Status      string  `json:"status"`
@@ -147,6 +151,11 @@ func (h *Handler) CreateProject(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, "title is required")
 		return
 	}
+	normalizedRepoURL, err := util.NormalizeRepoURL(req.RepoURL)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
 	workspaceID := h.resolveWorkspaceID(r)
 	userID, ok := requireUserID(w, r)
 	if !ok {
@@ -171,6 +180,7 @@ func (h *Handler) CreateProject(w http.ResponseWriter, r *http.Request) {
 	project, err := h.Queries.CreateProject(r.Context(), db.CreateProjectParams{
 		WorkspaceID: parseUUID(workspaceID),
 		Title:       req.Title,
+		RepoUrl:     normalizedRepoURL,
 		Description: ptrToText(req.Description),
 		Icon:        ptrToText(req.Icon),
 		Status:      status,

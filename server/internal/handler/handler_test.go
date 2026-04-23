@@ -409,7 +409,8 @@ func TestCreateSubIssueInheritsParentProject(t *testing.T) {
 
 	w := httptest.NewRecorder()
 	req := newRequest("POST", "/api/projects?workspace_id="+testWorkspaceID, map[string]any{
-		"title": "Sub-issue inheritance project",
+		"title":    "Sub-issue inheritance project",
+		"repo_url": "https://github.com/test/sub-issue-inheritance",
 	})
 	testHandler.CreateProject(w, req)
 	if w.Code != http.StatusCreated {
@@ -479,7 +480,8 @@ func TestCreateSubIssueUsesExplicitProjectOverParentProject(t *testing.T) {
 
 	w := httptest.NewRecorder()
 	req := newRequest("POST", "/api/projects?workspace_id="+testWorkspaceID, map[string]any{
-		"title": "Parent project",
+		"title":    "Parent project",
+		"repo_url": "https://github.com/test/parent-project",
 	})
 	testHandler.CreateProject(w, req)
 	if w.Code != http.StatusCreated {
@@ -491,7 +493,8 @@ func TestCreateSubIssueUsesExplicitProjectOverParentProject(t *testing.T) {
 
 	w = httptest.NewRecorder()
 	req = newRequest("POST", "/api/projects?workspace_id="+testWorkspaceID, map[string]any{
-		"title": "Child explicit project",
+		"title":    "Child explicit project",
+		"repo_url": "https://github.com/test/child-explicit-project",
 	})
 	testHandler.CreateProject(w, req)
 	if w.Code != http.StatusCreated {
