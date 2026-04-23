@@ -23,6 +23,9 @@ func TestNormalizeRepoURL(t *testing.T) {
 
 		{"git@github.com:a/b", "git@github.com:a/b.git", false},
 		{"git@github.com:a/b.git", "git@github.com:a/b.git", false},
+
+		{"git@:path", "", true},
+		{"git@host:", "", true},
 	}
 	for _, c := range cases {
 		t.Run(c.in, func(t *testing.T) {

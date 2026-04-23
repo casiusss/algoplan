@@ -33,8 +33,13 @@ func NormalizeRepoURL(raw string) (string, error) {
 	}
 
 	if strings.HasPrefix(s, "git@") && strings.Contains(s, ":") {
-		tail := s[strings.Index(s, ":")+1:]
-		if tail == "" {
+		colon := strings.Index(s, ":")
+		host := s[len("git@"):colon]
+		path := s[colon+1:]
+		if host == "" {
+			return "", errors.New("invalid SSH URL: missing host")
+		}
+		if path == "" {
 			return "", errors.New("invalid SSH URL: missing path")
 		}
 		if !strings.HasSuffix(s, ".git") {
