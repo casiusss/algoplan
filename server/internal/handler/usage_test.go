@@ -34,8 +34,9 @@ func TestWorkspaceUsage_BucketsByUsageTime(t *testing.T) {
 
 	var issueID string
 	if err := testPool.QueryRow(ctx, `
-		INSERT INTO issue (workspace_id, title, creator_id, creator_type)
-		VALUES ($1, 'workspace usage test', $2, 'member')
+		INSERT INTO issue (workspace_id, title, creator_id, creator_type, project_id)
+		VALUES ($1, 'workspace usage test', $2, 'member',
+		        (SELECT id FROM project WHERE workspace_id = $1 AND title = 'Inbox' ORDER BY created_at ASC LIMIT 1))
 		RETURNING id
 	`, testWorkspaceID, testUserID).Scan(&issueID); err != nil {
 		t.Fatalf("create issue: %v", err)

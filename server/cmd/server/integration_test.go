@@ -126,6 +126,16 @@ func setupIntegrationTestFixture(ctx context.Context, pool *pgxpool.Pool) (strin
 		return "", "", err
 	}
 
+	// Seed an "Inbox" project for this workspace so any fixture that inserts
+	// issues via raw SQL (post-migration 058 requires issue.project_id NOT NULL)
+	// can resolve project_id via a subquery on title='Inbox'.
+	if _, err := pool.Exec(ctx, `
+		INSERT INTO project (workspace_id, title, description, icon, status, repo_url, created_at, updated_at)
+		VALUES ($1, 'Inbox', 'Default project for issues without an explicit project', '📥', 'in_progress', 'https://github.com/multica-ai/multica.git', now(), now())
+	`, workspaceID); err != nil {
+		return "", "", err
+	}
+
 	var runtimeID string
 	if err := pool.QueryRow(ctx, `
 		INSERT INTO agent_runtime (

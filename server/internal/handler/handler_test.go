@@ -1096,8 +1096,9 @@ func TestResolveActor(t *testing.T) {
 	// Create a task for the agent so we can test X-Task-ID validation.
 	var issueID string
 	err = testPool.QueryRow(ctx,
-		`INSERT INTO issue (workspace_id, title, status, priority, creator_type, creator_id, number, position)
-		 VALUES ($1, 'resolveActor test', 'todo', 'none', 'member', $2, 9999, 0)
+		`INSERT INTO issue (workspace_id, title, status, priority, creator_type, creator_id, number, position, project_id)
+		 VALUES ($1, 'resolveActor test', 'todo', 'none', 'member', $2, 9999, 0,
+		         (SELECT id FROM project WHERE workspace_id = $1 AND title = 'Inbox' ORDER BY created_at ASC LIMIT 1))
 		 RETURNING id`, testWorkspaceID, testUserID,
 	).Scan(&issueID)
 	if err != nil {
