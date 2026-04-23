@@ -2,7 +2,22 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useWorkspaceId } from "../hooks";
+import { useAuthStore } from "../auth";
+import type { MemberRole } from "../types";
 import { memberListOptions, agentListOptions } from "./queries";
+
+/**
+ * Returns the current user's role in the active workspace, or `null` when the
+ * user or the membership hasn't been loaded yet. Must be called inside a
+ * workspace route — `useWorkspaceId()` throws otherwise.
+ */
+export function useCurrentMemberRole(): MemberRole | null {
+  const wsId = useWorkspaceId();
+  const userId = useAuthStore((s) => s.user?.id ?? "");
+  const { data: members = [] } = useQuery(memberListOptions(wsId));
+  if (!userId) return null;
+  return members.find((m) => m.user_id === userId)?.role ?? null;
+}
 
 export function useActorName() {
   const wsId = useWorkspaceId();

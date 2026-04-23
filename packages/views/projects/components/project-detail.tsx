@@ -17,7 +17,7 @@ import { useUpdateIssue } from "@multica/core/issues/mutations";
 import { memberListOptions, agentListOptions } from "@multica/core/workspace/queries";
 import { useWorkspaceId } from "@multica/core/hooks";
 import { useCurrentWorkspace, useWorkspacePaths } from "@multica/core/paths";
-import { useActorName } from "@multica/core/workspace/hooks";
+import { useActorName, useCurrentMemberRole } from "@multica/core/workspace/hooks";
 import { PROJECT_STATUS_ORDER, PROJECT_STATUS_CONFIG, PROJECT_PRIORITY_ORDER, PROJECT_PRIORITY_CONFIG } from "@multica/core/projects/config";
 import { BOARD_STATUSES } from "@multica/core/issues/config";
 import { createIssueViewStore } from "@multica/core/issues/stores/view-store";
@@ -66,6 +66,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@multica/ui/components/ui/alert-dialog";
+
+// ---------------------------------------------------------------------------
+// Repo URL validation — duplicated from create-project modal to keep this
+// file self-contained. Accepts http(s):// and git@host:path forms.
+// ---------------------------------------------------------------------------
+
+function isValidRepoURL(url: string): boolean {
+  const trimmed = url.trim();
+  if (!trimmed) return false;
+  return /^(https?:\/\/\S+|git@\S+:\S+)$/.test(trimmed);
+}
 
 // ---------------------------------------------------------------------------
 // Property row — sidebar property display
@@ -205,8 +216,13 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
   const { data: members = [] } = useQuery(memberListOptions(wsId));
   const { data: agents = [] } = useQuery(agentListOptions(wsId));
   const { getActorName } = useActorName();
+  const role = useCurrentMemberRole();
+  const canEditRepo = role === "admin" || role === "owner";
   const updateProject = useUpdateProject();
   const deleteProject = useDeleteProject();
+  const [editingRepo, setEditingRepo] = useState(false);
+  const [draftRepoUrl, setDraftRepoUrl] = useState("");
+  const [savingRepo, setSavingRepo] = useState(false);
   const { data: pinnedItems = [] } = useQuery({
     ...pinListOptions(wsId, userId ?? ""),
     enabled: !!userId,
@@ -445,6 +461,86 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
           </PropRow>
         </div>}
       </div>
+
+      {/* Repository */}
+      <section aria-label="Repository">
+        <div className="flex w-full items-center gap-1 rounded-md px-2 py-1 text-xs font-medium mb-2">
+          Repository
+        </div>
+        <div className="pl-2">
+          {!editingRepo ? (
+            <div className="flex items-center gap-2">
+              <code className="font-mono text-xs break-all text-foreground flex-1 min-w-0">
+                {project.repo_url}
+              </code>
+              {canEditRepo && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  aria-label="Edit repository"
+                  title="Edit repository"
+                  onClick={() => {
+                    setDraftRepoUrl(project.repo_url);
+                    setEditingRepo(true);
+                  }}
+                >
+                  Edit
+                </Button>
+              )}
+            </div>
+          ) : canEditRepo ? (
+            <div className="flex flex-col gap-2">
+              <input
+                aria-label="Repository URL"
+                type="url"
+                value={draftRepoUrl}
+                onChange={(e) => setDraftRepoUrl(e.target.value)}
+                className="w-full rounded-md border bg-background px-2 py-1 font-mono text-xs outline-none focus:ring-2 focus:ring-ring"
+                placeholder="https://github.com/org/repo.git"
+              />
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  disabled={!isValidRepoURL(draftRepoUrl) || savingRepo}
+                  onClick={async () => {
+                    if (!isValidRepoURL(draftRepoUrl) || savingRepo) return;
+                    setSavingRepo(true);
+                    try {
+                      await updateProject.mutateAsync({
+                        id: project.id,
+                        repo_url: draftRepoUrl.trim(),
+                      });
+                      toast.success("Repository updated");
+                      setEditingRepo(false);
+                    } catch (err: unknown) {
+                      const status = (err as { status?: number } | null)?.status;
+                      if (status === 403) {
+                        toast.error("Only admins can change the repository.");
+                      } else {
+                        toast.error("Failed to update repository");
+                      }
+                    } finally {
+                      setSavingRepo(false);
+                    }
+                  }}
+                >
+                  Save
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setEditingRepo(false);
+                    setDraftRepoUrl(project.repo_url);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </section>
 
       {/* Progress */}
       {issueMetrics.totalCount > 0 && (() => {
