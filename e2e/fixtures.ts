@@ -19,11 +19,30 @@ interface TestWorkspace {
   slug: string;
 }
 
+interface TestProject {
+  id: string;
+  title: string;
+  repo_url: string;
+  description?: string;
+}
+
+interface MemberWithUserResponse {
+  id: string;
+  workspace_id: string;
+  user_id: string;
+  role: string;
+  created_at: string;
+  name: string;
+  email: string;
+  avatar_url?: string;
+}
+
 export class TestApiClient {
   private token: string | null = null;
   private workspaceSlug: string | null = null;
   private workspaceId: string | null = null;
   private createdIssueIds: string[] = [];
+  private createdProjectIds: string[] = [];
 
   async login(email: string, name: string) {
     const client = new pg.Client(DATABASE_URL);
@@ -137,7 +156,72 @@ export class TestApiClient {
     await this.authedFetch(`/api/issues/${id}`, { method: "DELETE" });
   }
 
-  /** Clean up all issues created during this test. */
+  async createProject(opts: {
+    title: string;
+    repo_url: string;
+    description?: string;
+  }): Promise<TestProject> {
+    const res = await this.authedFetch("/api/projects", {
+      method: "POST",
+      body: JSON.stringify(opts),
+    });
+    if (!res.ok) {
+      throw new Error(
+        `createProject failed: ${res.status} ${await res.text()}`,
+      );
+    }
+    const project = (await res.json()) as TestProject;
+    this.createdProjectIds.push(project.id);
+    return project;
+  }
+
+  async promoteMeToAdmin(): Promise<void> {
+    if (!this.workspaceId) {
+      throw new Error("workspace not set; call ensureWorkspace first");
+    }
+
+    // List members to find current user
+    const membersRes = await this.authedFetch(
+      `/api/workspaces/${this.workspaceId}/members`,
+    );
+    if (!membersRes.ok) {
+      throw new Error(
+        `ListMembers failed: ${membersRes.status} ${await membersRes.text()}`,
+      );
+    }
+
+    const members = (await membersRes.json()) as MemberWithUserResponse[];
+
+    // Get current user to find their member ID
+    const meRes = await this.authedFetch("/api/me");
+    if (!meRes.ok) {
+      throw new Error(
+        `GetMe failed: ${meRes.status} ${await meRes.text()}`,
+      );
+    }
+
+    const me = (await meRes.json()) as { id: string };
+    const myMember = members.find((m) => m.user_id === me.id);
+    if (!myMember) {
+      throw new Error("Current user not found in workspace members");
+    }
+
+    // Update role to admin
+    const updateRes = await this.authedFetch(
+      `/api/workspaces/${this.workspaceId}/members/${myMember.id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ role: "admin" }),
+      },
+    );
+    if (!updateRes.ok) {
+      throw new Error(
+        `UpdateMember failed: ${updateRes.status} ${await updateRes.text()}`,
+      );
+    }
+  }
+
+  /** Clean up all issues and projects created during this test. */
   async cleanup() {
     for (const id of this.createdIssueIds) {
       try {
@@ -147,6 +231,15 @@ export class TestApiClient {
       }
     }
     this.createdIssueIds = [];
+
+    for (const id of this.createdProjectIds) {
+      try {
+        await this.authedFetch(`/api/projects/${id}`, { method: "DELETE" });
+      } catch {
+        /* ignore — may already be deleted */
+      }
+    }
+    this.createdProjectIds = [];
   }
 
   getToken() {
