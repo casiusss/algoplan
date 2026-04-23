@@ -1058,6 +1058,7 @@ func (d *Daemon) runTask(ctx context.Context, task Task, provider string, taskLo
 		env, err = execenv.Prepare(execenv.PrepareParams{
 			WorkspacesRoot: d.cfg.WorkspacesRoot,
 			WorkspaceID:    task.WorkspaceID,
+			ProjectSlug:    task.ProjectSlug,
 			TaskID:         task.ID,
 			AgentName:      agentName,
 			Provider:       provider,
