@@ -46,7 +46,7 @@ repos remain as a template pool for project creation.
 | 8 | Daemon worktree path | Split per project: `~/.multica/worktrees/<workspace>/<project>/<task>` (c.2) |
 | 9 | Authorization for `repo_url` changes | Admin/owner only (d.2) |
 | 10 | CLI support in this task | Yes — `project create --repo-url`, `project update --repo-url` (a.1) |
-| 11 | Audit trail | Timeline event `type='repo_url_changed'` (b.1) |
+| 11 | Audit trail | `activity_log` entry with `action='project.repo_url_changed'` + `details` JSONB (b.1) |
 | 12 | Test scope | Full: unit + integration + migration rollback + worktree path + URL normalization + 1 E2E (c.2) |
 | 13 | Autopilots | Out of scope (d.2) |
 
@@ -106,11 +106,12 @@ ALTER TABLE project ADD CONSTRAINT project_repo_url_not_empty
   CHECK (length(trim(repo_url)) > 0);
 ALTER TABLE issue ALTER COLUMN project_id SET NOT NULL;
 
--- 7. Extend timeline event type enum for audit trail
-ALTER TABLE timeline DROP CONSTRAINT timeline_type_check;
-ALTER TABLE timeline ADD CONSTRAINT timeline_type_check
-  CHECK (type IN ('comment', 'status_change', 'progress_update',
-                  'system', 'repo_url_changed'));
+-- 7. activity_log: add optional project_id + index for project-scoped audit queries
+ALTER TABLE activity_log
+  ADD COLUMN IF NOT EXISTS project_id UUID REFERENCES project(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_activity_log_project
+  ON activity_log(project_id, created_at DESC)
+  WHERE project_id IS NOT NULL;
 
 -- 8. Index for fast project lookup by workspace + repo_url (diagnostic queries)
 CREATE INDEX IF NOT EXISTS idx_project_repo_url ON project(workspace_id, repo_url);
@@ -120,7 +121,9 @@ CREATE INDEX IF NOT EXISTS idx_project_repo_url ON project(workspace_id, repo_ur
 
 - Relax `issue.project_id` back to nullable.
 - Drop `project.repo_url` column + check constraint.
-- Revert timeline enum.
+- Drop `idx_activity_log_project` index and `activity_log.project_id`
+  column (details JSONB already carries project context, so no data
+  loss for historical events).
 - **Intentionally keep the Inbox projects** to avoid data loss. Operator
   manually deletes them if desired.
 
@@ -148,9 +151,10 @@ allowlist + worktree code keeps working.
 - `CreateProject`: require `repo_url` in request body, apply
   normalization (see below), 400 on missing/invalid.
 - `UpdateProject`: accept optional `repo_url`. On change, verify caller
-  has `admin` or `owner` workspace role, emit timeline event
-  `type='repo_url_changed'` with old+new values in `metadata`. Return
-  403 on role mismatch.
+  has `admin` or `owner` workspace role, insert into `activity_log`
+  with `action='project.repo_url_changed'`, `project_id` set, and
+  `details` JSONB carrying `{old_url, new_url}`. Return 403 on role
+  mismatch.
 - `GetProject` / `ListProjects`: include `repo_url` in JSON response.
 
 ### URL normalization helper (`server/internal/util/repo_url.go`, new)
@@ -251,8 +255,9 @@ consistent with title/description editing already in that file.
   (read from workspace store).
 - On save, send `PUT /api/projects/{id}` with new `repo_url`. On 403,
   show inline "Only workspace admins can change the repository."
-- On success, show toast + re-fetch project to refresh timeline (which
-  will contain the new `repo_url_changed` event).
+- On success, show toast + re-fetch project (`updated_at` and new
+  `repo_url` appear). The `activity_log` insert is write-only from the
+  UI — no render of the event in this phase.
 
 ### Project detail view
 
@@ -272,24 +277,22 @@ click-to-copy.
 
 ## Audit Trail
 
-Timeline event emitted by `UpdateProject` on `repo_url` change:
+`activity_log` entry emitted by `UpdateProject` on `repo_url` change:
 
-```json
-{
-  "type": "repo_url_changed",
-  "actor_type": "member",
-  "actor_id": "<user_uuid>",
-  "entity_type": "project",
-  "entity_id": "<project_uuid>",
-  "metadata": {
-    "old_url": "https://github.com/acme/foo.git",
-    "new_url": "https://github.com/acme/bar.git"
-  }
-}
-```
+| Column | Value |
+|---|---|
+| `workspace_id` | project's workspace |
+| `project_id` | project UUID (new column) |
+| `issue_id` | NULL |
+| `actor_type` | `'member'` |
+| `actor_id` | caller's user UUID |
+| `action` | `'project.repo_url_changed'` |
+| `details` | `{"old_url": "...", "new_url": "..."}` |
 
-Frontend timeline renderer gets a new case for this event type:
-"Alice changed repository from `foo.git` to `bar.git`".
+Frontend MVP: no dedicated renderer. Event is queryable via DB for
+operators and available as raw data for a future "Project activity"
+tab. The `project-detail.tsx` inline edit shows just
+`Last updated <time ago>` from `project.updated_at`.
 
 ## Error Handling
 
@@ -327,7 +330,7 @@ Table-driven tests for `NormalizeRepoURL`:
 - `CreateProject` with valid URL → 201, `repo_url` normalized in
   response.
 - `UpdateProject` `repo_url` as member → 403.
-- `UpdateProject` `repo_url` as admin → 200, timeline event emitted.
+- `UpdateProject` `repo_url` as admin → 200, `activity_log` row exists with `action='project.repo_url_changed'`, correct `project_id`, and `details` matching old/new URLs.
 - `ListProjects` response includes `repo_url` field.
 
 ### Go integration for daemon claim
@@ -361,13 +364,13 @@ Table-driven tests for `NormalizeRepoURL`:
 - Create dialog renders combobox with workspace.repos values.
 - Submit disabled until URL valid.
 - Settings tab edit button hidden for non-admin.
-- Timeline renders `repo_url_changed` event with both URLs visible.
+- After admin save: component refetches project and shows new URL.
 
 ### E2E (`e2e/tests/projects-repo-url.spec.ts`, new)
 
 - Login as admin → create project with repo URL → verify project
-  detail shows URL → open settings → change URL → verify toast →
-  verify timeline event appears.
+  detail shows URL → open inline edit → change URL → verify toast →
+  verify displayed URL is the new one after refetch.
 - Login as member → settings tab → edit button absent.
 
 ## Rollout
@@ -410,7 +413,7 @@ reviewers know nothing is implicit.
 | `server/pkg/db/queries/issue.sql` | remove nullable `project_id` handling where assumed |
 | `server/internal/util/repo_url.go` | new — `NormalizeRepoURL` |
 | `server/internal/util/repo_url_test.go` | new |
-| `server/internal/handler/project.go` | add `repo_url`, authz, timeline event |
+| `server/internal/handler/project.go` | add `repo_url`, authz, `activity_log` write |
 | `server/internal/handler/project_test.go` | new test cases |
 | `server/internal/handler/daemon.go` | fetch project.repo_url for task claim, drop workspace fallback |
 | `server/internal/daemon/types.go` | add `ProjectID`, `ProjectSlug` to `Task` |
