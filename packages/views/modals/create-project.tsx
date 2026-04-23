@@ -71,6 +71,7 @@ export function CreateProjectModal({ onClose }: { onClose: () => void }) {
   const [leadId, setLeadId] = useState<string | undefined>();
   const [icon, setIcon] = useState<string | undefined>();
   const [iconPickerOpen, setIconPickerOpen] = useState(false);
+  const [repoUrl, setRepoUrl] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -99,6 +100,7 @@ export function CreateProjectModal({ onClose }: { onClose: () => void }) {
         priority,
         lead_type: leadType,
         lead_id: leadId,
+        repo_url: repoUrl.trim(),
       });
       onClose();
       toast.success("Project created");
@@ -190,6 +192,13 @@ export function CreateProjectModal({ onClose }: { onClose: () => void }) {
             className="text-lg font-semibold"
             onChange={(v) => setTitle(v)}
             onSubmit={handleSubmit}
+          />
+          <input
+            type="url"
+            value={repoUrl}
+            onChange={(e) => setRepoUrl(e.target.value)}
+            placeholder="https://github.com/org/repo.git"
+            className="mt-2 w-full bg-transparent text-sm text-muted-foreground placeholder:text-muted-foreground/60 focus:outline-none"
           />
         </div>
 
