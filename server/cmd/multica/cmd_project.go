@@ -83,7 +83,9 @@ func init() {
 	projectCreateCmd.Flags().String("status", "", "Project status")
 	projectCreateCmd.Flags().String("icon", "", "Project icon (emoji)")
 	projectCreateCmd.Flags().String("lead", "", "Lead name (member or agent)")
+	projectCreateCmd.Flags().String("repo-url", "", "Git repository URL (required)")
 	projectCreateCmd.Flags().String("output", "json", "Output format: table or json")
+	projectCreateCmd.MarkFlagRequired("repo-url")
 
 	// project update
 	projectUpdateCmd.Flags().String("title", "", "New title")
@@ -91,6 +93,7 @@ func init() {
 	projectUpdateCmd.Flags().String("status", "", "New status")
 	projectUpdateCmd.Flags().String("icon", "", "New icon (emoji)")
 	projectUpdateCmd.Flags().String("lead", "", "New lead name (member or agent)")
+	projectUpdateCmd.Flags().String("repo-url", "", "New repository URL")
 	projectUpdateCmd.Flags().String("output", "json", "Output format: table or json")
 
 	// project delete
@@ -208,7 +211,8 @@ func runProjectCreate(cmd *cobra.Command, _ []string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	body := map[string]any{"title": title}
+	repoURL, _ := cmd.Flags().GetString("repo-url")
+	body := map[string]any{"title": title, "repo_url": repoURL}
 	if v, _ := cmd.Flags().GetString("description"); v != "" {
 		body["description"] = v
 	}
@@ -282,9 +286,13 @@ func runProjectUpdate(cmd *cobra.Command, args []string) error {
 		body["lead_type"] = aType
 		body["lead_id"] = aID
 	}
+	if cmd.Flags().Changed("repo-url") {
+		v, _ := cmd.Flags().GetString("repo-url")
+		body["repo_url"] = v
+	}
 
 	if len(body) == 0 {
-		return fmt.Errorf("no fields to update; use flags like --title, --status, --description, --icon, --lead")
+		return fmt.Errorf("no fields to update; use flags like --title, --status, --description, --icon, --lead, --repo-url")
 	}
 
 	var result map[string]any
