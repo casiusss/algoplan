@@ -6,8 +6,8 @@ LIMIT $2 OFFSET $3;
 
 -- name: CreateActivity :one
 INSERT INTO activity_log (
-    workspace_id, issue_id, actor_type, actor_id, action, details
-) VALUES ($1, $2, $3, $4, $5, $6)
+    workspace_id, issue_id, project_id, actor_type, actor_id, action, details
+) VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING *;
 
 -- name: CountAssigneeChangesByActor :many
