@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/multica-ai/multica/server/internal/middleware"
 	"github.com/multica-ai/multica/server/internal/util"
 	db "github.com/multica-ai/multica/server/pkg/db/generated"
 	"github.com/multica-ai/multica/server/pkg/protocol"
@@ -78,6 +79,7 @@ type UpdateProjectRequest struct {
 	Priority    *string `json:"priority"`
 	LeadType    *string `json:"lead_type"`
 	LeadID      *string `json:"lead_id"`
+	RepoURL     *string `json:"repo_url"`
 }
 
 func (h *Handler) ListProjects(w http.ResponseWriter, r *http.Request) {
@@ -224,12 +226,27 @@ func (h *Handler) UpdateProject(w http.ResponseWriter, r *http.Request) {
 	var rawFields map[string]json.RawMessage
 	json.Unmarshal(bodyBytes, &rawFields)
 
+	// Check authorization for repo_url changes
+	if _, ok := rawFields["repo_url"]; ok {
+		member, hasMember := middleware.MemberFromContext(r.Context())
+		if !hasMember {
+			writeError(w, http.StatusForbidden, "repo_url changes require admin access")
+			return
+		}
+		// Only owner and admin roles can change repo_url
+		if member.Role != "owner" && member.Role != "admin" {
+			writeError(w, http.StatusForbidden, "repo_url changes require admin access")
+			return
+		}
+	}
+
 	params := db.UpdateProjectParams{
 		ID:          prevProject.ID,
 		Description: prevProject.Description,
 		Icon:        prevProject.Icon,
 		LeadType:    prevProject.LeadType,
 		LeadID:      prevProject.LeadID,
+		RepoUrl:     pgtype.Text{String: prevProject.RepoUrl, Valid: true},
 	}
 	if req.Title != nil {
 		params.Title = pgtype.Text{String: *req.Title, Valid: true}
@@ -268,11 +285,47 @@ func (h *Handler) UpdateProject(w http.ResponseWriter, r *http.Request) {
 			params.LeadID = pgtype.UUID{Valid: false}
 		}
 	}
+	if _, ok := rawFields["repo_url"]; ok {
+		if req.RepoURL != nil {
+			normalizedRepoURL, err := util.NormalizeRepoURL(*req.RepoURL)
+			if err != nil {
+				writeError(w, http.StatusBadRequest, err.Error())
+				return
+			}
+			params.RepoUrl = pgtype.Text{String: normalizedRepoURL, Valid: true}
+		} else {
+			params.RepoUrl = pgtype.Text{Valid: false}
+		}
+	}
+
 	project, err := h.Queries.UpdateProject(r.Context(), params)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "failed to update project")
 		return
 	}
+
+	// Write activity log if repo_url changed
+	if _, ok := rawFields["repo_url"]; ok {
+		// Check if normalized value differs from previous
+		if project.RepoUrl != prevProject.RepoUrl {
+			member, _ := middleware.MemberFromContext(r.Context())
+			activityDetails := map[string]string{
+				"old_url": prevProject.RepoUrl,
+				"new_url": project.RepoUrl,
+			}
+			detailsJSON, _ := json.Marshal(activityDetails)
+			_, _ = h.Queries.CreateActivity(r.Context(), db.CreateActivityParams{
+				WorkspaceID: parseUUID(workspaceID),
+				IssueID:     pgtype.UUID{Valid: false},
+				ProjectID:   pgtype.UUID{Bytes: project.ID.Bytes, Valid: true},
+				ActorType:   pgtype.Text{String: "member", Valid: true},
+				ActorID:     member.ID,
+				Action:      "project.repo_url_changed",
+				Details:     detailsJSON,
+			})
+		}
+	}
+
 	resp := projectToResponse(project)
 	h.publish(protocol.EventProjectUpdated, workspaceID, "member", userID, map[string]any{"project": resp})
 	writeJSON(w, http.StatusOK, resp)

@@ -142,3 +142,39 @@ func (q *Queries) ListActivities(ctx context.Context, arg ListActivitiesParams) 
 	}
 	return items, nil
 }
+
+const listActivityByProject = `-- name: ListActivityByProject :many
+SELECT id, workspace_id, issue_id, actor_type, actor_id, action, details, created_at, project_id FROM activity_log
+WHERE project_id = $1
+ORDER BY created_at DESC
+`
+
+func (q *Queries) ListActivityByProject(ctx context.Context, projectID pgtype.UUID) ([]ActivityLog, error) {
+	rows, err := q.db.Query(ctx, listActivityByProject, projectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ActivityLog{}
+	for rows.Next() {
+		var i ActivityLog
+		if err := rows.Scan(
+			&i.ID,
+			&i.WorkspaceID,
+			&i.IssueID,
+			&i.ActorType,
+			&i.ActorID,
+			&i.Action,
+			&i.Details,
+			&i.CreatedAt,
+			&i.ProjectID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
