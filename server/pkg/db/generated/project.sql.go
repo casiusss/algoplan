@@ -83,6 +83,20 @@ func (q *Queries) DeleteProject(ctx context.Context, id pgtype.UUID) error {
 	return err
 }
 
+const getInboxProjectID = `-- name: GetInboxProjectID :one
+SELECT id FROM project
+WHERE workspace_id = $1 AND title = 'Inbox'
+ORDER BY created_at ASC
+LIMIT 1
+`
+
+func (q *Queries) GetInboxProjectID(ctx context.Context, workspaceID pgtype.UUID) (pgtype.UUID, error) {
+	row := q.db.QueryRow(ctx, getInboxProjectID, workspaceID)
+	var id pgtype.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
 const getProject = `-- name: GetProject :one
 SELECT id, workspace_id, title, description, icon, status, lead_type, lead_id, created_at, updated_at, priority, repo_url FROM project
 WHERE id = $1

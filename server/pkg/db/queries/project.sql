@@ -49,3 +49,9 @@ SELECT project_id,
 FROM issue
 WHERE project_id = ANY(sqlc.arg('project_ids')::uuid[])
 GROUP BY project_id;
+
+-- name: GetInboxProjectID :one
+SELECT id FROM project
+WHERE workspace_id = $1 AND title = 'Inbox'
+ORDER BY created_at ASC
+LIMIT 1;

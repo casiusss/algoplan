@@ -128,6 +128,15 @@ func setupHandlerTestFixture(ctx context.Context, pool *pgxpool.Pool) (string, s
 		return "", "", err
 	}
 
+	// Create the Inbox project (normally created by migration 058)
+	if _, err := pool.Exec(ctx, `
+		INSERT INTO project (workspace_id, title, description, icon, status, repo_url)
+		VALUES ($1, $2, $3, $4, $5, $6)
+		ON CONFLICT DO NOTHING
+	`, workspaceID, "Inbox", "Default project for issues without an explicit project", "📥", "in_progress", "https://example.com"); err != nil {
+		return "", "", err
+	}
+
 	return userID, workspaceID, nil
 }
 
@@ -1283,6 +1292,47 @@ func TestBacklogToTodoTriggersAgent(t *testing.T) {
 
 	// Cleanup
 	testPool.Exec(ctx, `DELETE FROM agent_task_queue WHERE issue_id = $1`, created.ID)
+	cleanupReq := newRequest("DELETE", "/api/issues/"+created.ID, nil)
+	cleanupReq = withURLParam(cleanupReq, "id", created.ID)
+	testHandler.DeleteIssue(httptest.NewRecorder(), cleanupReq)
+}
+
+func TestCreateIssue_DefaultsToInboxProject(t *testing.T) {
+	ctx := context.Background()
+
+	// Verify that the test workspace has an Inbox project (created by migration 058)
+	var inboxProjectID string
+	err := testPool.QueryRow(ctx,
+		`SELECT id FROM project WHERE workspace_id = $1 AND title = 'Inbox' LIMIT 1`,
+		testWorkspaceID,
+	).Scan(&inboxProjectID)
+	if err != nil {
+		t.Fatalf("TestCreateIssue_DefaultsToInboxProject: Inbox project not found in test workspace: %v", err)
+	}
+
+	// Create an issue without specifying project_id
+	w := httptest.NewRecorder()
+	req := newRequest("POST", "/api/issues?workspace_id="+testWorkspaceID, map[string]any{
+		"title":  "Issue without explicit project",
+		"status": "todo",
+	})
+	testHandler.CreateIssue(w, req)
+	if w.Code != http.StatusCreated {
+		t.Fatalf("CreateIssue: expected 201, got %d: %s", w.Code, w.Body.String())
+	}
+
+	var created IssueResponse
+	json.NewDecoder(w.Body).Decode(&created)
+
+	// Verify the created issue has the Inbox project_id
+	if created.ProjectID == nil {
+		t.Fatal("CreateIssue: expected project_id to be set, but got nil")
+	}
+	if *created.ProjectID != inboxProjectID {
+		t.Fatalf("CreateIssue: expected project_id %q, got %q", inboxProjectID, *created.ProjectID)
+	}
+
+	// Cleanup
 	cleanupReq := newRequest("DELETE", "/api/issues/"+created.ID, nil)
 	cleanupReq = withURLParam(cleanupReq, "id", created.ID)
 	testHandler.DeleteIssue(httptest.NewRecorder(), cleanupReq)

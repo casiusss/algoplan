@@ -448,6 +448,14 @@ func (h *Handler) ImportStarterContent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// --- Resolve Inbox project for welcome and sub-issues ---
+	inboxID, err := qtx.GetInboxProjectID(r.Context(), parseUUID(req.WorkspaceID))
+	if err != nil {
+		slog.Warn("import starter content: get inbox project failed", append(logger.RequestAttrs(r), "error", err)...)
+		writeError(w, http.StatusInternalServerError, "failed to resolve default project")
+		return
+	}
+
 	// --- Create welcome issue (only when an agent exists) ---
 	var welcomeIssueID *string
 	var welcomeIssueForEvent *db.Issue
@@ -472,6 +480,7 @@ func (h *Handler) ImportStarterContent(w http.ResponseWriter, r *http.Request) {
 			CreatorType:  "member",
 			CreatorID:    actorID,
 			Number:       welcomeNumber,
+			ProjectID:    inboxID,
 		})
 		if err != nil {
 			slog.Warn("import starter content: create welcome issue failed", append(logger.RequestAttrs(r), "error", err)...)

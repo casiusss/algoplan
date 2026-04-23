@@ -847,6 +847,17 @@ func (h *Handler) CreateIssue(w http.ResponseWriter, r *http.Request) {
 		dueDate = pgtype.Timestamptz{Time: t, Valid: true}
 	}
 
+	// If projectID is still not set, default to the workspace's Inbox project
+	if !projectID.Valid {
+		inboxID, err := h.Queries.GetInboxProjectID(r.Context(), parseUUID(workspaceID))
+		if err != nil {
+			slog.Warn("get inbox project failed", append(logger.RequestAttrs(r), "error", err, "workspace_id", workspaceID)...)
+			writeError(w, http.StatusInternalServerError, "failed to resolve default project")
+			return
+		}
+		projectID = inboxID
+	}
+
 	// Use a transaction to atomically increment the workspace issue counter
 	// and create the issue with the assigned number.
 	tx, err := h.TxStarter.Begin(r.Context())
