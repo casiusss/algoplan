@@ -33,6 +33,12 @@ import { PriorityIcon } from "../issues/components/priority-icon";
 import { ActorAvatar } from "../common/actor-avatar";
 import { useNavigation } from "../navigation";
 
+function isValidRepoURL(url: string): boolean {
+  const trimmed = url.trim();
+  if (!trimmed) return false;
+  return /^(https?:\/\/\S+|git@\S+:\S+)$/.test(trimmed);
+}
+
 function PillButton({
   children,
   className,
@@ -57,6 +63,7 @@ export function CreateProjectModal({ onClose }: { onClose: () => void }) {
   const router = useNavigation();
   const workspace = useCurrentWorkspace();
   const workspaceName = workspace?.name;
+  const workspaceRepos = workspace?.repos ?? [];
   const wsPaths = useWorkspacePaths();
   const wsId = useWorkspaceId();
   const { data: members = [] } = useQuery(memberListOptions(wsId));
@@ -89,7 +96,7 @@ export function CreateProjectModal({ onClose }: { onClose: () => void }) {
   const createProject = useCreateProject();
 
   const handleSubmit = async () => {
-    if (!title.trim() || submitting) return;
+    if (!title.trim() || !isValidRepoURL(repoUrl) || submitting) return;
     setSubmitting(true);
     try {
       const project = await createProject.mutateAsync({
@@ -193,13 +200,25 @@ export function CreateProjectModal({ onClose }: { onClose: () => void }) {
             onChange={(v) => setTitle(v)}
             onSubmit={handleSubmit}
           />
+          <label htmlFor="project-repo-url" className="sr-only">
+            Repository URL
+          </label>
           <input
+            id="project-repo-url"
             type="url"
+            list="project-repo-url-options"
             value={repoUrl}
             onChange={(e) => setRepoUrl(e.target.value)}
             placeholder="https://github.com/org/repo.git"
             className="mt-2 w-full bg-transparent text-sm text-muted-foreground placeholder:text-muted-foreground/60 focus:outline-none"
           />
+          <datalist id="project-repo-url-options">
+            {workspaceRepos.map((r) => (
+              <option key={r.url} value={r.url}>
+                {r.url}
+              </option>
+            ))}
+          </datalist>
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto px-5">
@@ -351,7 +370,11 @@ export function CreateProjectModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="flex items-center justify-end px-4 py-3 border-t shrink-0">
-          <Button size="sm" onClick={handleSubmit} disabled={!title.trim() || submitting}>
+          <Button
+            size="sm"
+            onClick={handleSubmit}
+            disabled={!title.trim() || !isValidRepoURL(repoUrl) || submitting}
+          >
             {submitting ? "Creating..." : "Create Project"}
           </Button>
         </div>
