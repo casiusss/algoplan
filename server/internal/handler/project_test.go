@@ -130,3 +130,61 @@ func TestUpdateProject_RepoURLAsAdminWritesActivity(t *testing.T) {
 		t.Errorf("no project.repo_url_changed activity row found")
 	}
 }
+
+func TestListProjects_IncludesRepoURL(t *testing.T) {
+	projectID := createProjectWithRepo(t, "P", "https://github.com/a/b.git")
+
+	w := httptest.NewRecorder()
+	req := newRequest("GET", "/api/projects", nil)
+	testHandler.ListProjects(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("want 200, got %d: %s", w.Code, w.Body.String())
+	}
+
+	var wrap struct {
+		Projects []struct {
+			ID      string `json:"id"`
+			RepoURL string `json:"repo_url"`
+		} `json:"projects"`
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &wrap); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+
+	found := false
+	for _, p := range wrap.Projects {
+		if p.ID == projectID && p.RepoURL == "https://github.com/a/b.git" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("project %s with repo_url not in response; got %+v", projectID, wrap.Projects)
+	}
+}
+
+func TestGetProject_IncludesRepoURL(t *testing.T) {
+	projectID := createProjectWithRepo(t, "P", "https://github.com/a/b.git")
+
+	w := httptest.NewRecorder()
+	req := newRequest("GET", "/api/projects/"+projectID, nil)
+	req = withURLParam(req, "id", projectID)
+	testHandler.GetProject(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("want 200, got %d: %s", w.Code, w.Body.String())
+	}
+
+	var got struct {
+		ID      string `json:"id"`
+		RepoURL string `json:"repo_url"`
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &got); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+
+	if got.RepoURL != "https://github.com/a/b.git" {
+		t.Errorf("got %q want canonical form", got.RepoURL)
+	}
+}
