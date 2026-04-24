@@ -82,12 +82,12 @@ Kompletter Frontend-Redesign der Multica-Plattform inklusive Rebrand zu **AlgoPl
 
 ### Out of Scope
 
-**Konzepte aus den Mocks — visuell, aber ohne Logik in diesem Milestone:**
-- **Phase-Progress-Bars** — visuelles Platzhalter-Widget; Phasen-Konzept als Feature nicht implementiert (später)
-- **Effort-Segmented-Control S/M/L/XL** — UI vorhanden, kein Backend-Feld (später)
-- **Launch-Blocker-Toggle** — UI vorhanden, kein Backend-Feld (später)
-- **Top-Performer-Widget** — UI vorhanden, kein Metrik-Backend (später)
-- **Kategorien-Taxonomie** (Backend/Frontend/Launch/Legal/DevOps) — als Mock-Labels, nicht als First-Class-Feld (später)
+**Konzepte aus den Mocks — vollständig aus v1 entfernt (v2+):**
+- **Phase-Timeline-Bar** — User hat abgewählt; kein Widget ohne Phase-Logik
+- **Effort-Segmented-Control S/M/L/XL** — User hat Mock abgewählt; UI-only ohne Backend wertlos
+- **Launch-Blocker-Toggle** — User hat Mock abgewählt; UI-only ohne Backend wertlos
+- **Top-Performer-Widget** — kein Metrik-Backend
+- **Kategorien-Taxonomie** (Backend/Frontend/Launch/Legal/DevOps) — nur als Mock-Labels im Design, keine First-Class-Struktur
 
 **Code-Internals bleiben:**
 - Paketnamen `@multica/*` NICHT umbenannt — Umbenennung wäre invasive Refactor-Welle ohne User-Value
