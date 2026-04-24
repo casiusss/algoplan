@@ -12,7 +12,6 @@ Requirements für initialen Release. Jedes mappt zu genau einer Roadmap-Phase.
 - [ ] **FND-01**: Neue OKLCH-Farbpalette (deep-forest-green Sidebar, mint-sage Canvas, weiße Cards, colored tag chips) in `packages/ui/styles/tokens.css` ersetzt bestehende Werte atomar — beide Apps konsumieren die gleichen Tokens
 - [ ] **FND-02**: Inter-Font in `next/font/google` mit `style: ["normal", "italic"]` auf `apps/web` geladen; `@fontsource-variable/inter` auf `apps/desktop` und `apps/showroom` mit italic-Axis
 - [ ] **FND-03**: Dark Mode funktioniert auf beiden Apps per `.dark`-Class (next-themes auf web, Desktop pre-React inline script in `index.html` verhindert FOUC)
-- [ ] **FND-04**: CI-Regel erkennt hardcoded Tailwind-Farben (`text-red-500`, `bg-yellow-200` etc.) in `packages/views/` und `packages/ui/` und schlägt fehl — bestehende 6 Verstöße werden migriert
 
 ### Atomic UI Primitives
 
@@ -150,6 +149,7 @@ Explizit ausgeschlossen. Dokumentiert um Scope-Creep zu verhindern.
 | Neues Auth-Modell / Permissions-Redesign | Visueller Refresh der bestehenden Flows |
 | E2E-Test-Neuarchitektur | Selektoren angepasst, keine Neuarchitektur |
 | Visual Regression Tests (Chromatic) | v2+ |
+| FND-04 CI-Regel gegen hardcoded Tailwind-Farben | User explicit dropped enforcement (CONTEXT D-19, 2026-04-24) — "keine — unnötig". Bestehende Verstöße werden Phase 1 Plan 04 als one-shot Migration entfernt; keine Lint-/CI-Regel verhindert neue Einführungen. Re-evaluate if Phase 2+ regressions appear. |
 
 ## Traceability
 
@@ -157,7 +157,7 @@ Welche Phasen decken welche Requirements. Befüllt beim Roadmap-Erstellen.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FND-01 → FND-04 | Phase 1 | Pending |
+| FND-01 → FND-03 | Phase 1 | Pending |
 | UI-01 → UI-04 | Phase 2 | Pending |
 | SB-01 → SB-04 | Phase 3 | Pending |
 | SHL-01 → SHL-05 | Phase 4 | Pending |
@@ -170,10 +170,10 @@ Welche Phasen decken welche Requirements. Befüllt beim Roadmap-Erstellen.
 | RBR-01 → RBR-06 | Phase 7 | Pending |
 
 **Coverage:**
-- v1 requirements: 51 total (FND×4, UI×4, SB×4, SHL×5, KBN×7, DTL×4, AUTH×6, INB×3, SET×3, WS×5, RBR×6)
-- Mapped to phases: 51/51 — verified by roadmapper 2026-04-24
+- v1 requirements: 50 total (FND×3, UI×4, SB×4, SHL×5, KBN×7, DTL×4, AUTH×6, INB×3, SET×3, WS×5, RBR×6) — FND-04 dropped to Out of Scope per CONTEXT D-19 (2026-04-24)
+- Mapped to phases: 50/50 — verified by Phase 1 planner 2026-04-25
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-24*
-*Last updated: 2026-04-24 — Roadmap created, traceability verified*
+*Last updated: 2026-04-25 — FND-04 dropped to Out of Scope per Phase 1 CONTEXT D-19; coverage count 51 → 50*
