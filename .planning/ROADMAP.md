@@ -25,12 +25,12 @@ Decimal phases appear between their surrounding integers in numeric order.
 ### Phase 1: Token Foundation + Typography
 **Goal**: Both apps render every surface in the new AlgoPlan OKLCH palette with Inter (including italic) and dark mode works correctly from the first paint — no flash, no hardcoded color escapes
 **Depends on**: Nothing (first phase)
-**Requirements**: FND-01, FND-02, FND-03, FND-04
+**Requirements**: FND-01, FND-02, FND-03
 **Success Criteria** (what must be TRUE):
   1. Toggling `.dark` on `<html>` in DevTools flips every redesigned surface correctly — no invisible text, no wrong backgrounds — on both web and desktop
   2. Electron desktop starts in dark mode with no visible light flash (pre-React inline script sets `.dark` before React mounts)
   3. Display headlines in the web app render in Inter italic (Network tab shows the italic woff2 loaded, no serif fallback)
-  4. Running `grep -rn "text-red-\|bg-blue-\|text-green-" packages/views packages/ui` returns zero results — CI rule enforces this and fails on any new violation
+  4. Running `bash scripts/grep-hardcoded-colors.sh` returns zero results — one-shot post-Phase-1 manual verification (no CI rule per CONTEXT D-19; future regressions are caught at PR review only)
 **Plans**: 6 plans
 
 Plans:
