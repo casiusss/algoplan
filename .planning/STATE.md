@@ -4,7 +4,7 @@ milestone: v0.4.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 1 context gathered
-last_updated: "2026-04-24T23:09:03.950Z"
+last_updated: "2026-04-25T00:00:00.000Z"
 last_activity: 2026-04-24 -- Phase --phase execution started
 progress:
   total_phases: 7
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 Phase: --phase (01) — EXECUTING
 Plan: 1 of --name
 Status: Executing Phase --phase
-Last activity: 2026-04-24 -- Phase --phase execution started
+Last activity: 2026-04-25 — Phase 1 plans created (5 plans across 2 waves + Wave 0 scaffolds); FND-04 dropped per CONTEXT D-19; Algorivo palette locked
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -83,7 +83,7 @@ Items acknowledged and carried forward from previous milestone close:
 | Open question | dnd-kit: unified diff vs separate commits in Phase 5 | Recommendation: two commits (API migrate, then restyle) | Roadmap creation |
 | Open question | Kanban column virtualization decision gate | Decision: run perf test with 50+ mock cards in Phase 5; go/no-go within phase | Roadmap creation |
 | Open question | Password strength meter library (`@zxcvbn-ts/core`) | Decision needed before Phase 6; add catalog entry at Phase 5→6 transition | Roadmap creation |
-| Open question | `Source_Serif_4` removal | Audit for remaining uses before removing in Phase 1 | Roadmap creation |
+| Partial closure | `Source_Serif_4` removal | PARTIAL: italic axis removed from desktop (Phase 1 Plan 02 Task 2.2). Base import + `--font-serif` token KEPT — onboarding (`packages/views/onboarding/**`) consumes `font-serif` (14 lines / 7 files). Full removal deferred to onboarding-redesign phase. | Roadmap creation; partial closure 2026-04-25 (Phase 1 planner Q4 deviation from D-12) |
 
 ## Session Continuity
 
