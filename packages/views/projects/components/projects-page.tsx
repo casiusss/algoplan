@@ -131,7 +131,7 @@ function ProjectRow({ project }: { project: Project }) {
           <>
             <span className="relative h-1.5 w-12 rounded-full bg-muted overflow-hidden">
               <span
-                className="absolute inset-y-0 left-0 rounded-full bg-emerald-500 transition-all"
+                className="absolute inset-y-0 left-0 rounded-full bg-success transition-all"
                 style={{ width: `${Math.round((project.done_count / project.issue_count) * 100)}%` }}
               />
             </span>

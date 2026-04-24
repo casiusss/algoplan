@@ -109,11 +109,11 @@ vi.mock("@multica/core/issues/config", () => ({
 vi.mock("@multica/core/projects/config", () => ({
   PROJECT_STATUS_ORDER: ["planned"],
   PROJECT_STATUS_CONFIG: {
-    planned: { label: "Planned", dotColor: "bg-gray-500" },
-    in_progress: { label: "In Progress", dotColor: "bg-blue-500" },
-    paused: { label: "Paused", dotColor: "bg-yellow-500" },
-    completed: { label: "Completed", dotColor: "bg-green-500" },
-    cancelled: { label: "Cancelled", dotColor: "bg-red-500" },
+    planned: { label: "Planned", dotColor: "bg-muted" },
+    in_progress: { label: "In Progress", dotColor: "bg-info" },
+    paused: { label: "Paused", dotColor: "bg-warning" },
+    completed: { label: "Completed", dotColor: "bg-success" },
+    cancelled: { label: "Cancelled", dotColor: "bg-destructive" },
   },
   PROJECT_PRIORITY_ORDER: ["none"],
   PROJECT_PRIORITY_CONFIG: {
