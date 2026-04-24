@@ -113,8 +113,8 @@ function formatRelativeDate(date: string): string {
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof Zap }> = {
-  active: { label: "Active", color: "text-emerald-500", icon: Play },
-  paused: { label: "Paused", color: "text-amber-500", icon: Pause },
+  active: { label: "Active", color: "text-success", icon: Play },
+  paused: { label: "Paused", color: "text-warning", icon: Pause },
   archived: { label: "Archived", color: "text-muted-foreground", icon: AlertCircle },
 };
 
