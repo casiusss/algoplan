@@ -1,5 +1,13 @@
 /* =============================================================================
  * Multica shared base styles — imported by all apps
+ *
+ * Reviewed 2026-04-24 (Plan 01-01) for AlgoPlan token compatibility:
+ *   - Scrollbar (var(--scrollbar-thumb / -hover / -track)) — no change required;
+ *     contrast vs new --background is preserved (light bg shifted only ~1.5%
+ *     darker, dark bg shifted only in chroma/hue at the same lightness).
+ *   - chat-impulse keyframe (var(--brand)) — works with new brand-green
+ *     oklch(0.55 0.13 156); color-mix(in oklab, var(--brand) 40%, transparent)
+ *     resolves correctly with the new in-gamut value.
  * ============================================================================= */
 
 /* Shiki dual themes: CSS-only light/dark switching via CSS variables */
