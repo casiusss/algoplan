@@ -19,6 +19,7 @@ import "./globals.css";
 // PingFang SC (macOS) / Microsoft YaHei (Windows) / Noto Sans CJK SC (Linux).
 const inter = Inter({
   subsets: ["latin"],
+  style: ["normal", "italic"],
   variable: "--font-sans",
   fallback: [
     "-apple-system",
