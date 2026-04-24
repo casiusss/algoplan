@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Kompletter Frontend-Redesign der Multica-Plattform inklusive Rebrand zu **AlgoPlan** (app-facing). Die bestehende Linear-artige Issue-Plattform wird visuell auf eine neue Board-zentrierte Identität umgestellt: deep-forest-green / mint-sage Palette, Inter als Schriftfamilie (inkl. italic für Headlines), neues Kanban-Board als alternative Issue-View, neuer Komponenten-Showroom. Code-Internals (Paketnamen `@multica/*`, DB-Schemas, CLI-Binary, Repo) bleiben unverändert — nur die User-facing Oberfläche wird getauscht.
+Kompletter Frontend-Redesign der Multica-Plattform inklusive Rebrand zu **AlgoPlan** (app-facing). Die bestehende Linear-artige Issue-Plattform wird visuell auf eine neue Board-zentrierte Identität umgestellt: Algorivo OKLCH Palette (brand-green #008757 auf neutralem Surface, near-white #fafbfc light / near-black #0f1318 dark), Inter als Schriftfamilie (inkl. italic für Headlines), neues Kanban-Board als alternative Issue-View, neuer Komponenten-Showroom. Code-Internals (Paketnamen `@multica/*`, DB-Schemas, CLI-Binary, Repo) bleiben unverändert — nur die User-facing Oberfläche wird getauscht.
 
 ## Core Value
 
@@ -30,7 +30,7 @@ Kompletter Frontend-Redesign der Multica-Plattform inklusive Rebrand zu **AlgoPl
 <!-- Frontend redesign scope — hypotheses until shipped -->
 
 **Foundation & Tokens**
-- [ ] Neues Farbsystem (deep-forest-green Sidebar/Header, mint-sage Canvas, weiße Cards) via CSS-Variablen in `packages/ui/styles/`
+- [ ] Neues Farbsystem (Algorivo-derived OKLCH-Palette: brand-green #008757 primary, near-white/-black backgrounds, weiße/dark Cards) via CSS-Variablen in `packages/ui/styles/`
 - [ ] Inter-Font als Primary-Font inkl. italic-Variante für Display-Headlines (mit System-Fallback)
 - [ ] Light- und Dark-Mode als vollwertige Themes
 - [ ] Semantische Design-Tokens (`bg-background`, `bg-sidebar`, `bg-canvas`, `text-muted-foreground`…) — keine hardcoded Tailwind-Farben
@@ -135,12 +135,13 @@ Kompletter Frontend-Redesign der Multica-Plattform inklusive Rebrand zu **AlgoPl
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
 | Rebrand zu AlgoPlan nur app-facing, Code bleibt `@multica/*` | Paket-Rename wäre invasive Refactor-Welle ohne User-Value; Trennung erlaubt kleinen Scope | — Pending |
-| Inter als alleinige Font-Familie (inkl. italic für Headlines) | User hat Inter lokal evtl. nicht geladen, Mock zeigt serif-Fallback — echte Absicht ist Inter | — Pending |
+| Inter als alleinige Font-Familie (inkl. italic für Headlines); Source_Serif_4 nur für Landing + Onboarding behalten (Phase 1 planner Q4 deviation von D-12) | User hat Inter lokal evtl. nicht geladen, Mock zeigt serif-Fallback — echte Absicht ist Inter; Onboarding consumes font-serif (14 lines / 7 files), kann nicht ohne View-Redesign entfernt werden | — Pending Phase 1 ship; full Source_Serif_4 removal deferred to onboarding-redesign phase |
 | Kanban als zusätzliche View mit Toggle (nicht Listen-Ersatz) | User-Workflow bleibt, Board ist opt-in pro Page — UI-Preference persistieren | — Pending |
 | Storybook-Showroom als separate App | Komponenten vor App-Integration review-bar — reduziert Risiko beim Umschalten | — Pending |
 | Phase-Progress / Effort / Launch-Blocker / Top-Performer = Mock-only | Backend-Erweiterungen würden Scope verdoppeln; UI vorbereiten, Logik später | — Pending |
 | Standard Granularität (5-8 Phasen) | Balance zwischen Foundation-first-Sequenzierung und vertikal-vollständigen Feature-Drops | — Pending |
 | Both Modes (Light + Dark) von Anfang an | Token-System muss Dark mitdenken, nachträglich doppelte Arbeit | — Pending |
+| Algorivo OKLCH-Palette adoptiert (FND-01); FND-04 CI-Regel gedroppt (D-19) | Brand-direction-shift weg von mint-sage hin zu Algorivo brand-green; user explicit "CI-Regel unnötig" | — Pending Phase 1 ship |
 
 ## Evolution
 
