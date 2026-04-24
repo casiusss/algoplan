@@ -47,9 +47,9 @@ function formatDate(date: string): string {
 }
 
 const RUN_STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof CheckCircle2; spin?: boolean }> = {
-  issue_created: { label: "Issue Created", color: "text-blue-500", icon: Clock },
-  running: { label: "Running", color: "text-blue-500", icon: Loader2, spin: true },
-  completed: { label: "Completed", color: "text-emerald-500", icon: CheckCircle2 },
+  issue_created: { label: "Issue Created", color: "text-info", icon: Clock },
+  running: { label: "Running", color: "text-info", icon: Loader2, spin: true },
+  completed: { label: "Completed", color: "text-success", icon: CheckCircle2 },
   failed: { label: "Failed", color: "text-destructive", icon: XCircle },
 };
 
@@ -304,8 +304,8 @@ export function AutopilotDetailPage({ autopilotId }: { autopilotId: string }) {
             />
             <span className={cn(
               "text-xs font-medium capitalize",
-              autopilot.status === "active" ? "text-emerald-500" :
-              autopilot.status === "paused" ? "text-amber-500" :
+              autopilot.status === "active" ? "text-success" :
+              autopilot.status === "paused" ? "text-warning" :
               "text-muted-foreground",
             )}>
               {autopilot.status}

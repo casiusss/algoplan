@@ -109,7 +109,7 @@ function SessionItem({
     >
       <Avatar className="size-6 shrink-0 mt-0.5">
         {agent?.avatar_url && <AvatarImage src={agent.avatar_url} />}
-        <AvatarFallback className="bg-purple-100 text-purple-700">
+        <AvatarFallback className="bg-secondary text-secondary-foreground">
           <Bot className="size-3" />
         </AvatarFallback>
       </Avatar>

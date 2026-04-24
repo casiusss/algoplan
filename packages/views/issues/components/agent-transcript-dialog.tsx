@@ -76,11 +76,11 @@ function getEventColor(item: TimelineItem): EventColor {
 }
 
 const colorClasses: Record<EventColor, { bg: string; bgActive: string; label: string }> = {
-  agent: { bg: "bg-emerald-400/60", bgActive: "bg-emerald-500", label: "bg-emerald-500" },
-  thinking: { bg: "bg-violet-400/60", bgActive: "bg-violet-500", label: "bg-violet-500/20 text-violet-700 dark:text-violet-300" },
-  tool: { bg: "bg-blue-400/60", bgActive: "bg-blue-500", label: "bg-blue-500/20 text-blue-700 dark:text-blue-300" },
+  agent: { bg: "bg-success/60", bgActive: "bg-success", label: "bg-success" },
+  thinking: { bg: "bg-brand/60", bgActive: "bg-brand", label: "bg-brand/20 text-brand" },
+  tool: { bg: "bg-info/60", bgActive: "bg-info", label: "bg-info/20 text-info" },
   result: { bg: "bg-slate-300/60 dark:bg-slate-600/60", bgActive: "bg-slate-400 dark:bg-slate-500", label: "bg-muted text-muted-foreground" },
-  error: { bg: "bg-red-400/60", bgActive: "bg-red-500", label: "bg-red-500/20 text-red-700 dark:text-red-300" },
+  error: { bg: "bg-destructive/60", bgActive: "bg-destructive", label: "bg-destructive/20 text-destructive" },
 };
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -342,14 +342,14 @@ export function AgentTranscriptDialog({
                     className={cn(
                       "flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors",
                       selectedTools.size > 0
-                        ? "text-blue-600 dark:text-blue-400 bg-blue-500/10 hover:bg-blue-500/20"
+                        ? "text-info bg-info/10 hover:bg-info/20"
                         : "text-muted-foreground hover:text-foreground hover:bg-accent",
                     )}
                   >
                     <Filter className="h-3 w-3" />
                     Filter
                     {selectedTools.size > 0 && (
-                      <span className="ml-0.5 rounded-full bg-blue-500/20 px-1.5 py-0 text-[10px] font-medium">
+                      <span className="ml-0.5 rounded-full bg-info/20 px-1.5 py-0 text-[10px] font-medium">
                         {selectedTools.size}
                       </span>
                     )}
