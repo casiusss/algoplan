@@ -4,6 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Multica</title>
+    <!-- Pre-React FOUC prevention: read theme from localStorage, apply .dark
+         to <html> before the renderer mounts. Synchronous, no network.
+         Storage key matches @multica/ui ThemeProvider storageKey="multica_theme".
+         Wrapped in try/catch for Safari private-mode quota errors (RESEARCH Pitfall 4). -->
+    <script>
+      try {
+        var t = localStorage.getItem('multica_theme') || 'system';
+        var dark = t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) document.documentElement.classList.add('dark');
+      } catch (e) {}
+    </script>
   </head>
   <body class="h-full overflow-hidden antialiased font-sans">
     <div id="root" class="h-full"></div>
