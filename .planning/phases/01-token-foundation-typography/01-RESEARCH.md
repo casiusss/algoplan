@@ -629,32 +629,39 @@ completed: { label: "Completed", color: "text-success", icon: CheckCircle2 },
 | A7 | Migrating `bg-purple-100 text-purple-700` chat avatar fallback to `bg-secondary text-secondary-foreground` is visually acceptable | Hardcoded Color Violation Map | If wrong, chat avatars look bland/wrong. Discuss with planner whether to introduce `--brand-soft` or accept the substitution. |
 | A8 | Brand Guide (Pending Inputs in CONTEXT.md) will not arrive before plan-phase starts | Color Mapping | If it arrives, plan must re-derive from Brand Guide values, not Algorivo. **Planner must re-read CONTEXT.md and check for an updated D-02 before writing plans.** |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should the `multica_theme` localStorage key change include a one-shot migration from the legacy `theme` key?**
    - What we know: next-themes' default key is `theme`. Project currently uses default. After D-15, key becomes `multica_theme` → effectively all current users reset to `defaultTheme="system"`.
    - What's unclear: Whether any production users have a non-default theme preference today (CONTEXT.md says no production AlgoPlan users yet — so likely not material).
    - Recommendation: Accept the reset as a no-op for the rebrand launch. If internal users complain, add a 3-line `useEffect` migration in a follow-up.
+   - **RESOLVED:** Accept silent reset of legacy `theme` key (Plan 03 Task 3.1). No migration code added; internal users may briefly re-pick their theme preference. Justification: no production AlgoPlan users; documented in Plan 03 commit body and SUMMARY.
 
 2. **Is `packages/core/theme/` the right home for the shared theme hook?**
    - What we know: `useTheme` is already exported from `@multica/ui/components/common/theme-provider.tsx`. Moving it to `packages/core` would add react-dom as a transitive dep to `core`, violating the boundary rule (`packages/core` has zero react-dom imports).
    - What's unclear: Whether D-17 was a deliberate architectural choice or a default assumption.
    - Recommendation: **Keep useTheme in `packages/ui`.** Update CONTEXT.md to reflect this. If the planner wants to honor D-17 literally, create `packages/core/theme/index.ts` that ONLY re-exports from `@multica/ui` — no logic in `core`.
+   - **RESOLVED:** KEEP canonical `useTheme` + `ThemeProvider` at `@multica/ui/components/common/theme-provider`. D-17 literal placement (move/re-export from `@multica/core`) is REJECTED because it violates the Core↔UI independence rule (CLAUDE.md: "Dependency direction: views/ → core/ + ui/. Core and UI are independent of each other"). Even a thin re-export barrel in `packages/core` requires `@multica/ui` as a peer dependency on `packages/core`, which breaks the boundary. Existing consumers (`appearance-tab.tsx`, `search-command.tsx`) already import from the canonical path. Plan 03 Task 3.3 (barrel creation) was DROPPED in revision; Plan 03 reduces to 2 tasks (storageKey + FOUC inline script). Plan 03 `<objective>` documents the deviation explicitly.
 
 3. **Should we add `--highlight` and `--accent-thinking` (or equivalent) tokens for search-mark and AI-thinking semantics?**
    - What we know: `bg-yellow-200 dark:bg-yellow-900/60` (search highlight) and `bg-violet-*` (agent thinking) are the only "non-canonical" semantic colors in the codebase.
    - What's unclear: Whether they deserve first-class tokens or can be replaced with existing `--warning` / `--brand` reuse.
    - Recommendation: Defer to planner. If planner wants exact-match migration, use `--warning/15` and `bg-secondary` (or hardcoded with documented exception). If clean semantic separation desired, add the two tokens.
+   - **RESOLVED (Q3a — `--highlight` token):** ADD as a new semantic token in Plan 01 (`--highlight` + `--highlight-foreground`, plus `--color-highlight*` bindings in `@theme inline`). Plan 04 Task 4.4 migrates the `<mark>` consumer in `search-command.tsx` to `bg-highlight text-highlight-foreground`. The Wave 0 token-binding test (Plan 00 Task 0.1) also asserts the `bg-highlight` className wiring.
+   - **RESOLVED (Q3b — `--accent-thinking` token):** SKIP. Migrate `agent-transcript-dialog.tsx` thinking row to use `text-brand` (resolves via `--color-brand` binding in `@theme inline`, Plan 01). Plan 04 Task 4.4 thinking row uses `{ bg: 'bg-brand/60', bgActive: 'bg-brand', label: 'bg-brand/20 text-brand' }` — fixes the original `text-brand-foreground` (white) on light/20% bg invisibility issue. Visual sign-off in Plan 04 SUMMARY required; if rejected, follow-up `--accent-thinking` token deferred to Phase 2+.
+   - **RESOLVED (Q3c — chat avatar fallback purple):** Migrate `bg-purple-100 text-purple-700` in `chat-session-history.tsx` and `chat-window.tsx` to `bg-secondary text-secondary-foreground` (Plan 04 Task 4.2). Visual outcome: muted neutral; planner-accepted per RESEARCH §A7.
 
 4. **Does any view consume `font-serif` outside the Landing pages?**
    - What we know: `apps/web/app/(landing)/layout.tsx` keeps it (D-12 explicit). Onboarding pages on desktop may use `font-serif` (verified: `entrance-spin` animation and onboarding keyframes are in base.css, but those don't reference `font-serif`).
    - What's unclear: Need a fresh grep `grep -rn "font-serif\|font-heading" packages/views apps/desktop` before removing the var on desktop.
    - Recommendation: Plan should include a verify-step: re-grep before the desktop globals.css edit.
+   - **RESOLVED:** KEEP base `@fontsource-variable/source-serif-4` import + `--font-serif` token on desktop (Plan 02 Task 2.2). Re-grep surfaced 14 active `font-serif` consumers across 7 onboarding files (`starter-content-prompt.tsx`, `step-platform-fork.tsx`, `step-questionnaire.tsx`, `step-welcome.tsx`, `step-workspace.tsx`, `step-runtime-connect.tsx`, `step-agent.tsx`). Removing the base import would degrade onboarding to Times New Roman fallback. Only the unused italic axis (`@fontsource-variable/source-serif-4/wght-italic.css`) is removed. STATE.md (Plan 05 Task 5.4) records this as PARTIAL closure of the deferred-item — full removal blocked until onboarding redesign phase. Deviation from CONTEXT D-12 documented in Plan 02 `<objective>`.
 
 5. **Should we drop the existing `--priority` token (currently orange) now that `--tag-p0..p3` exist?**
    - What we know: `--priority: oklch(0.65 0.18 50)` exists in light, `--priority: oklch(0.70 0.18 50)` in dark. `@theme inline` exposes `--color-priority`. Grep for usages: not yet run but likely zero.
    - What's unclear: Where, if anywhere, `--color-priority` is consumed.
    - Recommendation: Drop. If grep finds usages, replace with `--tag-p1` (orange) for the closest visual match.
+   - **RESOLVED:** KEEP `--priority` singleton (Plan 01). Re-grep found 8 active consumers in `packages/core/{projects,issues}/config.ts` using `bg-priority` / `text-priority` Tailwind classes. Dropping the token would break priority badge styling project-wide. Phase 2+ may revisit if those configs migrate to per-priority `--tag-p0..p3`.
 
 ## Environment Availability
 
