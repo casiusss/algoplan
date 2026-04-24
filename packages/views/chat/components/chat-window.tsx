@@ -597,7 +597,7 @@ function AgentAvatarSmall({ agent }: { agent: Agent }) {
   return (
     <Avatar className="size-6">
       {agent.avatar_url && <AvatarImage src={agent.avatar_url} />}
-      <AvatarFallback className="bg-purple-100 text-purple-700">
+      <AvatarFallback className="bg-secondary text-secondary-foreground">
         <Bot className="size-3.5" />
       </AvatarFallback>
     </Avatar>
