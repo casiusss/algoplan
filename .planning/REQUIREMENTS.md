@@ -170,10 +170,10 @@ Welche Phasen decken welche Requirements. Befüllt beim Roadmap-Erstellen.
 | RBR-01 → RBR-06 | Phase 7 | Pending |
 
 **Coverage:**
-- v1 requirements: 41 total
-- Mapped to phases: 41 (indikativ — Roadmapper verifiziert)
+- v1 requirements: 51 total (FND×4, UI×4, SB×4, SHL×5, KBN×7, DTL×4, AUTH×6, INB×3, SET×3, WS×5, RBR×6)
+- Mapped to phases: 51/51 — verified by roadmapper 2026-04-24
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-24*
-*Last updated: 2026-04-24 after initial definition*
+*Last updated: 2026-04-24 — Roadmap created, traceability verified*
