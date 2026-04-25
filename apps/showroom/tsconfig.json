@@ -1,0 +1,12 @@
+{
+  "extends": "@multica/tsconfig/base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["node"],
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "noEmit": true
+  },
+  "include": [".storybook/**/*", "stories/**/*", "vite.config.ts"]
+}

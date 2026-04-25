@@ -36,6 +36,11 @@
     },
     "lint": {
       "dependsOn": ["^typecheck"]
+    },
+    "build-storybook": {
+      "dependsOn": ["^typecheck"],
+      "inputs": [".storybook/**", "stories/**", "**/*.ts", "**/*.tsx", "**/*.css", "package.json", "tsconfig.json", "vite.config.ts"],
+      "outputs": ["storybook-static/**"]
     }
   }
 }
