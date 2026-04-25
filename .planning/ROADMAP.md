@@ -34,12 +34,12 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 6 plans
 
 Plans:
-- [ ] 01-00-PLAN.md — Wave 0 test scaffolds + manual FOUC recipe + grep verification helper (Nyquist gate)
-- [ ] 01-01-PLAN.md — Replace tokens.css :root + .dark with Algorivo OKLCH palette; add --tag-p0..p3, --highlight tokens
-- [ ] 01-02-PLAN.md — Inter italic axis on web + desktop; remove Source_Serif_4 italic axis from desktop (partial D-12)
-- [ ] 01-03-PLAN.md — storageKey=multica_theme on shared ThemeProvider; desktop FOUC inline script; @multica/core/theme barrel
-- [ ] 01-04-PLAN.md — Migrate 22 hardcoded Tailwind color violations across 8 files in packages/views to semantic tokens
-- [ ] 01-05-PLAN.md — Documentation updates: drop FND-04 to Out of Scope (D-19); update PROJECT.md to Algorivo direction; STATE.md Source_Serif_4 partial closure
+- [x] 01-00-PLAN.md — Wave 0 test scaffolds + manual FOUC recipe + grep verification helper (Nyquist gate)
+- [x] 01-01-PLAN.md — Replace tokens.css :root + .dark with Algorivo OKLCH palette; add --tag-p0..p3, --highlight tokens
+- [x] 01-02-PLAN.md — Inter italic axis on web + desktop; remove Source_Serif_4 italic axis from desktop (partial D-12)
+- [x] 01-03-PLAN.md — storageKey=multica_theme on shared ThemeProvider; desktop FOUC inline script; @multica/core/theme barrel
+- [x] 01-04-PLAN.md — Migrate 22 hardcoded Tailwind color violations across 8 files in packages/views to semantic tokens
+- [x] 01-05-PLAN.md — Documentation updates: drop FND-04 to Out of Scope (D-19); update PROJECT.md to Algorivo direction; STATE.md Source_Serif_4 partial closure
 
 ### Phase 2: Atomic UI Primitives
 **Goal**: The four new atomic components (`TagChip`, `AccentBar`, `AvatarInitial`, `SegmentedControl`) exist in `packages/ui/components/ui/`, are keyboard-accessible, and pass Vitest tests in both light and dark mode — ready for any view phase to import
