@@ -45,15 +45,15 @@ export function BoardColumn({
   const viewStoreApi = useViewStoreApi();
 
   return (
-    <div className={`flex w-[280px] shrink-0 flex-col rounded-xl ${cfg.columnBg} p-2`}>
+    <div data-board-column-root className={`flex w-[280px] shrink-0 flex-col rounded-xl ${cfg.columnBg} p-2`}>
       <div className="mb-2 flex items-center justify-between px-1.5">
         {/* Left: status badge + count */}
         <div className="flex items-center gap-2">
-          <span className={`inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-xs font-semibold ${cfg.badgeBg} ${cfg.badgeText}`}>
+          <span className={`inline-flex items-center gap-1.5 rounded px-2 py-0.5 ${cfg.badgeBg} ${cfg.badgeText}`}>
             <StatusIcon status={status} className="h-3 w-3" inheritColor />
-            {cfg.label}
+            <span data-board-column-status-label className="text-xs italic font-semibold">{cfg.label}</span>
           </span>
-          <span className="text-xs text-muted-foreground">
+          <span data-board-column-count className="text-xs text-muted-foreground tabular-nums">
             {totalCount ?? issues.length}
           </span>
         </div>
@@ -63,7 +63,7 @@ export function BoardColumn({
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
-                <Button variant="ghost" size="icon-sm" className="rounded-full text-muted-foreground">
+                <Button data-board-column-menu-trigger variant="ghost" size="icon-sm" className="rounded-full text-muted-foreground">
                   <MoreHorizontal className="size-3.5" />
                 </Button>
               }
@@ -71,7 +71,7 @@ export function BoardColumn({
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => viewStoreApi.getState().hideStatus(status)}>
                 <EyeOff className="size-3.5" />
-                Hide column
+                Spalte ausblenden
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -79,6 +79,8 @@ export function BoardColumn({
             <TooltipTrigger
               render={
                 <Button
+                  data-board-column-add-trigger
+                  aria-label="Issue hinzufügen"
                   variant="ghost"
                   size="icon-sm"
                   className="rounded-full text-muted-foreground"
@@ -88,14 +90,15 @@ export function BoardColumn({
                 </Button>
               }
             />
-            <TooltipContent>Add issue</TooltipContent>
+            <TooltipContent>Issue hinzufügen</TooltipContent>
           </Tooltip>
         </div>
       </div>
       <div
         ref={ref}
+        data-board-column-body
         className={`min-h-[200px] flex-1 space-y-2 overflow-y-auto rounded-lg p-1 transition-colors ${
-          isDropTarget ? "bg-accent/60" : ""
+          isDropTarget ? "ring-2 ring-brand ring-offset-2 ring-offset-background bg-accent/40" : ""
         }`}
       >
         {issues.map((issue, idx) => (
@@ -108,9 +111,11 @@ export function BoardColumn({
           />
         ))}
         {issues.length === 0 && (
-          <p className="py-8 text-center text-xs text-muted-foreground">
-            No issues
-          </p>
+          isDropTarget ? (
+            <p className="py-8 text-center text-xs text-brand font-medium">Hier ablegen</p>
+          ) : (
+            <p className="py-8 text-center text-xs text-muted-foreground">Keine Issues</p>
+          )
         )}
         {footer}
       </div>
