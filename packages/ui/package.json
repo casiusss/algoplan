@@ -16,6 +16,7 @@
     "./markdown/linkify": "./markdown/linkify.ts",
     "./markdown/mentions": "./markdown/mentions.ts",
     "./hooks/*": "./hooks/*.ts",
+    "./lib/avatar-color": "./lib/avatar-color.ts",
     "./lib/utils": "./lib/utils.ts",
     "./styles/tokens.css": "./styles/tokens.css",
     "./styles/base.css": "./styles/base.css"

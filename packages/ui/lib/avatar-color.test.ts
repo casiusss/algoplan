@@ -42,9 +42,10 @@ describe("hashToPaletteIndex", () => {
   });
 
   it("locks regression: hashToPaletteIndex('Stephan') matches committed value", () => {
-    // After GREEN, replace __EXPECTED__ with the literal computed value.
+    // Locked regression value: do not edit unless djb2 algorithm intentionally changes.
+    // Computed once: djb2("Stephan") = 249206168 → Math.abs % 8 = 0.
     // Per RESEARCH §Pitfall 6, this guards against silent algorithm drift.
-    expect(hashToPaletteIndex("Stephan")).toBe(__EXPECTED__);
+    expect(hashToPaletteIndex("Stephan")).toBe(0);
   });
 });
 
