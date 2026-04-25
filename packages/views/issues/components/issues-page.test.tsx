@@ -406,8 +406,8 @@ describe("IssuesPage (shared)", () => {
 
     renderWithQuery(<IssuesPage />);
 
-    await screen.findByText("No issues yet");
-    expect(screen.getByText("Create an issue to get started.")).toBeInTheDocument();
+    await screen.findByText("Noch keine Issues");
+    expect(screen.getByText("Erstelle ein Issue, um zu starten.")).toBeInTheDocument();
   });
 
   it("shows scope tab buttons", async () => {

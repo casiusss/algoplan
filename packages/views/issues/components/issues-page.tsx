@@ -90,7 +90,7 @@ export function IssuesPage() {
 
       updateIssueMutation.mutate(
         { id: issueId, ...updates },
-        { onError: () => toast.error("Failed to move issue") },
+        { onError: () => toast.error("Issue konnte nicht verschoben werden") },
       );
     },
     [updateIssueMutation],
@@ -156,8 +156,8 @@ export function IssuesPage() {
         {scopedIssues.length === 0 ? (
           <div className="flex flex-1 min-h-0 flex-col items-center justify-center gap-2 text-muted-foreground">
             <ListTodo className="h-10 w-10 text-muted-foreground/40" />
-            <p className="text-sm">No issues yet</p>
-            <p className="text-xs">Create an issue to get started.</p>
+            <p className="text-sm">Noch keine Issues</p>
+            <p className="text-xs">Erstelle ein Issue, um zu starten.</p>
           </div>
         ) : (
           <div className="flex flex-col flex-1 min-h-0">
