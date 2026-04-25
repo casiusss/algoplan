@@ -172,11 +172,11 @@ function StatusAccordionItem({
                     e.stopPropagation();
                     setIsAdding(true);
                   }}
-                />
+                >
+                  <Plus className="size-3.5" />
+                </Button>
               }
-            >
-              <Plus className="size-3.5" />
-            </TooltipTrigger>
+            />
             <TooltipContent>Issue hinzufügen</TooltipContent>
           </Tooltip>
         </div>

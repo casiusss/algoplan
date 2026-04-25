@@ -60,13 +60,13 @@ export const ListRow = memo(function ListRow({
       )}
     >
       {!selected && (
-        <span data-list-row-leading>
+        <div data-list-row-leading>
           <AccentBar
             color={priorityToAccentColor(issue.priority)}
             orientation="vertical"
             className="absolute inset-y-0 left-0 w-1"
           />
-        </span>
+        </div>
       )}
       <div className="relative flex shrink-0 items-center justify-center w-4 h-4">
         <PriorityIcon

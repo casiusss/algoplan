@@ -134,17 +134,18 @@ export function BoardView({
   const columnsRef = useRef(columns);
   columnsRef.current = columns;
 
+  // After a cross-column move, lock for one animation frame so dnd-kit's
+  // collision detection can stabilize before processing the next move.
+  // Without this, collision oscillates: A→B→A→B… until React bails out.
+  // (KBN-01 Layer 3 — Hard Constraint 13. Read in the rebuild gate below.)
+  const recentlyMovedRef = useRef(false);
+
   useEffect(() => {
-    if (!isDraggingRef.current) {
+    if (!isDraggingRef.current && !recentlyMovedRef.current) {
       setColumns(buildColumns(issues, visibleStatuses, sortBy, sortDirection));
     }
   }, [issues, visibleStatuses, sortBy, sortDirection]);
 
-  // After a cross-column move, lock for one animation frame so dnd-kit's
-  // collision detection can stabilize before processing the next move.
-  // Without this, collision oscillates: A→B→A→B… until React bails out.
-  // (KBN-01 Layer 3 — Hard Constraint 13.)
-  const recentlyMovedRef = useRef(false);
   useEffect(() => {
     const id = requestAnimationFrame(() => {
       recentlyMovedRef.current = false;
