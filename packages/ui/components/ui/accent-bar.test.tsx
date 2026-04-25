@@ -62,8 +62,8 @@ describe("AccentBar — multi-segment", () => {
       const segments = container.querySelectorAll("span");
       expect(segments.length).toBe(N);
       colors.forEach((c, i) => {
-        expect(segments[i].className).toContain(`bg-${c}`);
-        expect(segments[i].className).toContain("flex-1");
+        expect(segments[i]!.className).toContain(`bg-${c}`);
+        expect(segments[i]!.className).toContain("flex-1");
       });
     });
   }
@@ -72,8 +72,8 @@ describe("AccentBar — multi-segment", () => {
     const { container } = render(<AccentBar segments={2} color="tag-p0" />);
     const segments = container.querySelectorAll("span");
     expect(segments.length).toBe(2);
-    expect(segments[0].className).toContain("bg-tag-p0");
-    expect(segments[1].className).toContain("bg-tag-p0");
+    expect(segments[0]!.className).toContain("bg-tag-p0");
+    expect(segments[1]!.className).toContain("bg-tag-p0");
   });
 });
 
@@ -88,7 +88,7 @@ describe("AccentBar — validation errors", () => {
 
   it("throws when neither `color` nor `colors` is provided", () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
-    // @ts-expect-error — intentionally omitting both required-by-validation props
+    // Props are optional at type-level; runtime validation enforces the contract.
     expect(() => render(<AccentBar />)).toThrow();
     spy.mockRestore();
   });
@@ -97,10 +97,10 @@ describe("AccentBar — validation errors", () => {
 describe("AccentBar — theme tokens only", () => {
   it("source contains no dark: overrides", async () => {
     const fs = await import("node:fs");
-    const src = fs.readFileSync(
-      "packages/ui/components/ui/accent-bar.tsx",
-      "utf8",
-    );
+    const path = await import("node:path");
+    const url = await import("node:url");
+    const here = path.dirname(url.fileURLToPath(import.meta.url));
+    const src = fs.readFileSync(path.join(here, "accent-bar.tsx"), "utf8");
     expect(src).not.toMatch(/\bdark:/);
   });
 });
