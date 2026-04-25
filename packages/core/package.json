@@ -31,6 +31,7 @@
     "./issues/stores": "./issues/stores/index.ts",
     "./issues/stores/view-store-context": "./issues/stores/view-store-context.tsx",
     "./issues/stores/*": "./issues/stores/*.ts",
+    "./issues/derived": "./issues/derived/index.ts",
     "./inbox": "./inbox/index.ts",
     "./inbox/queries": "./inbox/queries.ts",
     "./inbox/mutations": "./inbox/mutations.ts",
@@ -80,7 +81,11 @@
   },
   "devDependencies": {
     "@multica/tsconfig": "workspace:*",
+    "@testing-library/react": "catalog:",
     "@types/react": "catalog:",
+    "jsdom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }
