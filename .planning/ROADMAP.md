@@ -97,8 +97,16 @@ Plans:
   5. All existing board-view tests pass after the `@dnd-kit/react` migration with the `onMoveIssue` signature unchanged
 
 **Phase annotation**: Phase 5 requires phase-specific research on `@dnd-kit/react` v0.4.0 migration before implementation. The cross-column `group` pattern and optimistic mutation handling under the new event system have potential undocumented edge cases. Recommended commit split within phase: (1) API migration with existing tests passing, (2) visual restyle, (3) inline task add and WS/scroll fixes.
-**Plans**: TBD
+**Plans**: 6 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 05-00-PLAN.md — Wave 0 catalog @dnd-kit/react@0.4.0 + RED test scaffolds (Nyquist gate)
+- [ ] 05-01-PLAN.md — Wave 1 dnd-kit API migration (board-view + board-column + board-card + test mocks; KBN-06)
+- [ ] 05-02-PLAN.md — Wave 2 board visual restyle (priority-color helper + AccentBar + italic header + ring-brand drop; KBN-07)
+- [ ] 05-03-PLAN.md — Wave 2 list visual restyle (sticky h-12 italic headers + vertical AccentBar leading edges; KBN-07)
+- [ ] 05-04-PLAN.md — Wave 3 ViewToggle + InlineTaskAdd + header/page wiring (KBN-03 + KBN-04)
+- [ ] 05-05-PLAN.md — Wave 4 E2E specs (KBN-01 WS race, KBN-02 scroll, KBN-03 inline, KBN-04 toggle persistence)
 
 ### Phase 6: Issue Detail + Remaining Views
 **Goal**: Every user-facing view outside the shell and issues list — issue detail modal, auth flows, inbox, settings, agents, workspace management, and error states — is fully restyled in the AlgoPlan design system with DragStrip on all desktop full-window views
