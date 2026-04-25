@@ -4,29 +4,8 @@ import { useMemo } from "react";
 import { Button } from "@multica/ui/components/ui/button";
 import { cn } from "@multica/ui/lib/utils";
 import { useIssueViewStore } from "@multica/core/issues/stores/view-store";
+import { useIssueCountByPriority } from "@multica/core/issues/derived";
 import type { IssuePriority } from "@multica/core/types";
-
-// PHASE-4-INLINE-STUB: Plan 05 deletes this stub and rewires the import to
-// `@multica/core/issues/derived/use-issue-count-by-priority`. Until then the
-// grid renders zero counts so the rest of the chrome can land safely.
-interface PriorityCountMap {
-  p0: number;
-  p1: number;
-  p2: number;
-  p3: number;
-}
-const EMPTY_COUNTS: PriorityCountMap = Object.freeze({
-  p0: 0,
-  p1: 0,
-  p2: 0,
-  p3: 0,
-});
-function useIssueCountByPriority(
-  _wsId: string | undefined,
-): PriorityCountMap {
-  return EMPTY_COUNTS;
-}
-// END PHASE-4-INLINE-STUB
 
 type CellKey = "p0" | "p1" | "p2" | "p3";
 type CellLabel = "P0" | "P1" | "P2" | "P3";

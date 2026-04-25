@@ -2,13 +2,21 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-const { mockState, mockToggle } = vi.hoisted(() => ({
+const { mockState, mockToggle, mockCounts } = vi.hoisted(() => ({
   mockState: {
     current: {
       priorityFilters: [] as Array<"urgent" | "high" | "medium" | "low" | "none">,
     },
   },
   mockToggle: vi.fn(),
+  mockCounts: {
+    current: { p0: 0, p1: 0, p2: 0, p3: 0 } as {
+      p0: number;
+      p1: number;
+      p2: number;
+      p3: number;
+    },
+  },
 }));
 
 vi.mock("@multica/core/issues/stores/view-store", () => {
@@ -30,12 +38,17 @@ vi.mock("@multica/core/issues/stores/view-store", () => {
   return { useIssueViewStore };
 });
 
+vi.mock("@multica/core/issues/derived", () => ({
+  useIssueCountByPriority: () => mockCounts.current,
+}));
+
 import { PriorityGrid } from "./priority-grid";
 
 describe("PriorityGrid", () => {
   beforeEach(() => {
     mockState.current.priorityFilters = [];
     mockToggle.mockReset();
+    mockCounts.current = { p0: 0, p1: 0, p2: 0, p3: 0 };
   });
 
   it("renders 4 buttons in P0/P1/P2/P3 order", () => {
@@ -60,6 +73,14 @@ describe("PriorityGrid", () => {
     const { container } = render(<PriorityGrid wsId="ws-1" />);
     const numericBadges = container.querySelectorAll(".tabular-nums");
     expect(numericBadges.length).toBe(0);
+  });
+
+  it("renders count badges when hook returns positive counts", () => {
+    mockCounts.current = { p0: 2, p1: 5, p2: 0, p3: 7 };
+    render(<PriorityGrid wsId="ws-1" />);
+    expect(screen.getByText("2")).toBeInTheDocument();
+    expect(screen.getByText("5")).toBeInTheDocument();
+    expect(screen.getByText("7")).toBeInTheDocument();
   });
 
   it("active P0 cell carries 'ring-2 ring-tag-p0' classes", () => {
