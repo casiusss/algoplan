@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v0.4.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 04-00 Wave 0 scaffolds + grep CI
-last_updated: "2026-04-25T14:07:59.690Z"
+stopped_at: Completed 04-01 sidebar atoms (Wordmark, PriorityGrid, NotificationsBadge, DarkModeToggle, CollapseToggle)
+last_updated: "2026-04-25T14:17:48Z"
 last_activity: 2026-04-25
 progress:
   total_phases: 7
   completed_phases: 3
   total_plans: 23
-  completed_plans: 17
-  percent: 74
+  completed_plans: 18
+  percent: 78
 ---
 
 # Project State
@@ -26,17 +26,17 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 ## Current Position
 
 Phase: 4
-Plan: 00 (complete) → 01 next
+Plan: 01 (complete) → 02 next (Wave 2 — AppSidebar composition)
 Status: In progress
 Last activity: 2026-04-25
 
-Progress: [███████░░░] 74%
+Progress: [███████▊░░] 78%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 16
+- Total plans completed: 17
 - Average duration: -
 - Total execution time: 0 hours
 
@@ -48,6 +48,7 @@ Progress: [███████░░░] 74%
 | 02 | 6 | - | - |
 | 03 | 4 | - | - |
 | 04 P00 | 1 | 2m | 2m |
+| 04 P01 | 1 | ~5m | ~5m |
 
 **Recent Trend:**
 
@@ -68,6 +69,8 @@ Recent decisions affecting current work:
 - Phase 7: `multica://` → `algoplan://` scheme change is app-facing; must update atomically in both locations. `multica_*` localStorage keys intentionally unchanged (would cause silent data loss)
 - Research: Phase 5 requires phase-specific `@dnd-kit/react` v0.4.0 migration research before implementation starts
 - Phase 4 Plan 00: IssuePriority enum verified as descriptive ('urgent' | 'high' | 'medium' | 'low' | 'none'); priority mapping urgent->P0, high->P1, medium->P2, low->P3, none->excluded baked into Plan 05 test scaffolds
+- Phase 4 Plan 01: Five sidebar atoms shipped with 29 vitest assertions; PriorityGrid carries a delimited PHASE-4-INLINE-STUB for useIssueCountByPriority that Plan 05 must replace with the real hook from @multica/core/issues/derived/use-issue-count-by-priority
+- Phase 4 Plan 01: Pre-existing typecheck error in packages/ui/components/ui/calendar.tsx:141 (duplicate @types/react drift) logged in deferred-items.md; out-of-scope per SCOPE BOUNDARY
 
 ### Pending Todos
 
@@ -91,8 +94,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-25T14:07:59.686Z
-Stopped at: Completed 04-00 Wave 0 scaffolds + grep CI
+Last session: 2026-04-25T14:17:48Z
+Stopped at: Completed 04-01 sidebar atoms (Wordmark, PriorityGrid, NotificationsBadge, DarkModeToggle, CollapseToggle)
 Resume file: None
 
 **Planned Phase:** 01 (token-foundation-typography) — 6 plans — 2026-04-24T23:07:23.601Z

@@ -137,7 +137,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 1. Token Foundation + Typography | 0/TBD | Not started | - |
 | 2. Atomic UI Primitives | 0/TBD | Not started | - |
 | 3. Storybook Showroom | 0/TBD | Not started | - |
-| 4. Dashboard Shell Redesign | 0/TBD | Not started | - |
+| 4. Dashboard Shell Redesign | 2/7 | In progress | - |
 | 5. Issues Views + Kanban + dnd-kit Migration | 0/TBD | Not started | - |
 | 6. Issue Detail + Remaining Views | 0/TBD | Not started | - |
 | 7. Rebrand Pass | 0/TBD | Not started | - |
