@@ -17,6 +17,8 @@ import { PriorityPicker, AssigneePicker, DueDatePicker } from "./pickers";
 import { PRIORITY_CONFIG } from "@multica/core/issues/config";
 import { useViewStore } from "@multica/core/issues/stores/view-store-context";
 import { ProgressRing } from "./progress-ring";
+import { AccentBar } from "@multica/ui/components/ui/accent-bar";
+import { priorityToAccentColor } from "../utils/priority-color";
 import type { ChildProgress } from "./list-row";
 
 function formatDate(date: string): string {
@@ -76,18 +78,30 @@ export const BoardCardContent = memo(function BoardCardContent({
   const showChildProgress = storeProperties.childProgress && childProgress;
 
   return (
-    <div className="rounded-lg border-[0.5px] bg-card py-3 px-2.5 shadow-[0_3px_6px_-2px_rgba(0,0,0,0.02),0_1px_1px_0_rgba(0,0,0,0.04)] transition-shadow group-hover:shadow-sm">
+    <div
+      data-board-card-root
+      data-issue-id={issue.id}
+      className="rounded-lg border-[0.5px] bg-card overflow-hidden shadow-[0_3px_6px_-2px_rgba(0,0,0,0.02),0_1px_1px_0_rgba(0,0,0,0.04)] transition-shadow group-hover:shadow-sm"
+    >
+      <AccentBar
+        color={priorityToAccentColor(issue.priority)}
+        segments={1}
+        className="h-1 w-full rounded-none"
+      />
       {/* Row 1: Identifier */}
-      <p className="text-xs text-muted-foreground">{issue.identifier}</p>
+      <p
+        data-board-card-identifier
+        className="pt-3 px-2.5 text-xs text-muted-foreground"
+      >{issue.identifier}</p>
 
       {/* Row 2: Title */}
-      <p className="mt-1 text-sm font-medium leading-snug line-clamp-2">
+      <p className="mt-1 px-2.5 text-sm font-medium leading-snug line-clamp-2">
         {issue.title}
       </p>
 
       {/* Sub-issue progress + project */}
       {(showChildProgress || showProject) && (
-        <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
+        <div className="mt-1.5 px-2.5 flex items-center gap-1.5 flex-wrap">
           {showChildProgress && (
             <div className="inline-flex items-center gap-1 rounded-full bg-muted/60 px-1.5 py-0.5">
               <ProgressRing done={childProgress!.done} total={childProgress!.total} size={14} />
@@ -107,14 +121,14 @@ export const BoardCardContent = memo(function BoardCardContent({
 
       {/* Description */}
       {showDescription && (
-        <p className="mt-1 text-xs text-muted-foreground line-clamp-1">
+        <p className="mt-1 px-2.5 text-xs text-muted-foreground line-clamp-1">
           {issue.description}
         </p>
       )}
 
       {/* Row 3: Assignee, priority badge, due date */}
       {(showAssignee || showPriority || showDueDate) && (
-        <div className="mt-3 flex items-center gap-2">
+        <div className="mt-3 px-2.5 pb-3 flex items-center gap-2">
           {showAssignee &&
             (editable ? (
               <PickerWrapper>
