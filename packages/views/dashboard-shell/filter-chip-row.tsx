@@ -53,7 +53,7 @@ interface ChipDescriptor {
  */
 export function FilterChipRow() {
   const { pathname } = useNavigation();
-  const onIssuesPage = /\/[^/]+\/(issues|my-issues)\b/.test(pathname);
+  const onIssuesPage = /^\/[^/]+\/(issues|my-issues)(?:\?|$)/.test(pathname);
 
   // Individual primitive selectors — each subscribes only to its own array
   // reference, keeping subscriptions stable across unrelated store updates.

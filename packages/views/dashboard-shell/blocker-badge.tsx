@@ -34,6 +34,7 @@ export function BlockerBadge({ wsId }: BlockerBadgeProps) {
             size="icon-sm"
             aria-label={ariaLabel}
             title="Blockers"
+            className={cn(count > 0 && "w-auto px-1.5")}
           />
         }
       >
