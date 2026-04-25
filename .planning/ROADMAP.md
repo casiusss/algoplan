@@ -50,8 +50,16 @@ Plans:
   2. `<SegmentedControl>` responds to arrow keys and Tab — keyboard navigation moves selection without mouse (WCAG keyboard accessible)
   3. `<AvatarInitial name="Stephan" />` deterministically produces the same color for the same name across renders (no randomness)
   4. Vitest tests for all four components pass with zero failures; components are imported from `packages/ui` with zero `next/*` or `react-router-dom` dependencies
-**Plans**: TBD
+**Plans**: 6 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 02-00-PLAN.md — Wave 0: Vitest + jsdom + Testing Library infrastructure for packages/ui (config, setup, devDeps via catalog)
+- [ ] 02-01-PLAN.md — Wave 1: Pure avatar-color utility (djb2 hash + extractInitials + AVATAR_PALETTE) — TDD with regression-locked fixture
+- [ ] 02-02-PLAN.md — Wave 2: TagChip atom (cva + useRender polymorphism + optional X-to-remove, 5 colors locked to Phase 1 tokens)
+- [ ] 02-03-PLAN.md — Wave 2: AccentBar atom (decorative role=presentation bar, 1–4 segments, 6 colors)
+- [ ] 02-04-PLAN.md — Wave 2: AvatarInitial atom (deterministic color from name, 3 sizes, consumes Plan 01 utility)
+- [ ] 02-05-PLAN.md — Wave 2: SegmentedControl atom (single-select adapter over Base UI ToggleGroup with keyboard navigation)
 
 ### Phase 3: Storybook Showroom
 **Goal**: `apps/showroom` is a running Storybook 9 instance that renders stories for all Phase 2 atoms with live theme toggle and WCAG panel — providing a visual review sandbox before any app-level view work begins
