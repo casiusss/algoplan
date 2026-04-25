@@ -156,6 +156,30 @@ export class TestApiClient {
     await this.authedFetch(`/api/issues/${id}`, { method: "DELETE" });
   }
 
+  /**
+   * Register an externally-created issue id so `cleanup()` will delete it.
+   * Use this when the issue was created via UI (e.g. the inline-task-add
+   * spec) rather than via `createIssue()`.
+   */
+  trackIssue(id: string) {
+    this.createdIssueIds.push(id);
+  }
+
+  /**
+   * Patch an existing issue (PUT /api/issues/{id}). Used by the WS-race
+   * spec to trigger a remote update from a second context.
+   */
+  async updateIssue(id: string, patch: Record<string, unknown>) {
+    const res = await this.authedFetch(`/api/issues/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(patch),
+    });
+    if (!res.ok) {
+      throw new Error(`updateIssue failed: ${res.status} ${await res.text()}`);
+    }
+    return res.json();
+  }
+
   async createProject(opts: {
     title: string;
     repo_url: string;
