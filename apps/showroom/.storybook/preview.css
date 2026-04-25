@@ -1,0 +1,28 @@
+/* Source: mirrors apps/web/app/globals.css and apps/desktop/src/renderer/src/globals.css
+ * Differences from web:
+ *  - no animation utility import (no animate-* classes in any atom)
+ *  - no shadcn registry stylesheet (showroom does not install shadcn — UI-SPEC §Design System)
+ *  - no app-local custom CSS (web-specific)
+ *  - @source restricted to ui atoms + apps/showroom/stories
+ *    (showroom never imports core, so no scan; views are out of Phase 3 scope)
+ */
+@import "tailwindcss";
+@import "@multica/ui/styles/tokens.css";
+@import "@multica/ui/styles/base.css";
+
+/* CITED: tailwindcss.com/docs/dark-mode "Override dark variant with custom CSS selector"
+ * MUST match apps/web/app/globals.css exactly so dark-bound utilities
+ * (bg-sidebar dark variant, text-foreground dark variant) resolve identically.
+ */
+@custom-variant dark (&:is(.dark *));
+
+/* CITED: tailwindcss.com/docs/detecting-classes-in-source-files
+ * @source paths are relative to THIS CSS file. From apps/showroom/.storybook/preview.css:
+ *  - ../   → apps/showroom/.storybook → apps/showroom
+ *  - ../../   → apps
+ *  - ../../../   → repo root
+ * Then descend into packages/ui (workspace atoms + tokens classes that get composed).
+ * The stories glob is one level above .storybook/ so ../stories suffices.
+ */
+@source "../../../packages/ui/**/*.{ts,tsx}";
+@source "../stories/**/*.{ts,tsx}";
