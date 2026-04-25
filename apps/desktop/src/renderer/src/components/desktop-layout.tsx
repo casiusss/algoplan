@@ -5,17 +5,20 @@ import { useTabHistory } from "@/hooks/use-tab-history";
 import { useActiveTitleSync } from "@/hooks/use-tab-sync";
 import { useTabStore, resolveRouteIcon } from "@/stores/tab-store";
 import {
-  SidebarProvider,
   SidebarTrigger,
   useSidebar,
 } from "@multica/ui/components/ui/sidebar";
-import { ModalRegistry } from "@multica/views/modals/registry";
-import { AppSidebar } from "@multica/views/layout";
-import { SearchCommand, SearchTrigger } from "@multica/views/search";
+import { DashboardShell } from "@multica/views/dashboard-shell";
+import { DragStrip } from "@multica/views/platform";
+import { SearchTrigger } from "@multica/views/search";
 import { ChatFab, ChatWindow } from "@multica/views/chat";
 import { StarterContentPrompt } from "@multica/views/onboarding";
 import { WorkspaceSlugProvider } from "@multica/core/paths";
-import { getCurrentSlug, subscribeToCurrentSlug } from "@multica/core/platform";
+import {
+  getCurrentSlug,
+  getCurrentWsId,
+  subscribeToCurrentSlug,
+} from "@multica/core/platform";
 import { DesktopNavigationProvider } from "@/platform/navigation";
 import { TabBar } from "./tab-bar";
 import { TabContent } from "./tab-content";
@@ -105,7 +108,32 @@ export function DesktopShell() {
   // On first mount, slug is null until WorkspaceRouteLayout (inside the tab
   // router) sets it. Once set, the sidebar and other shell-level components
   // can resolve workspace-scoped paths via useWorkspacePaths().
-  const slug = useSyncExternalStore(subscribeToCurrentSlug, getCurrentSlug, () => null);
+  const slug = useSyncExternalStore(
+    subscribeToCurrentSlug,
+    getCurrentSlug,
+    () => null,
+  );
+  // wsId mirror is updated alongside slug by WorkspaceRouteLayout (Pitfall 1
+  // wsId pass-through); it lets DashboardShell forward an explicit workspace
+  // id to AppSidebar / AppTopbar without re-resolving the slug downstream.
+  const wsId = useSyncExternalStore(
+    subscribeToCurrentSlug,
+    getCurrentWsId,
+    () => null,
+  );
+
+  // Children of DashboardShell — desktop's tab chrome (back/forward+tabs row +
+  // rounded TabContent container). Memoized via constant JSX so the same
+  // element reference is reused while DashboardShell re-renders for slug/wsId
+  // changes — TabContent owns Activity-based state preservation per tab.
+  const dashboardChildren = (
+    <div className="flex h-full min-h-0 flex-col">
+      <MainTopBar />
+      <div className="relative flex flex-1 min-h-0 flex-col overflow-hidden mr-2 mb-2 ml-0.5 rounded-xl shadow-sm bg-background">
+        <TabContent />
+      </div>
+    </div>
+  );
 
   return (
     <DesktopNavigationProvider>
@@ -116,26 +144,38 @@ export function DesktopShell() {
           to populate the slug. The sidebar gates on slug being present
           to avoid the useRequiredWorkspaceSlug throw. Zero-workspace
           users see the window-level overlay (new-workspace flow)
-          triggered by IndexRedirect, not a route. */}
+          triggered by IndexRedirect, not a route.
+
+          Two render paths:
+          - slug present: full <DashboardShell> with sidebar + topbar + chrome
+          - slug null: TabContent renders bare so its IndexRedirect can run
+            and populate the slug via WorkspaceRouteLayout. DragStrip stays
+            mounted at the very top so the window remains draggable. */}
       <WorkspaceSlugProvider slug={slug}>
-        <div className="flex h-screen">
-          <SidebarProvider className="flex-1">
-            {slug && <AppSidebar topSlot={<SidebarTopBar />} searchSlot={<SearchTrigger />} />}
-            {/* Right side: header + content container */}
-            <div className="flex flex-1 min-w-0 flex-col">
-              <MainTopBar />
-              {/* Content area with inset styling — relative so ChatWindow/ChatFab are constrained here */}
-              <div className="relative flex flex-1 min-h-0 flex-col overflow-hidden mr-2 mb-2 ml-0.5 rounded-xl shadow-sm bg-background">
-                <TabContent />
-                {slug && <ChatWindow />}
-                {slug && <ChatFab />}
-              </div>
+        {slug ? (
+          <DashboardShell
+            wsId={wsId ?? undefined}
+            topSlot={<DragStrip />}
+            sidebarTopSlot={<SidebarTopBar />}
+            searchSlot={<SearchTrigger />}
+            extra={
+              <>
+                <ChatWindow />
+                <ChatFab />
+                <StarterContentPrompt />
+              </>
+            }
+          >
+            {dashboardChildren}
+          </DashboardShell>
+        ) : (
+          <div className="flex h-svh flex-col">
+            <DragStrip />
+            <div className="flex-1 min-h-0">
+              <TabContent />
             </div>
-          </SidebarProvider>
-        </div>
-        {slug && <ModalRegistry />}
-        {slug && <SearchCommand />}
-        {slug && <StarterContentPrompt />}
+          </div>
+        )}
         <WindowOverlay />
       </WorkspaceSlugProvider>
     </DesktopNavigationProvider>

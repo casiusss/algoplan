@@ -33,6 +33,7 @@
     "./workspace/new-workspace-page": "./workspace/new-workspace-page.tsx",
     "./workspace/use-workspace-seen": "./workspace/use-workspace-seen.ts",
     "./layout": "./layout/index.ts",
+    "./dashboard-shell": "./dashboard-shell/index.ts",
     "./auth": "./auth/index.ts",
     "./search": "./search/index.ts",
     "./chat": "./chat/index.ts",
