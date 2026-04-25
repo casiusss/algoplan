@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v0.4.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 4 complete (CLEAN review, 4/4 SC met) — Phase 5 ready to start
-last_updated: "2026-04-25T17:23:00.000Z"
+stopped_at: Completed 05-00 Wave-0 foundation (dnd-kit catalog + priorityToAccentColor + 7 RED scaffolds)
+last_updated: "2026-04-25T16:47:19.827Z"
 last_activity: 2026-04-25
 progress:
   total_phases: 7
   completed_phases: 4
-  total_plans: 23
-  completed_plans: 23
-  percent: 57
+  total_plans: 29
+  completed_plans: 24
+  percent: 83
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 
 ## Current Position
 
-Phase: 4
-Plan: 01 (complete) → 02 next (Wave 2 — AppSidebar composition)
+Phase: 5
+Plan: 00 (complete) → 01 next (Wave 1 — board-view dnd-kit/react migration)
 Status: In progress
 Last activity: 2026-04-25
 
-Progress: [███████▊░░] 78%
+Progress: [████████░░] 83%
 
 ## Performance Metrics
 
@@ -56,6 +56,7 @@ Progress: [███████▊░░] 78%
 - Trend: -
 
 *Updated after each plan completion*
+| Phase 5 P00 | 289 | 4 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -71,6 +72,7 @@ Recent decisions affecting current work:
 - Phase 4 Plan 00: IssuePriority enum verified as descriptive ('urgent' | 'high' | 'medium' | 'low' | 'none'); priority mapping urgent->P0, high->P1, medium->P2, low->P3, none->excluded baked into Plan 05 test scaffolds
 - Phase 4 Plan 01: Five sidebar atoms shipped with 29 vitest assertions; PriorityGrid carries a delimited PHASE-4-INLINE-STUB for useIssueCountByPriority that Plan 05 must replace with the real hook from @multica/core/issues/derived/use-issue-count-by-priority
 - Phase 4 Plan 01: Pre-existing typecheck error in packages/ui/components/ui/calendar.tsx:141 (duplicate @types/react drift) logged in deferred-items.md; out-of-scope per SCOPE BOUNDARY
+- Phase 5 Wave 0: pinned @dnd-kit/{abstract,dom,helpers,react}@0.4.0 in catalog (no caret); removed legacy @dnd-kit/{core,sortable,utilities} from apps/web + apps/desktop (transitive via @multica/views, .npmrc shamefully-hoist=true); KEPT @dnd-kit/modifiers in apps/desktop (only consumer); priorityToAccentColor helper landed in packages/views/issues/utils/ (lifted from Plan 02 per B-1).
 
 ### Pending Todos
 
@@ -94,8 +96,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-25T14:17:48Z
-Stopped at: Completed 04-01 sidebar atoms (Wordmark, PriorityGrid, NotificationsBadge, DarkModeToggle, CollapseToggle)
+Last session: 2026-04-25T16:47:10.462Z
+Stopped at: Completed 05-00 Wave-0 foundation (dnd-kit catalog + priorityToAccentColor + 7 RED scaffolds)
 Resume file: None
 
 **Planned Phase:** 01 (token-foundation-typography) — 6 plans — 2026-04-24T23:07:23.601Z

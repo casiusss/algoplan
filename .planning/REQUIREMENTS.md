@@ -41,9 +41,12 @@ Requirements für initialen Release. Jedes mappt zu genau einer Roadmap-Phase.
 - [ ] **KBN-02**: Board visuell restyled: Columns mit neuer Typografie (Inter italic für Headers), Cards mit `AccentBar`, `TagChip`, `AvatarInitial`
 - [ ] **KBN-03**: Inline Task-Add pro Column — Input + "Task hinzufügen"/"Abbrechen"-Row, feuert bestehenden `useCreateIssue` mit Column-Status
 - [ ] **KBN-04**: View-Toggle Board↔List UI in `issues-header.tsx` (Store `view-store.ts` existiert bereits); selected-state visuell klar
-- [ ] **KBN-05**: Listen-View (`list-view.tsx`, `list-row.tsx`) im neuen Look (Colored Bars, Chips, neue Typografie)
-- [ ] **KBN-06**: WS-Invalidation-Race fixed: `queryClient.cancelQueries` vor optimistic mutation; drag-freeze bleibt 1 Frame nach `handleDragEnd` aktiv
-- [ ] **KBN-07**: Scroll-Collision fixed: `MeasuringStrategy.Always` oder `autoScroll` auf Column-Scroll-Container — Drop-Targets stimmen bei gescrollter Column
+- [x] **KBN-05
+**: Listen-View (`list-view.tsx`, `list-row.tsx`) im neuen Look (Colored Bars, Chips, neue Typografie)
+- [x] **KBN-06
+**: WS-Invalidation-Race fixed: `queryClient.cancelQueries` vor optimistic mutation; drag-freeze bleibt 1 Frame nach `handleDragEnd` aktiv
+- [x] **KBN-07
+**: Scroll-Collision fixed: `MeasuringStrategy.Always` oder `autoScroll` auf Column-Scroll-Container — Drop-Targets stimmen bei gescrollter Column
 
 ### Issue Detail
 
