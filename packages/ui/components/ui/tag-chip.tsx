@@ -79,7 +79,7 @@ function TagChip({
                   e.stopPropagation()
                   onRemove()
                 }}
-                className="inline-flex size-3.5 items-center justify-center rounded-full hover:bg-black/10 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+                className="inline-flex size-3.5 items-center justify-center rounded-full hover:bg-foreground/10 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
               >
                 <X className="size-3" />
               </button>
