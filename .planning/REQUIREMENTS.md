@@ -37,10 +37,10 @@ Requirements für initialen Release. Jedes mappt zu genau einer Roadmap-Phase.
 
 ### Kanban + Issues Views
 
-- [ ] **KBN-01**: `packages/views/issues/components/board-view.tsx` von `@dnd-kit/core` auf `@dnd-kit/react` v0.4.0 migriert — bestehende Tests grün, `onMoveIssue`-Signatur unverändert
-- [ ] **KBN-02**: Board visuell restyled: Columns mit neuer Typografie (Inter italic für Headers), Cards mit `AccentBar`, `TagChip`, `AvatarInitial`
-- [ ] **KBN-03**: Inline Task-Add pro Column — Input + "Task hinzufügen"/"Abbrechen"-Row, feuert bestehenden `useCreateIssue` mit Column-Status
-- [ ] **KBN-04**: View-Toggle Board↔List UI in `issues-header.tsx` (Store `view-store.ts` existiert bereits); selected-state visuell klar
+- [x] **KBN-01**: `packages/views/issues/components/board-view.tsx` von `@dnd-kit/core` auf `@dnd-kit/react` v0.4.0 migriert — bestehende Tests grün, `onMoveIssue`-Signatur unverändert (Phase 5 Plans 01 + 05)
+- [x] **KBN-02**: Board visuell restyled: Columns mit neuer Typografie (Inter italic für Headers), Cards mit `AccentBar`, `TagChip`, `AvatarInitial` (Phase 5 Plans 02 + 05)
+- [x] **KBN-03**: Inline Task-Add pro Column — Input + "Task hinzufügen"/"Abbrechen"-Row, feuert bestehenden `useCreateIssue` mit Column-Status (Phase 5 Plans 04 + 05)
+- [x] **KBN-04**: View-Toggle Board↔List UI in `issues-header.tsx` (Store `view-store.ts` existiert bereits); selected-state visuell klar (Phase 5 Plans 04 + 05)
 - [x] **KBN-05
 **: Listen-View (`list-view.tsx`, `list-row.tsx`) im neuen Look (Colored Bars, Chips, neue Typografie)
 - [x] **KBN-06
@@ -164,7 +164,7 @@ Welche Phasen decken welche Requirements. Befüllt beim Roadmap-Erstellen.
 | UI-01 → UI-04 | Phase 2 | Pending |
 | SB-01 → SB-04 | Phase 3 | Pending |
 | SHL-01 → SHL-05 | Phase 4 | Pending |
-| KBN-01 → KBN-07 | Phase 5 | Pending |
+| KBN-01 → KBN-07 | Phase 5 | Complete (code-side); awaiting user live-E2E sign-off |
 | DTL-01 → DTL-04 | Phase 6 | Pending |
 | AUTH-01 → AUTH-06 | Phase 6 | Pending |
 | INB-01 → INB-03 | Phase 6 | Pending |

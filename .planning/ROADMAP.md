@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 2: Atomic UI Primitives** - TagChip, AccentBar, AvatarInitial, SegmentedControl with tests
 - [ ] **Phase 3: Storybook Showroom** - `apps/showroom` Storybook 9.1.5 with mock providers, a11y, theme toggle
 - [x] **Phase 4: Dashboard Shell Redesign** - New sidebar, topbar, layout slot system, Zustand selector guard
-- [ ] **Phase 5: Issues Views + Kanban + dnd-kit Migration** - `@dnd-kit/react` v0.4.0 migration, board restyle, list restyle, view toggle, inline task-add, WS race fix
+- [x] **Phase 5: Issues Views + Kanban + dnd-kit Migration** - `@dnd-kit/react` v0.4.0 migration, board restyle, list restyle, view toggle, inline task-add, WS race fix
 - [ ] **Phase 6: Issue Detail + Remaining Views** - Issue detail, auth flows, inbox, settings, agents, workspace, error states
 - [ ] **Phase 7: Rebrand Pass** - Strings, assets, metadata, deep-link scheme, Electron chrome, test updates
 
@@ -101,12 +101,12 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 05-00-PLAN.md — Wave 0 catalog @dnd-kit/react@0.4.0 + RED test scaffolds (Nyquist gate)
-- [ ] 05-01-PLAN.md — Wave 1 dnd-kit API migration (board-view + board-column + board-card + test mocks; KBN-06)
-- [ ] 05-02-PLAN.md — Wave 2 board visual restyle (priority-color helper + AccentBar + italic header + ring-brand drop; KBN-07)
-- [ ] 05-03-PLAN.md — Wave 2 list visual restyle (sticky h-12 italic headers + vertical AccentBar leading edges; KBN-07)
-- [ ] 05-04-PLAN.md — Wave 3 ViewToggle + InlineTaskAdd + header/page wiring (KBN-03 + KBN-04)
-- [ ] 05-05-PLAN.md — Wave 4 E2E specs (KBN-01 WS race, KBN-02 scroll, KBN-03 inline, KBN-04 toggle persistence)
+- [x] 05-00-PLAN.md — Wave 0 catalog @dnd-kit/react@0.4.0 + RED test scaffolds (Nyquist gate)
+- [x] 05-01-PLAN.md — Wave 1 dnd-kit API migration (board-view + board-column + board-card + test mocks; KBN-06)
+- [x] 05-02-PLAN.md — Wave 2 board visual restyle (priority-color helper + AccentBar + italic header + ring-brand drop; KBN-07)
+- [x] 05-03-PLAN.md — Wave 2 list visual restyle (sticky h-12 italic headers + vertical AccentBar leading edges; KBN-07)
+- [x] 05-04-PLAN.md — Wave 3 ViewToggle + InlineTaskAdd + header/page wiring (KBN-03 + KBN-04)
+- [x] 05-05-PLAN.md — Wave 4 E2E specs (KBN-01 WS race, KBN-02 scroll, KBN-03 inline, KBN-04 toggle persistence)
 
 ### Phase 6: Issue Detail + Remaining Views
 **Goal**: Every user-facing view outside the shell and issues list — issue detail modal, auth flows, inbox, settings, agents, workspace management, and error states — is fully restyled in the AlgoPlan design system with DragStrip on all desktop full-window views
@@ -146,6 +146,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 2. Atomic UI Primitives | 0/TBD | Not started | - |
 | 3. Storybook Showroom | 0/TBD | Not started | - |
 | 4. Dashboard Shell Redesign | 2/7 | In progress | - |
-| 5. Issues Views + Kanban + dnd-kit Migration | 0/TBD | Not started | - |
+| 5. Issues Views + Kanban + dnd-kit Migration | 6/6 | Complete (code-side); awaiting user live-E2E sign-off | 2026-04-25 |
 | 6. Issue Detail + Remaining Views | 0/TBD | Not started | - |
 | 7. Rebrand Pass | 0/TBD | Not started | - |
