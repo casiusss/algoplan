@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v0.4.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-05 Wave-4 E2E specs (KBN-01..04 + issues.spec selector update); Phase 5 exit gate ready
-last_updated: "2026-04-25T17:55:00.000Z"
+stopped_at: Phase 5 complete (5/5 SC met, code review fixes applied) — Phase 6 ready to start
+last_updated: "2026-04-25T20:02:00.000Z"
 last_activity: 2026-04-25
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 29
   completed_plans: 29
-  percent: 100
+  percent: 71
 ---
 
 # Project State
