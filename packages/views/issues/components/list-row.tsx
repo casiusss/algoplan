@@ -2,6 +2,8 @@
 
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { AccentBar } from "@multica/ui/components/ui/accent-bar";
+import { cn } from "@multica/ui/lib/utils";
 import { AppLink } from "../../navigation";
 import type { Issue } from "@multica/core/types";
 import { ActorAvatar } from "../../common/actor-avatar";
@@ -12,6 +14,7 @@ import { useViewStore } from "@multica/core/issues/stores/view-store-context";
 import { projectListOptions } from "@multica/core/projects/queries";
 import { PriorityIcon } from "./priority-icon";
 import { ProgressRing } from "./progress-ring";
+import { priorityToAccentColor } from "../utils/priority-color";
 
 export interface ChildProgress {
   done: number;
@@ -50,10 +53,21 @@ export const ListRow = memo(function ListRow({
 
   return (
     <div
-      className={`group/row flex h-9 items-center gap-2 px-4 text-sm transition-colors hover:bg-accent/50 ${
-        selected ? "bg-accent/30" : ""
-      }`}
+      data-list-row-root
+      className={cn(
+        "group/row relative flex h-9 items-center gap-2 px-4 text-sm transition-colors hover:bg-accent/50",
+        selected && "bg-accent/30",
+      )}
     >
+      {!selected && (
+        <span data-list-row-leading>
+          <AccentBar
+            color={priorityToAccentColor(issue.priority)}
+            orientation="vertical"
+            className="absolute inset-y-0 left-0 w-1"
+          />
+        </span>
+      )}
       <div className="relative flex shrink-0 items-center justify-center w-4 h-4">
         <PriorityIcon
           priority={issue.priority}
@@ -76,7 +90,9 @@ export const ListRow = memo(function ListRow({
           {issue.identifier}
         </span>
         <span className="flex min-w-0 flex-1 items-center gap-1.5">
-          <span className="truncate">{issue.title}</span>
+          <span data-list-row-title className="truncate font-medium">
+            {issue.title}
+          </span>
           {showChildProgress && (
             <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-muted/60 px-1.5 py-0.5">
               <ProgressRing done={childProgress!.done} total={childProgress!.total} size={14} />
