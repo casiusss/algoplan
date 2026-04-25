@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v0.4.0
 milestone_name: milestone
-status: ready_to_plan
-stopped_at: Phase 1 context gathered
-last_updated: "2026-04-25T10:43:05.340Z"
-last_activity: 2026-04-25 -- Phase --phase execution started
+status: planning
+stopped_at: Completed 04-00 Wave 0 scaffolds + grep CI
+last_updated: "2026-04-25T14:07:59.690Z"
+last_activity: 2026-04-25
 progress:
   total_phases: 7
   completed_phases: 3
-  total_plans: 12
-  completed_plans: 6
-  percent: 43
+  total_plans: 23
+  completed_plans: 17
+  percent: 74
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 ## Current Position
 
 Phase: 4
-Plan: Not started
-Status: Ready to plan
+Plan: 00 (complete) → 01 next
+Status: In progress
 Last activity: 2026-04-25
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███████░░░] 74%
 
 ## Performance Metrics
 
@@ -47,6 +47,7 @@ Progress: [░░░░░░░░░░] 0%
 | 01 | 6 | - | - |
 | 02 | 6 | - | - |
 | 03 | 4 | - | - |
+| 04 P00 | 1 | 2m | 2m |
 
 **Recent Trend:**
 
@@ -66,6 +67,7 @@ Recent decisions affecting current work:
 - Phase 5: Two-commit split recommended within Kanban phase (API migration first, then restyle) to isolate dnd-kit bugs from visual regressions
 - Phase 7: `multica://` → `algoplan://` scheme change is app-facing; must update atomically in both locations. `multica_*` localStorage keys intentionally unchanged (would cause silent data loss)
 - Research: Phase 5 requires phase-specific `@dnd-kit/react` v0.4.0 migration research before implementation starts
+- Phase 4 Plan 00: IssuePriority enum verified as descriptive ('urgent' | 'high' | 'medium' | 'low' | 'none'); priority mapping urgent->P0, high->P1, medium->P2, low->P3, none->excluded baked into Plan 05 test scaffolds
 
 ### Pending Todos
 
@@ -89,8 +91,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: --stopped-at
-Stopped at: Phase 1 context gathered
-Resume file: --resume-file
+Last session: 2026-04-25T14:07:59.686Z
+Stopped at: Completed 04-00 Wave 0 scaffolds + grep CI
+Resume file: None
 
 **Planned Phase:** 01 (token-foundation-typography) — 6 plans — 2026-04-24T23:07:23.601Z
