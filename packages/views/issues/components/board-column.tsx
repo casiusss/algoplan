@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { EyeOff, MoreHorizontal, Plus } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@multica/ui/components/ui/tooltip";
-import { useDroppable } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { useDroppable } from "@dnd-kit/react";
+import { CollisionPriority } from "@dnd-kit/abstract";
 import type { Issue, IssueStatus } from "@multica/core/types";
 import { Button } from "@multica/ui/components/ui/button";
 import {
@@ -22,32 +22,27 @@ import type { ChildProgress } from "./list-row";
 
 export function BoardColumn({
   status,
-  issueIds,
-  issueMap,
+  issues,
   childProgressMap,
   totalCount,
   footer,
 }: {
   status: IssueStatus;
-  issueIds: string[];
-  issueMap: Map<string, Issue>;
+  issues: Issue[];
   childProgressMap?: Map<string, ChildProgress>;
   totalCount?: number;
   footer?: ReactNode;
 }) {
   const cfg = STATUS_CONFIG[status];
-  const { setNodeRef, isOver } = useDroppable({ id: status });
+  // v0.4 droppable — singular `accept`, `collisionPriority.Low` so individual cards
+  // win pointer-collision when both card and column droppable overlap (RESEARCH §Pitfall 2).
+  const { ref, isDropTarget } = useDroppable({
+    id: status,
+    type: "status-column",
+    accept: "card",
+    collisionPriority: CollisionPriority.Low,
+  });
   const viewStoreApi = useViewStoreApi();
-
-  // Resolve IDs to Issue objects, preserving parent-provided order
-  const resolvedIssues = useMemo(
-    () =>
-      issueIds.flatMap((id) => {
-        const issue = issueMap.get(id);
-        return issue ? [issue] : [];
-      }),
-    [issueIds, issueMap],
-  );
 
   return (
     <div className={`flex w-[280px] shrink-0 flex-col rounded-xl ${cfg.columnBg} p-2`}>
@@ -59,7 +54,7 @@ export function BoardColumn({
             {cfg.label}
           </span>
           <span className="text-xs text-muted-foreground">
-            {totalCount ?? issueIds.length}
+            {totalCount ?? issues.length}
           </span>
         </div>
 
@@ -98,17 +93,21 @@ export function BoardColumn({
         </div>
       </div>
       <div
-        ref={setNodeRef}
+        ref={ref}
         className={`min-h-[200px] flex-1 space-y-2 overflow-y-auto rounded-lg p-1 transition-colors ${
-          isOver ? "bg-accent/60" : ""
+          isDropTarget ? "bg-accent/60" : ""
         }`}
       >
-        <SortableContext items={issueIds} strategy={verticalListSortingStrategy}>
-          {resolvedIssues.map((issue) => (
-            <DraggableBoardCard key={issue.id} issue={issue} childProgress={childProgressMap?.get(issue.id)} />
-          ))}
-        </SortableContext>
-        {issueIds.length === 0 && (
+        {issues.map((issue, idx) => (
+          <DraggableBoardCard
+            key={issue.id}
+            issue={issue}
+            cardIndex={idx}
+            editable
+            childProgress={childProgressMap?.get(issue.id)}
+          />
+        ))}
+        {issues.length === 0 && (
           <p className="py-8 text-center text-xs text-muted-foreground">
             No issues
           </p>

@@ -2,9 +2,7 @@
 
 import { useCallback, memo } from "react";
 import { AppLink } from "../../navigation";
-import { useSortable, defaultAnimateLayoutChanges } from "@dnd-kit/sortable";
-import type { AnimateLayoutChanges } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { useSortable } from "@dnd-kit/react/sortable";
 import { toast } from "sonner";
 import type { Issue, UpdateIssueRequest } from "@multica/core/types";
 import { CalendarDays } from "lucide-react";
@@ -201,45 +199,48 @@ export const BoardCardContent = memo(function BoardCardContent({
   );
 });
 
-const animateLayoutChanges: AnimateLayoutChanges = (args) => {
-  const { isSorting, wasDragging } = args;
-  if (isSorting || wasDragging) return false;
-  return defaultAnimateLayoutChanges(args);
+type DraggableBoardCardProps = {
+  issue: Issue;
+  /** Index of the card within its column. Threaded by `BoardColumn` (single source of truth per RESEARCH §Pattern Map). */
+  cardIndex: number;
+  editable?: boolean;
+  childProgress?: ChildProgress;
 };
 
-export const DraggableBoardCard = memo(function DraggableBoardCard({ issue, childProgress }: { issue: Issue; childProgress?: ChildProgress }) {
+/**
+ * v0.4 sortable wrapper. The hook returns ONLY `{ref, isDragging, ...}` — the v6
+ * idioms `attributes`, `listeners`, `transform`, `transition`, `CSS.Transform.toString`,
+ * `defaultAnimateLayoutChanges` do NOT exist in the v0.4 React adapter (RESEARCH §Pitfall 1).
+ * The activator and drop animation are wired internally via the `ref` callback.
+ *
+ * Activation distance (W-4 / RESEARCH Open Question Q3): v0.4's default PointerSensor
+ * activation distance (~5px) is sufficient to keep clicks on the inner `<AppLink>` from
+ * triggering a drag. If smoke testing reveals otherwise, board-view.tsx adds an explicit
+ * `PointerSensor.configure({ activationConstraint: { distance: 5 } })` to its plugins.
+ */
+export const DraggableBoardCard = memo(function DraggableBoardCard({
+  issue,
+  cardIndex,
+  editable = false,
+  childProgress,
+}: DraggableBoardCardProps) {
   const p = useWorkspacePaths();
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+  const { ref, isDragging } = useSortable({
     id: issue.id,
+    index: cardIndex,
+    group: issue.status,
+    type: "card",
+    accept: "card",
     data: { status: issue.status },
-    animateLayoutChanges,
   });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      className={isDragging ? "opacity-30" : ""}
-    >
+    <div ref={ref} className={isDragging ? "opacity-30" : ""}>
       <AppLink
         href={p.issueDetail(issue.id)}
         className={`group block transition-colors ${isDragging ? "pointer-events-none" : ""}`}
       >
-        <BoardCardContent issue={issue} editable childProgress={childProgress} />
+        <BoardCardContent issue={issue} editable={editable} childProgress={childProgress} />
       </AppLink>
     </div>
   );

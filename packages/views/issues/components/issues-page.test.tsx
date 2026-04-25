@@ -205,34 +205,31 @@ vi.mock("sonner", () => ({
   toast: { error: vi.fn(), success: vi.fn() },
 }));
 
-// Mock dnd-kit
-vi.mock("@dnd-kit/core", () => ({
-  DndContext: ({ children }: any) => children,
+// Mock dnd-kit (v0.4 — @dnd-kit/react family)
+vi.mock("@dnd-kit/react", () => ({
+  DragDropProvider: ({ children }: any) => children,
   DragOverlay: () => null,
-  PointerSensor: class {},
-  useSensor: () => ({}),
-  useSensors: () => [],
-  useDroppable: () => ({ setNodeRef: vi.fn(), isOver: false }),
-  pointerWithin: vi.fn(),
-  closestCenter: vi.fn(),
+  useDroppable: () => ({ ref: vi.fn(), isDropTarget: false }),
 }));
 
-vi.mock("@dnd-kit/sortable", () => ({
-  SortableContext: ({ children }: any) => children,
-  verticalListSortingStrategy: {},
-  arrayMove: vi.fn(),
+vi.mock("@dnd-kit/react/sortable", () => ({
   useSortable: () => ({
-    attributes: {},
-    listeners: {},
-    setNodeRef: vi.fn(),
-    transform: null,
-    transition: null,
+    ref: vi.fn(),
     isDragging: false,
+    isDropTarget: false,
+    isDragSource: false,
+    isDropping: false,
   }),
+  isSortable: () => true,
 }));
 
-vi.mock("@dnd-kit/utilities", () => ({
-  CSS: { Transform: { toString: () => undefined } },
+vi.mock("@dnd-kit/dom", () => ({
+  AutoScroller: { configure: () => ({}) },
+  PointerSensor: { configure: () => ({}) },
+}));
+
+vi.mock("@dnd-kit/abstract", () => ({
+  CollisionPriority: { Lowest: 0, Low: 1, Normal: 2, High: 3, Highest: 4 },
 }));
 
 // Mock @base-ui/react/accordion (used by ListView)
