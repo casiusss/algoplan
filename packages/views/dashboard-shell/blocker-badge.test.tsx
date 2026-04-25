@@ -1,15 +1,21 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import {
-  BlockerBadge,
-  __blockerCountForTesting,
-} from "./blocker-badge";
+const { mockBlockerCount } = vi.hoisted(() => ({
+  mockBlockerCount: vi.fn<(wsId: string | undefined) => number>(() => 0),
+}));
+
+vi.mock("@multica/core/issues/derived", () => ({
+  useBlockerCount: (wsId: string | undefined) => mockBlockerCount(wsId),
+}));
+
+import { BlockerBadge } from "./blocker-badge";
 
 describe("BlockerBadge", () => {
   beforeEach(() => {
-    __blockerCountForTesting.current = 0;
+    mockBlockerCount.mockReset();
+    mockBlockerCount.mockReturnValue(0);
   });
 
   it("renders an icon-only button when count = 0", () => {
@@ -27,7 +33,7 @@ describe("BlockerBadge", () => {
   });
 
   it("renders the count badge with bg-tag-p0 when count > 0", () => {
-    __blockerCountForTesting.current = 5;
+    mockBlockerCount.mockReturnValue(5);
     render(<BlockerBadge wsId="ws-1" />);
     const countBadge = screen.getByText("5");
     expect(countBadge.className).toMatch(/bg-tag-p0/);
@@ -38,14 +44,14 @@ describe("BlockerBadge", () => {
   });
 
   it("uses singular 'blocker' aria-label when count === 1", () => {
-    __blockerCountForTesting.current = 1;
+    mockBlockerCount.mockReturnValue(1);
     render(<BlockerBadge wsId="ws-1" />);
     const button = screen.getByRole("button");
     expect(button.getAttribute("aria-label")).toBe("1 blocker");
   });
 
   it("uses plural 'blockers' aria-label when count > 1", () => {
-    __blockerCountForTesting.current = 5;
+    mockBlockerCount.mockReturnValue(5);
     render(<BlockerBadge wsId="ws-1" />);
     const button = screen.getByRole("button");
     expect(button.getAttribute("aria-label")).toBe("5 blockers");
@@ -58,7 +64,7 @@ describe("BlockerBadge", () => {
   });
 
   it("uses 'Blockers' as the title (tooltip) regardless of count", () => {
-    __blockerCountForTesting.current = 3;
+    mockBlockerCount.mockReturnValue(3);
     render(<BlockerBadge wsId="ws-1" />);
     const button = screen.getByRole("button");
     expect(button.getAttribute("title")).toBe("Blockers");
@@ -76,5 +82,10 @@ describe("BlockerBadge", () => {
   it("works with wsId={undefined} without throwing", () => {
     expect(() => render(<BlockerBadge wsId={undefined} />)).not.toThrow();
     expect(screen.getByRole("button", { name: "Blockers" })).toBeInTheDocument();
+  });
+
+  it("forwards wsId prop to useBlockerCount hook", () => {
+    render(<BlockerBadge wsId="ws-42" />);
+    expect(mockBlockerCount).toHaveBeenCalledWith("ws-42");
   });
 });

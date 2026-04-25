@@ -8,20 +8,7 @@ import {
   PopoverTrigger,
 } from "@multica/ui/components/ui/popover";
 import { cn } from "@multica/ui/lib/utils";
-
-// PHASE-4-INLINE-STUB: Plan 05 deletes this stub and rewires the import to
-// `@multica/core/issues/derived/use-blocker-count`. Until then the badge
-// renders a literal 0 so the rest of the topbar can land safely.
-//
-// `__blockerCountForTesting` is exported ONLY so tests can drive the stub
-// from `count = 0` (default) into `count > 0` without mocking the module.
-// Plan 05 deletes this mutable AND the `__blockerCountForTesting` export
-// AND updates blocker-badge.test.tsx to mock the real hook via vi.mock.
-export const __blockerCountForTesting = { current: 0 };
-function useBlockerCount(_wsId: string | undefined): number {
-  return __blockerCountForTesting.current;
-}
-// END PHASE-4-INLINE-STUB
+import { useBlockerCount } from "@multica/core/issues/derived";
 
 export interface BlockerBadgeProps {
   /** Workspace id, passed as a prop so the atom never calls the useWorkspaceId hook. */
