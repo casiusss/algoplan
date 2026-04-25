@@ -32,8 +32,13 @@ test.describe("Issues", () => {
     await page.reload();
     await expect(page.locator("text=Backlog")).toBeVisible();
 
-    // Switch to list view
-    await page.click("text=List");
+    // Switch to list view — SegmentedControl renders the German "Liste"
+    // label (Plan 05-04). Scope by the toggle group's aria-label so we
+    // don't accidentally match incidental "Liste" text elsewhere.
+    await page
+      .getByRole("group", { name: "Ansicht wechseln" })
+      .getByText("Liste", { exact: true })
+      .click();
     await expect(page.getByText(title)).toBeVisible();
   });
 
