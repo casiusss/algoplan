@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 1: Token Foundation + Typography** - New OKLCH palette, Inter italic, dark-mode FOUC fix, hardcoded-color CI rule
 - [ ] **Phase 2: Atomic UI Primitives** - TagChip, AccentBar, AvatarInitial, SegmentedControl with tests
 - [ ] **Phase 3: Storybook Showroom** - `apps/showroom` Storybook 9.1.5 with mock providers, a11y, theme toggle
-- [ ] **Phase 4: Dashboard Shell Redesign** - New sidebar, topbar, layout slot system, Zustand selector guard
+- [x] **Phase 4: Dashboard Shell Redesign** - New sidebar, topbar, layout slot system, Zustand selector guard
 - [ ] **Phase 5: Issues Views + Kanban + dnd-kit Migration** - `@dnd-kit/react` v0.4.0 migration, board restyle, list restyle, view toggle, inline task-add, WS race fix
 - [ ] **Phase 6: Issue Detail + Remaining Views** - Issue detail, auth flows, inbox, settings, agents, workspace, error states
 - [ ] **Phase 7: Rebrand Pass** - Strings, assets, metadata, deep-link scheme, Electron chrome, test updates
