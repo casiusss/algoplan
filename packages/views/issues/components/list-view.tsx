@@ -5,6 +5,7 @@ import { ChevronRight, Plus } from "lucide-react";
 import { Accordion } from "@base-ui/react/accordion";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@multica/ui/components/ui/tooltip";
 import { Button } from "@multica/ui/components/ui/button";
+import { cn } from "@multica/ui/lib/utils";
 import type { Issue, IssueStatus } from "@multica/core/types";
 import { useLoadMoreByStatus } from "@multica/core/issues/mutations";
 import type { MyIssuesFilter } from "@multica/core/issues/queries";
@@ -120,7 +121,12 @@ function StatusAccordionItem({
 
   return (
     <Accordion.Item value={status}>
-      <Accordion.Header className="group/header flex h-10 items-center rounded-lg bg-muted/40 transition-colors hover:bg-accent/30">
+      <Accordion.Header
+        data-list-view-header
+        className={cn(
+          "group/header sticky top-0 z-10 flex h-12 items-center rounded-lg bg-card border-b border-border transition-colors hover:bg-accent/30",
+        )}
+      >
         <div className="pl-3 flex items-center">
           <input
             type="checkbox"
@@ -142,15 +148,21 @@ function StatusAccordionItem({
           <ChevronRight className="size-3.5 shrink-0 text-muted-foreground transition-transform group-aria-expanded/trigger:rotate-90" />
           <span className={`inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-xs font-semibold ${cfg.badgeBg} ${cfg.badgeText}`}>
             <StatusIcon status={status} className="h-3 w-3" inheritColor />
-            {cfg.label}
+            <span data-list-view-status-label className="text-xs italic font-semibold">
+              {cfg.label}
+            </span>
           </span>
-          <span className="text-xs text-muted-foreground">{total}</span>
+          <span data-list-view-count className="text-xs text-muted-foreground tabular-nums">
+            {total}
+          </span>
         </Accordion.Trigger>
         <div className="pr-2">
           <Tooltip>
             <TooltipTrigger
               render={
                 <Button
+                  data-list-view-add-trigger
+                  aria-label="Issue hinzufügen"
                   variant="ghost"
                   size="icon-sm"
                   className="rounded-full text-muted-foreground opacity-0 group-hover/header:opacity-100 transition-opacity"
@@ -164,7 +176,7 @@ function StatusAccordionItem({
             >
               <Plus className="size-3.5" />
             </TooltipTrigger>
-            <TooltipContent>Add issue</TooltipContent>
+            <TooltipContent>Issue hinzufügen</TooltipContent>
           </Tooltip>
         </div>
       </Accordion.Header>
@@ -180,7 +192,7 @@ function StatusAccordionItem({
           </>
         ) : (
           <p className="py-6 text-center text-xs text-muted-foreground">
-            No issues
+            Keine Issues
           </p>
         )}
       </Accordion.Panel>
