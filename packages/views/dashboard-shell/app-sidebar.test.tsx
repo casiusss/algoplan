@@ -159,6 +159,14 @@ vi.mock("@multica/core/issues/queries", () => ({
   }),
 }));
 
+// PriorityGrid (Plan 01) consumes useIssueCountByPriority (Plan 05). Mock the
+// derived hook directly so this test stays decoupled from issue-list query
+// internals.
+vi.mock("@multica/core/issues/derived", () => ({
+  useIssueCountByPriority: () => ({ p0: 0, p1: 0, p2: 0, p3: 0 }),
+  useBlockerCount: () => 0,
+}));
+
 vi.mock("@multica/core/projects/queries", () => ({
   projectDetailOptions: (wsId: string, id: string) => ({
     queryKey: ["project", wsId, id],
