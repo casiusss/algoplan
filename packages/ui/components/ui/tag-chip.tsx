@@ -34,7 +34,7 @@ const tagChipVariants = cva(
         brand: "bg-brand text-brand-foreground",
       },
       interactive: {
-        true: "px-1.5 pr-1",
+        true: "px-1.5 pr-1 hover:opacity-90",
         false: "px-2 py-0.5",
       },
     },

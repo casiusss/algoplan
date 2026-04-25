@@ -59,7 +59,7 @@ function SegmentedControl({
       disabled={disabled}
       data-slot="segmented-control"
       className={cn(
-        "inline-flex h-6 w-fit items-center gap-0 rounded-lg bg-muted p-[3px]",
+        "inline-flex w-fit items-center gap-0 rounded-lg bg-muted p-[3px]",
         className,
       )}
       {...props}
@@ -88,7 +88,7 @@ function SegmentedControlItem({
       disabled={disabled}
       data-slot="segmented-control-item"
       className={cn(
-        "inline-flex h-full min-w-8 items-center justify-center rounded-md px-3 text-sm font-medium text-muted-foreground transition-all",
+        "inline-flex h-6 min-w-8 items-center justify-center rounded-md px-3 text-sm font-medium text-muted-foreground transition-all",
         "hover:text-foreground",
         "focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
         "data-[pressed]:bg-background data-[pressed]:text-foreground data-[pressed]:shadow-sm",
