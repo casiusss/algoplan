@@ -68,7 +68,9 @@ describe("SegmentedControl — click", () => {
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledWith("b");
     // Type guard: argument must be a string, not an array
-    expect(typeof onChange.mock.calls[0][0]).toBe("string");
+    const firstCall = onChange.mock.calls[0];
+    expect(firstCall).toBeDefined();
+    expect(typeof firstCall![0]).toBe("string");
   });
 
   it("swallows deselect — clicking the active item does NOT fire onValueChange", async () => {
@@ -141,15 +143,24 @@ describe("SegmentedControl — disabled item", () => {
 });
 
 describe("SegmentedControl — source-level invariants", () => {
-  it("uses multiple={false} (RESEARCH §Pitfall 1 fix)", async () => {
+  // Resolve the source file via __dirname so the assertion is independent of
+  // the cwd Vitest is invoked from (root vs package). Vite transforms
+  // `import.meta.url` to a non-`file://` scheme in jsdom, so we cannot use
+  // `new URL(..., import.meta.url)` here — use Node's path APIs instead.
+  async function readSource() {
+    const path = await import("node:path");
     const fs = await import("node:fs");
-    const src = fs.readFileSync("packages/ui/components/ui/segmented-control.tsx", "utf8");
+    const here = path.dirname(new URL(import.meta.url).pathname);
+    return fs.readFileSync(path.join(here, "segmented-control.tsx"), "utf8");
+  }
+
+  it("uses multiple={false} (RESEARCH §Pitfall 1 fix)", async () => {
+    const src = await readSource();
     expect(src).toMatch(/\bmultiple=\{false\}/);
   });
 
   it("does NOT use the non-existent toggleMultiple prop", async () => {
-    const fs = await import("node:fs");
-    const src = fs.readFileSync("packages/ui/components/ui/segmented-control.tsx", "utf8");
+    const src = await readSource();
     expect(src).not.toContain("toggleMultiple");
   });
 });
