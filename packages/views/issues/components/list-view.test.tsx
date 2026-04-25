@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { Issue, IssueStatus } from "@multica/core/types";
 
@@ -169,6 +170,16 @@ vi.mock("./infinite-scroll-sentinel", () => ({
   InfiniteScrollSentinel: () => <div data-testid="sentinel" />,
 }));
 
+// InlineTaskAdd — passive renderer so the integration test asserts only
+// mount/unmount on add-trigger click, not the inner mutation behaviour.
+vi.mock("./inline-task-add", () => ({
+  InlineTaskAdd: ({ onCancel }: { onCancel: () => void }) => (
+    <div data-testid="inline-task-add">
+      <button type="button" onClick={onCancel}>Abbrechen</button>
+    </div>
+  ),
+}));
+
 // ---------------------------------------------------------------------------
 // Import component under test (after mocks)
 // ---------------------------------------------------------------------------
@@ -267,5 +278,14 @@ describe("ListView — KBN-07 visual contract", () => {
   it("empty status body shows 'Keine Issues'", () => {
     const { getByText } = renderListView({ issues: [], statuses: ["todo"] });
     expect(getByText("Keine Issues")).toBeTruthy();
+  });
+
+  it("clicking + add-trigger mounts InlineTaskAdd inside the panel (KBN-03)", async () => {
+    const user = userEvent.setup();
+    const { container, queryByTestId } = renderListView();
+    expect(queryByTestId("inline-task-add")).toBeNull();
+    const trigger = container.querySelector("[data-list-view-add-trigger]") as HTMLElement;
+    await user.click(trigger);
+    expect(queryByTestId("inline-task-add")).toBeTruthy();
   });
 });

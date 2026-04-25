@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { EyeOff, MoreHorizontal, Plus } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@multica/ui/components/ui/tooltip";
 import { useDroppable } from "@dnd-kit/react";
@@ -14,10 +14,10 @@ import {
   DropdownMenuItem,
 } from "@multica/ui/components/ui/dropdown-menu";
 import { STATUS_CONFIG } from "@multica/core/issues/config";
-import { useModalStore } from "@multica/core/modals";
 import { useViewStoreApi } from "@multica/core/issues/stores/view-store-context";
 import { StatusIcon } from "./status-icon";
 import { DraggableBoardCard } from "./board-card";
+import { InlineTaskAdd } from "./inline-task-add";
 import type { ChildProgress } from "./list-row";
 
 export function BoardColumn({
@@ -43,6 +43,9 @@ export function BoardColumn({
     collisionPriority: CollisionPriority.Low,
   });
   const viewStoreApi = useViewStoreApi();
+  // KBN-03 — local ephemeral UI state; never persisted (CLAUDE.md §State Mgmt
+  // "Don't persist ephemeral UI state").
+  const [isAdding, setIsAdding] = useState(false);
 
   return (
     <div data-board-column-root className={`flex w-[280px] shrink-0 flex-col rounded-xl ${cfg.columnBg} p-2`}>
@@ -84,7 +87,7 @@ export function BoardColumn({
                   variant="ghost"
                   size="icon-sm"
                   className="rounded-full text-muted-foreground"
-                  onClick={() => useModalStore.getState().open("create-issue", { status })}
+                  onClick={() => setIsAdding(true)}
                 >
                   <Plus className="size-3.5" />
                 </Button>
@@ -110,7 +113,7 @@ export function BoardColumn({
             childProgress={childProgressMap?.get(issue.id)}
           />
         ))}
-        {issues.length === 0 && (
+        {issues.length === 0 && !isAdding && (
           isDropTarget ? (
             <p className="py-8 text-center text-xs text-brand font-medium">Hier ablegen</p>
           ) : (
@@ -118,6 +121,14 @@ export function BoardColumn({
           )
         )}
         {footer}
+        {isAdding && (
+          <div data-board-column-inline-add className="mt-2 px-1">
+            <InlineTaskAdd
+              status={status}
+              onCancel={() => setIsAdding(false)}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

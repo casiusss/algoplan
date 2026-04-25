@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ChevronRight, Plus } from "lucide-react";
 import { Accordion } from "@base-ui/react/accordion";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@multica/ui/components/ui/tooltip";
@@ -10,12 +10,12 @@ import type { Issue, IssueStatus } from "@multica/core/types";
 import { useLoadMoreByStatus } from "@multica/core/issues/mutations";
 import type { MyIssuesFilter } from "@multica/core/issues/queries";
 import { STATUS_CONFIG } from "@multica/core/issues/config";
-import { useModalStore } from "@multica/core/modals";
 import { useViewStore } from "@multica/core/issues/stores/view-store-context";
 import { useIssueSelectionStore } from "@multica/core/issues/stores/selection-store";
 import { sortIssues } from "../utils/sort";
 import { StatusIcon } from "./status-icon";
 import { ListRow, type ChildProgress } from "./list-row";
+import { InlineTaskAdd } from "./inline-task-add";
 import { InfiniteScrollSentinel } from "./infinite-scroll-sentinel";
 
 const EMPTY_PROGRESS_MAP = new Map<string, ChildProgress>();
@@ -113,6 +113,8 @@ function StatusAccordionItem({
     status,
     myIssuesOpts,
   );
+  // KBN-03 — local ephemeral UI state per-status panel; never persisted.
+  const [isAdding, setIsAdding] = useState(false);
 
   const issueIds = issues.map((i) => i.id);
   const selectedCount = issueIds.filter((id) => selectedIds.has(id)).length;
@@ -166,11 +168,10 @@ function StatusAccordionItem({
                   variant="ghost"
                   size="icon-sm"
                   className="rounded-full text-muted-foreground opacity-0 group-hover/header:opacity-100 transition-opacity"
-                  onClick={() =>
-                    useModalStore
-                      .getState()
-                      .open("create-issue", { status })
-                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsAdding(true);
+                  }}
                 />
               }
             >
@@ -191,9 +192,19 @@ function StatusAccordionItem({
             )}
           </>
         ) : (
-          <p className="py-6 text-center text-xs text-muted-foreground">
-            Keine Issues
-          </p>
+          !isAdding && (
+            <p className="py-6 text-center text-xs text-muted-foreground">
+              Keine Issues
+            </p>
+          )
+        )}
+        {isAdding && (
+          <div data-list-view-inline-add className="px-2 py-1">
+            <InlineTaskAdd
+              status={status}
+              onCancel={() => setIsAdding(false)}
+            />
+          </div>
         )}
       </Accordion.Panel>
     </Accordion.Item>

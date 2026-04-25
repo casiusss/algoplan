@@ -86,6 +86,24 @@ vi.mock("./status-icon", () => ({
   StatusIcon: () => null,
 }));
 
+// InlineTaskAdd — render a passive textbox + cancel button so the BoardColumn
+// integration tests can assert mount/unmount on add-trigger / Esc without
+// pulling in the real mutation stack.
+vi.mock("./inline-task-add", () => ({
+  InlineTaskAdd: ({ onCancel }: { onCancel: () => void }) => (
+    <div data-testid="inline-task-add">
+      <input
+        type="text"
+        aria-label="Aufgabentitel eingeben"
+        onKeyDown={(e) => {
+          if (e.key === "Escape") onCancel();
+        }}
+      />
+      <button type="button" onClick={onCancel}>Abbrechen</button>
+    </div>
+  ),
+}));
+
 // ---------------------------------------------------------------------------
 // Import (after mocks)
 // ---------------------------------------------------------------------------
@@ -194,5 +212,18 @@ describe("BoardColumn - KBN-07 visual contract", () => {
     expect(menuTrigger).toBeTruthy();
     await user.click(menuTrigger);
     expect(await findByText("Spalte ausblenden")).toBeTruthy();
+  });
+
+  it("clicking + add-trigger mounts InlineTaskAdd; Esc on input closes it (KBN-03)", async () => {
+    const user = userEvent.setup();
+    const { container, queryByTestId, getByRole } = renderColumn();
+    expect(queryByTestId("inline-task-add")).toBeNull();
+    const trigger = container.querySelector("[data-board-column-add-trigger]") as HTMLElement;
+    await user.click(trigger);
+    expect(queryByTestId("inline-task-add")).toBeTruthy();
+    const input = getByRole("textbox") as HTMLInputElement;
+    input.focus();
+    await user.keyboard("{Escape}");
+    expect(queryByTestId("inline-task-add")).toBeNull();
   });
 });
