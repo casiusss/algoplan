@@ -50,8 +50,10 @@ Requirements für initialen Release. Jedes mappt zu genau einer Roadmap-Phase.
 
 ### Issue Detail
 
-- [ ] **DTL-01**: `issue-detail.tsx` redesigned zweispaltig: links Titel + Beschreibung + Kommentare, rechts Status / Priority / Kategorie / Assignees / Tags
-- [ ] **DTL-02**: Priority als `SegmentedControl` P0/P1/P2/P3 (ersetzt Dropdown)
+- [x] **DTL-01
+**: `issue-detail.tsx` redesigned zweispaltig: links Titel + Beschreibung + Kommentare, rechts Status / Priority / Kategorie / Assignees / Tags
+- [x] **DTL-02
+**: Priority als `SegmentedControl` P0/P1/P2/P3 (ersetzt Dropdown)
 - [ ] **DTL-03**: Tag-Chip-Row mit X-to-remove je Chip, "+ Neues Tag"-Input darunter
 - [x] **DTL-04
 **: Modal-Footer mit "Löschen" links, "Esc schließen" + "Fertig" rechts wie im Mock

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v0.4.0
 milestone_name: milestone
 status: completed
-stopped_at: "Completed 06-04-PLAN.md (WS sub-phase: Agents + NoAccessPage + sidebar German + web 404). 5 reqs marked, 2 commits."
-last_updated: "2026-04-26T10:18:16.523Z"
+stopped_at: "Completed 06-01-PLAN.md (Issue Detail restyle — DTL-01/02/04: SegmentedControl + modal-footer + German strings)"
+last_updated: "2026-04-26T10:20:07.608Z"
 last_activity: 2026-04-26
 progress:
   total_phases: 8
   completed_phases: 6
   total_plans: 41
-  completed_plans: 36
-  percent: 88
+  completed_plans: 37
+  percent: 90
 ---
 
 # Project State
@@ -30,7 +30,7 @@ Plan: 00 (complete — Wave-0 atoms + dragstrip-coverage gate + zxcvbn catalog);
 Status: Phase 6 Wave-0 complete; Wave-1 unblocked
 Last activity: 2026-04-26
 
-Progress: [█████████░] 88%
+Progress: [█████████░] 90%
 
 ## Performance Metrics
 
@@ -63,6 +63,7 @@ Progress: [█████████░] 88%
 | Phase 06 P00 | 13 | 3 tasks | 13 files |
 | Phase 06 P02 | 9m | 3 tasks | 11 files |
 | Phase 06 P04 | 14m | 2 tasks | 9 files |
+| Phase 06 P01 | 12m | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -88,6 +89,7 @@ Recent decisions affecting current work:
 - useInboxFilterStore lives in packages/core/inbox/ per CLAUDE.md state-management — no persist (ephemeral filter)
 - InboxTypeFilter collapses 14 InboxItemType enum values into 4 user-facing chip categories (Erwähnungen/Zuweisungen/Kommentare/System)
 - Phase 6 Plan 04: Workspace switcher dropdown lives inline in app-sidebar.tsx — no separate workspace-switcher.tsx file exists. WS-05 verification is a no-op on main checkout (workspace-tab.test.tsx is Plan-03-owned).
+- Phase 6 Plan 01: extended Phase 2 SegmentedControl with colorByValue?: Record<string,string> via module-private React Context (rejected per-item className override that duplicates mapping). IssuePrioritySegmentedControl maps urgent->P0, high->P1, medium->P2, low->P3, none->excluded with separate 'Priorität entfernen' affordance. Modal-footer hidden on mobile; Delete stays in More-actions dropdown on mobile only — desktop sees Löschen exclusively in modal-footer band. Modal-mode signal via optional onClose?: () => void prop on IssueDetail (no new context, no new store).
 
 ### Pending Todos
 
@@ -111,8 +113,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-26T10:18:06.574Z
-Stopped at: Completed 06-04-PLAN.md (WS sub-phase: Agents + NoAccessPage + sidebar German + web 404). 5 reqs marked, 2 commits.
+Last session: 2026-04-26T10:20:07.604Z
+Stopped at: Completed 06-01-PLAN.md (Issue Detail restyle — DTL-01/02/04: SegmentedControl + modal-footer + German strings)
 Resume file: None
 
 **Planned Phase:** 01 (token-foundation-typography) — 6 plans — 2026-04-24T23:07:23.601Z

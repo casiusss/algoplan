@@ -146,7 +146,7 @@ Plans:
 
 Plans:
 - [x] 06-00-PLAN.md — Wave 0: shared atoms (AlgoPlanWordmark, PasswordStrengthMeter, SettingsSection, EmptyState, NotFoundPage), useNavigationFlash util, dragstrip-coverage automated gate, @zxcvbn-ts/* catalog entries
-- [ ] 06-01-PLAN.md — Wave 1 DTL: issue-detail modal restructure (modal-footer, IssuePrioritySegmentedControl, German strings) + extend Phase 2 SegmentedControl with colorByValue
+- [x] 06-01-PLAN.md — Wave 1 DTL: issue-detail modal restructure (modal-footer, IssuePrioritySegmentedControl, German strings) + extend Phase 2 SegmentedControl with colorByValue
 - [ ] 06-02-PLAN.md — Wave 1 INB: date-bucket grouping, Alle-gelesen button + E shortcut (input-focus guard), TagChip type filter (useInboxFilterStore in @multica/core/inbox), AccentBar unread
 - [ ] 06-03-PLAN.md — Wave 1 SET: SettingsSection wrappers, German strings, Gefahrenzone quick-jump, dark-mode check-icon overlay (preserves safe-order + typed-name gate verbatim)
 - [ ] 06-04-PLAN.md — Wave 1 WS: Agents German + EmptyState + AvatarInitial fallback, NoAccessPage German + AlgoPlanWordmark, workspace-switcher German strings, web 404 route
