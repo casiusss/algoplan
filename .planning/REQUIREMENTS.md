@@ -108,11 +108,14 @@ Requirements für initialen Release. Jedes mappt zu genau einer Roadmap-Phase.
 
 - [x] **RBR-01
 **: Alle user-facing Strings "Multica" → "AlgoPlan" via targeted grep (schließt `@multica/*`-Imports aus) in beiden Apps
-- [ ] **RBR-02**: AlgoPlan-Logo / Wordmark / Favicon / OG-Image als neue Assets unter `packages/ui/assets/` und app-spezifisch verlinkt
-- [ ] **RBR-03**: `apps/web/app/layout.tsx` Title/Meta/OG/siteName auf "AlgoPlan"; Electron `productName`, Window-Title, macOS Dock-Icon, macOS-Menu auf "AlgoPlan"
+- [x] **RBR-02
+**: AlgoPlan-Logo / Wordmark / Favicon / OG-Image als neue Assets unter `packages/ui/assets/` und app-spezifisch verlinkt
+- [x] **RBR-03
+**: `apps/web/app/layout.tsx` Title/Meta/OG/siteName auf "AlgoPlan"; Electron `productName`, Window-Title, macOS Dock-Icon, macOS-Menu auf "AlgoPlan"
 - [x] **RBR-04
 **: Deep-Link-Scheme `multica://` → `algoplan://` atomar in `electron-builder.yml` + `apps/web/app/auth/callback/page.tsx`; Web-to-Desktop Callback getestet
-- [ ] **RBR-05**: localStorage-Keys bleiben `multica_*` (explizite Nicht-Änderung — sonst silent logout aller User); Entscheidung in Commit-Body dokumentiert
+- [x] **RBR-05
+**: localStorage-Keys bleiben `multica_*` (explizite Nicht-Änderung — sonst silent logout aller User); Entscheidung in Commit-Body dokumentiert
 - [x] **RBR-06
 **: Alle Tests die Brand-Copy asserten (`getByText(/Multica/)` etc.) auf "AlgoPlan" aktualisiert
 
