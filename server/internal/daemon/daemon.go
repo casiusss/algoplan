@@ -1009,7 +1009,7 @@ func (d *Daemon) handleTask(ctx context.Context, task Task) {
 
 func (d *Daemon) runTask(ctx context.Context, task Task, provider string, taskLog *slog.Logger) (TaskResult, error) {
 	// Refuse to spawn an agent without a workspace. An empty workspace_id
-	// here would make MULTICA_WORKSPACE_ID empty in the agent env, and the
+	// here would make ALGOPLAN_WORKSPACE_ID empty in the agent env, and the
 	// CLI would otherwise silently fall back to the user-global config — a
 	// path that can leak operations into an unrelated workspace when
 	// multiple workspaces share a host.
@@ -1083,13 +1083,13 @@ func (d *Daemon) runTask(ctx context.Context, task Task, provider string, taskLo
 	// Pass the daemon's auth credentials and context so the spawned agent CLI
 	// can call the Multica API and the local daemon (e.g. `multica repo checkout`).
 	agentEnv := map[string]string{
-		"MULTICA_TOKEN":        d.client.Token(),
-		"MULTICA_SERVER_URL":   d.cfg.ServerBaseURL,
-		"MULTICA_DAEMON_PORT":  fmt.Sprintf("%d", d.cfg.HealthPort),
-		"MULTICA_WORKSPACE_ID": task.WorkspaceID,
-		"MULTICA_AGENT_NAME":   agentName,
-		"MULTICA_AGENT_ID":     task.AgentID,
-		"MULTICA_TASK_ID":      task.ID,
+		"ALGOPLAN_TOKEN":        d.client.Token(),
+		"ALGOPLAN_SERVER_URL":   d.cfg.ServerBaseURL,
+		"ALGOPLAN_DAEMON_PORT":  fmt.Sprintf("%d", d.cfg.HealthPort),
+		"ALGOPLAN_WORKSPACE_ID": task.WorkspaceID,
+		"ALGOPLAN_AGENT_NAME":   agentName,
+		"ALGOPLAN_AGENT_ID":     task.AgentID,
+		"ALGOPLAN_TASK_ID":      task.ID,
 	}
 	// Ensure the multica CLI is on PATH inside the agent's environment.
 	// Some runtimes (e.g. Codex) run in an isolated sandbox that may not
@@ -1147,7 +1147,7 @@ func (d *Daemon) runTask(ctx context.Context, task Task, provider string, taskLo
 		mcpConfig = task.Agent.McpConfig
 	}
 	// Two-tier model resolution: an explicit agent.model wins,
-	// then the daemon-wide MULTICA_<PROVIDER>_MODEL env var. If
+	// then the daemon-wide ALGOPLAN_<PROVIDER>_MODEL env var. If
 	// both are empty we deliberately pass "" through — each
 	// backend omits `--model` from the CLI invocation, so the
 	// provider picks its own default (Claude Code's shipped
@@ -1549,7 +1549,7 @@ func convertSkillsForEnv(skills []SkillData) []execenv.SkillContextForEnv {
 // daemon-internal variables and critical system paths.
 func isBlockedEnvKey(key string) bool {
 	upper := strings.ToUpper(key)
-	if strings.HasPrefix(upper, "MULTICA_") {
+	if strings.HasPrefix(upper, "ALGOPLAN_") || strings.HasPrefix(upper, "MULTICA_") {
 		return true
 	}
 	switch upper {

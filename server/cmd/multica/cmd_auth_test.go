@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/spf13/cobra"
+
+	"github.com/multica-ai/multica/server/internal/config"
 )
 
 // testCmd returns a minimal cobra.Command with the --profile persistent flag
@@ -18,8 +20,8 @@ func testCmd() *cobra.Command {
 func TestResolveAppURL(t *testing.T) {
 	cmd := testCmd()
 
-	t.Run("prefers MULTICA_APP_URL", func(t *testing.T) {
-		t.Setenv("MULTICA_APP_URL", "http://localhost:14000")
+	t.Run("prefers ALGOPLAN_APP_URL", func(t *testing.T) {
+		t.Setenv("ALGOPLAN_APP_URL", "http://localhost:14000")
 		t.Setenv("FRONTEND_ORIGIN", "http://localhost:13000")
 
 		if got := resolveAppURL(cmd); got != "http://localhost:14000" {
@@ -28,7 +30,7 @@ func TestResolveAppURL(t *testing.T) {
 	})
 
 	t.Run("falls back to FRONTEND_ORIGIN", func(t *testing.T) {
-		t.Setenv("MULTICA_APP_URL", "")
+		t.Setenv("ALGOPLAN_APP_URL", "")
 		t.Setenv("FRONTEND_ORIGIN", "http://localhost:13026")
 
 		if got := resolveAppURL(cmd); got != "http://localhost:13026" {
@@ -137,4 +139,21 @@ func TestNormalizeAPIBaseURL(t *testing.T) {
 			t.Fatalf("normalizeAPIBaseURL() = %q, want %q", got, "://bad-url")
 		}
 	})
+}
+
+// TestAppURL_LegacyMulticaEnvVarStillWorks proves the dual-read shim from
+// Plan 08-01 is wired end-to-end: when ALGOPLAN_APP_URL is unset but the
+// legacy MULTICA_APP_URL is set, resolveAppURL should return the legacy value
+// (with a one-shot deprecation warning).
+func TestAppURL_LegacyMulticaEnvVarStillWorks(t *testing.T) {
+	config.ResetDeprecationWarnings()
+	t.Setenv("ALGOPLAN_APP_URL", "")
+	t.Setenv("MULTICA_APP_URL", "http://legacy.example")
+	t.Setenv("FRONTEND_ORIGIN", "")
+
+	cmd := testCmd()
+	got := resolveAppURL(cmd)
+	if got != "http://legacy.example" {
+		t.Fatalf("expected dual-read fallback for MULTICA_APP_URL; got %q", got)
+	}
 }

@@ -18,6 +18,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/multica-ai/multica/server/internal/cli"
+	"github.com/multica-ai/multica/server/internal/config"
 )
 
 var authCmd = &cobra.Command{
@@ -48,7 +49,7 @@ func init() {
 }
 
 func resolveToken(cmd *cobra.Command) string {
-	if v := strings.TrimSpace(os.Getenv("MULTICA_TOKEN")); v != "" {
+	if v := strings.TrimSpace(config.GetEnv("ALGOPLAN_TOKEN")); v != "" {
 		return v
 	}
 	profile := resolveProfile(cmd)
@@ -57,10 +58,11 @@ func resolveToken(cmd *cobra.Command) string {
 }
 
 func resolveAppURL(cmd *cobra.Command) string {
-	for _, key := range []string{"MULTICA_APP_URL", "FRONTEND_ORIGIN"} {
-		if val := strings.TrimSpace(os.Getenv(key)); val != "" {
-			return strings.TrimRight(val, "/")
-		}
+	if val := strings.TrimSpace(config.GetEnv("ALGOPLAN_APP_URL")); val != "" {
+		return strings.TrimRight(val, "/")
+	}
+	if val := strings.TrimSpace(os.Getenv("FRONTEND_ORIGIN")); val != "" {
+		return strings.TrimRight(val, "/")
 	}
 	profile := resolveProfile(cmd)
 	cfg, err := cli.LoadCLIConfigForProfile(profile)

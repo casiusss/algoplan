@@ -3,15 +3,16 @@ package daemon
 import (
 	"context"
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/multica-ai/multica/server/internal/config"
 )
 
 func envOrDefault(key, fallback string) string {
-	value := strings.TrimSpace(os.Getenv(key))
+	value := strings.TrimSpace(config.GetEnv(key))
 	if value == "" {
 		return fallback
 	}
@@ -19,7 +20,7 @@ func envOrDefault(key, fallback string) string {
 }
 
 func durationFromEnv(key string, fallback time.Duration) (time.Duration, error) {
-	value := strings.TrimSpace(os.Getenv(key))
+	value := strings.TrimSpace(config.GetEnv(key))
 	if value == "" {
 		return fallback, nil
 	}
@@ -56,7 +57,7 @@ func parseFlexDuration(value string) (time.Duration, error) {
 }
 
 func intFromEnv(key string, fallback int) (int, error) {
-	value := strings.TrimSpace(os.Getenv(key))
+	value := strings.TrimSpace(config.GetEnv(key))
 	if value == "" {
 		return fallback, nil
 	}

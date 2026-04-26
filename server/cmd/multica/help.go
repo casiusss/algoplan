@@ -125,8 +125,11 @@ EXAMPLES
   $ multica agent list --output json
 
 ENVIRONMENT VARIABLES
-  MULTICA_SERVER_URL    Override the default server URL
-  MULTICA_WORKSPACE_ID  Set the active workspace
+  ALGOPLAN_SERVER_URL    Override the default server URL
+  ALGOPLAN_WORKSPACE_ID  Set the active workspace
+
+  Note: legacy MULTICA_-prefixed names (MULTICA_SERVER_URL, MULTICA_WORKSPACE_ID, etc.)
+  still work with a deprecation warning. Planned for removal in v0.6.0 or v0.7.0.
 
 LEARN MORE
   Use ` + "`multica <command> <subcommand> --help`" + ` for more information about a command.

@@ -10,15 +10,17 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/multica-ai/multica/server/internal/cli"
+	"github.com/multica-ai/multica/server/internal/config"
 )
 
 // tryResolveAppURL returns the app URL if configured, or "" if not available.
 // Unlike resolveAppURL, it never calls os.Exit.
 func tryResolveAppURL(cmd *cobra.Command) string {
-	for _, key := range []string{"MULTICA_APP_URL", "FRONTEND_ORIGIN"} {
-		if val := strings.TrimSpace(os.Getenv(key)); val != "" {
-			return strings.TrimRight(val, "/")
-		}
+	if val := strings.TrimSpace(config.GetEnv("ALGOPLAN_APP_URL")); val != "" {
+		return strings.TrimRight(val, "/")
+	}
+	if val := strings.TrimSpace(os.Getenv("FRONTEND_ORIGIN")); val != "" {
+		return strings.TrimRight(val, "/")
 	}
 	profile := resolveProfile(cmd)
 	cfg, err := cli.LoadCLIConfigForProfile(profile)
