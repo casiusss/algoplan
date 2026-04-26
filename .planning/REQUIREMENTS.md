@@ -69,7 +69,8 @@ Requirements für initialen Release. Jedes mappt zu genau einer Roadmap-Phase.
 **: Invite-Accept-Flow redesigned (shared view, Overlay-wrap auf Desktop)
 - [x] **AUTH-05
 **: Desktop-Pre-Workspace-Views haben `<DragStrip />` als erster Flex-Child (macOS draggable window)
-- [ ] **AUTH-06**: Test-Strings in `login-page.test.tsx` und verwandten Tests auf "AlgoPlan" aktualisiert
+- [x] **AUTH-06
+**: Test-Strings in `login-page.test.tsx` und verwandten Tests auf "AlgoPlan" aktualisiert
 
 ### Inbox
 
@@ -84,7 +85,8 @@ Requirements für initialen Release. Jedes mappt zu genau einer Roadmap-Phase.
 
 - [x] **SET-01
 **: Settings-Page mit sectioned layout (Account / Notifications / Appearance / Workspace / Danger Zone)
-- [ ] **SET-02**: Dark-Mode-Toggle in Appearance-Section (Light / Dark / System radio)
+- [x] **SET-02
+**: Dark-Mode-Toggle in Appearance-Section (Light / Dark / System radio)
 - [x] **SET-03
 **: Destructive Actions (Leave Workspace, Delete Workspace) in eigener "Danger Zone"-Section mit typed-name Confirmation Modal
 

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v0.4.0
 milestone_name: milestone
 status: completed
-stopped_at: "Completed 06-01-PLAN.md (Issue Detail restyle — DTL-01/02/04: SegmentedControl + modal-footer + German strings)"
-last_updated: "2026-04-26T10:20:07.608Z"
+stopped_at: Completed 06-05-PLAN.md
+last_updated: "2026-04-26T10:23:23.798Z"
 last_activity: 2026-04-26
 progress:
   total_phases: 8
   completed_phases: 6
   total_plans: 41
-  completed_plans: 37
-  percent: 90
+  completed_plans: 39
+  percent: 95
 ---
 
 # Project State
@@ -30,7 +30,7 @@ Plan: 00 (complete — Wave-0 atoms + dragstrip-coverage gate + zxcvbn catalog);
 Status: Phase 6 Wave-0 complete; Wave-1 unblocked
 Last activity: 2026-04-26
 
-Progress: [█████████░] 90%
+Progress: [██████████] 95%
 
 ## Performance Metrics
 
@@ -64,6 +64,9 @@ Progress: [█████████░] 90%
 | Phase 06 P02 | 9m | 3 tasks | 11 files |
 | Phase 06 P04 | 14m | 2 tasks | 9 files |
 | Phase 06 P01 | 12m | 3 tasks | 9 files |
+| Phase 06 P05 | 15m | 3 tasks | 10 files |
+| Phase 06 P03 | 16m | 3 tasks | 17 files |
+| Phase 06 P05 | 15m | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -90,6 +93,12 @@ Recent decisions affecting current work:
 - InboxTypeFilter collapses 14 InboxItemType enum values into 4 user-facing chip categories (Erwähnungen/Zuweisungen/Kommentare/System)
 - Phase 6 Plan 04: Workspace switcher dropdown lives inline in app-sidebar.tsx — no separate workspace-switcher.tsx file exists. WS-05 verification is a no-op on main checkout (workspace-tab.test.tsx is Plan-03-owned).
 - Phase 6 Plan 01: extended Phase 2 SegmentedControl with colorByValue?: Record<string,string> via module-private React Context (rejected per-item className override that duplicates mapping). IssuePrioritySegmentedControl maps urgent->P0, high->P1, medium->P2, low->P3, none->excluded with separate 'Priorität entfernen' affordance. Modal-footer hidden on mobile; Delete stays in More-actions dropdown on mobile only — desktop sees Löschen exclusively in modal-footer band. Modal-mode signal via optional onClose?: () => void prop on IssueDetail (no new context, no new store).
+- Phase 6 P05: Sub-mode toggle as boolean state alongside existing step machine (preserves OTP test paths); LoginPage logo prop kept as optional override of new AlgoPlanWordmark default; idempotent endpoints render success on network errors (no enumeration oracle); resetPassword body uses snake_case new_password per FROZEN Phase 5.1 contract
+- Phase 6 Plan 03: Made Settings Tabs controlled (value/onValueChange) so the [Gefahrenzone] quick-jump can swap+scroll in one click via requestAnimationFrame; Tabs were uncontrolled (defaultValue) before
+- Phase 6 Plan 03: Added smoke tests for Account/Members/Repositories/Tokens tabs (planner left at planner discretion) — small cost, high regression value for the new German + SettingsSection contract
+- Plan 06-05: Sub-mode is useState boolean alongside step machine, not a third step (preserves OTP test path; one form id stays stable for autofill)
+- Plan 06-05: Idempotent endpoints (resend/forgot-password) silently swallow network errors and render success — backend always-200 contract; visible failure would leak enumeration oracle
+- Plan 06-05: api.resetPassword body uses snake_case new_password (not newPassword) — matches FROZEN Phase 5.1 Go backend contract; typed in TS to enforce at compile time
 
 ### Pending Todos
 
@@ -113,8 +122,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-26T10:20:07.604Z
-Stopped at: Completed 06-01-PLAN.md (Issue Detail restyle — DTL-01/02/04: SegmentedControl + modal-footer + German strings)
+Last session: 2026-04-26T10:23:12.738Z
+Stopped at: Completed 06-05-PLAN.md
 Resume file: None
 
 **Planned Phase:** 01 (token-foundation-typography) — 6 plans — 2026-04-24T23:07:23.601Z
