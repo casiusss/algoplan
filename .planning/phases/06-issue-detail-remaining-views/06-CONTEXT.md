@@ -9,9 +9,21 @@
 
 Every user-facing view outside the shell and issues list — issue detail modal, auth flows, inbox, settings, agents, workspace management, and error states — is fully restyled in the AlgoPlan design system with DragStrip on all desktop full-window views.
 
-**Requirements:** DTL-01, DTL-02, DTL-03, DTL-04, AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, INB-01, INB-02, INB-03, SET-01, SET-02, SET-03, WS-01, WS-02, WS-03, WS-04, WS-05
+**Requirements:** DTL-01, DTL-02, DTL-04, AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, INB-01, INB-02, INB-03, SET-01, SET-02, SET-03, WS-01, WS-02, WS-03, WS-04, WS-05
 
-**Depends on:** Phase 5 (DashboardShell + atoms + dnd-kit migration complete)
+**Note:** DTL-03 (Issue Tag Row) DEFERRED to future "Tags v1" phase per 06-BLOCKED.md — `Issue` type has no `tags` field yet. 20 requirements in scope (was 21).
+
+**Depends on:** Phase 5.1 (Auth Backend Endpoints — provides `/auth/signup`, `/auth/login`, `/auth/email-verify`, `/auth/email-verify/resend`, `/auth/password-reset/request`, `/auth/password-reset/confirm`) + Phase 5 (DashboardShell + atoms + dnd-kit migration complete)
+
+**Backend contract (consumable from Phase 5.1):**
+- `POST /auth/signup` — `{email, password (12-72 bytes), name}` → 200 LoginResponse + cookies, 403 if signup gated, 409 on duplicate, 400 on weak password
+- `POST /auth/login` — `{email, password}` → 200 + cookies, 401 on any failure (constant message — no enumeration)
+- `POST /auth/email-verify` — `{token}` → 200 UserResponse, 401 on reuse/expired/invalid
+- `POST /auth/email-verify/resend` — `{email}` → always 200 (idempotent, 60s rate-limited)
+- `POST /auth/password-reset/request` — `{email}` → always 200 (idempotent, 1h rate-limited)
+- `POST /auth/password-reset/confirm` — `{token, new_password}` → 200 (no auto-login), 401 on bad token, 400 on weak password
+- Verify link contract: `{FRONTEND_ORIGIN}/auth/verify-email?token=<token>`
+- Reset link contract: `{FRONTEND_ORIGIN}/auth/reset-password?token=<token>`
 
 </domain>
 

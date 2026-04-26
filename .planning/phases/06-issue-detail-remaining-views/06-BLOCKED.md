@@ -1,8 +1,10 @@
 ---
 phase: 06-issue-detail-remaining-views
-status: blocked
+status: resolved
 blocked_on: 05-1-auth-backend-endpoints
 created: 2026-04-26
+resolved: 2026-04-26
+resolution: Phase 5.1 shipped (27/27 GREEN, all 6 endpoints live). UI-SPEC re-research scheduled. DTL-03 dropped from scope (deferred to Tags v1).
 ---
 
 # Phase 6 — Blocked on Phase 5.1
