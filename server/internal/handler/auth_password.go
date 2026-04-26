@@ -136,10 +136,20 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request) {
 	// OTP-only users (Open Q §5 decision). An OTP-only user wishing to
 	// add a password must do it via the (future) account-settings flow
 	// while authenticated, never anonymously.
+	//
+	// Pay the dummy bcrypt cost on the 409 (and the 500) path so the
+	// duplicate check doesn't return in single-digit ms while the
+	// success path takes ~250ms. The 409 already enumerates the email
+	// explicitly, but when AllowSignup=false hides the 409 behind a
+	// 403 the timing channel would still distinguish "would have been
+	// 409" from "would have been 200" — closing it removes the
+	// gating-bypass leak.
 	if _, err := h.Queries.GetUserByEmail(r.Context(), email); err == nil {
+		_ = bcrypt.CompareHashAndPassword(dummyBcryptHashForTiming, []byte(req.Password))
 		writeError(w, http.StatusConflict, "email already registered")
 		return
 	} else if !isNotFound(err) {
+		_ = bcrypt.CompareHashAndPassword(dummyBcryptHashForTiming, []byte(req.Password))
 		writeError(w, http.StatusInternalServerError, "failed to check email")
 		return
 	}
