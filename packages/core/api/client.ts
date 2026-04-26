@@ -280,6 +280,82 @@ export class ApiClient {
     await this.fetch("/auth/logout", { method: "POST" });
   }
 
+  // ---------------------------------------------------------------------
+  // Auth — Phase 6 additions (paths frozen by Phase 5.1).
+  //
+  // These wrap the password-based signup/login + email-verify +
+  // password-reset endpoints introduced in Phase 5.1. The OTP methods above
+  // (sendCode/verifyCode) remain unchanged for the magic-link path.
+  //
+  // No-enumeration contract: api.login surfaces ANY 401 as a single ApiError
+  // with no sub-reason. api.resendVerifyEmail and api.requestPasswordReset
+  // always resolve when the backend returns 200 (idempotent — the backend
+  // returns 200 even for unknown emails, and the client mirrors that
+  // exactly: no thrown error to inspect).
+  // ---------------------------------------------------------------------
+
+  async signup(body: {
+    email: string;
+    password: string;
+    name: string;
+  }): Promise<LoginResponse> {
+    return this.fetch("/auth/signup", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  async login(body: {
+    email: string;
+    password: string;
+  }): Promise<LoginResponse> {
+    return this.fetch("/auth/login", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  async verifyEmail(body: { token: string }): Promise<User> {
+    return this.fetch("/auth/email-verify", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  async resendVerifyEmail(body: { email: string }): Promise<void> {
+    await this.fetch("/auth/email-verify/resend", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  async requestPasswordReset(body: { email: string }): Promise<void> {
+    await this.fetch("/auth/password-reset/request", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  /**
+   * Password reset confirm.
+   *
+   * IMPORTANT: body uses snake_case `new_password` to match the FROZEN
+   * Phase 5.1 backend contract. Do NOT camelCase this field.
+   *
+   * The endpoint deliberately does NOT set auth cookies — successful
+   * reset returns only `{message}` and the user must re-authenticate
+   * via /auth/login. See Phase 5.1 Pitfall §6 (brief-inbox-access threat).
+   */
+  async resetPassword(body: {
+    token: string;
+    new_password: string;
+  }): Promise<{ message: string }> {
+    return this.fetch("/auth/password-reset/confirm", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
   async issueCliToken(): Promise<{ token: string }> {
     return this.fetch("/api/cli-token", { method: "POST" });
   }

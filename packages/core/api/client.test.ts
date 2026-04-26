@@ -145,3 +145,292 @@ describe("ApiClient", () => {
     expect(headers["X-Client-OS"]).toBeUndefined();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Auth (Phase 6 additions) — signup / login / verifyEmail /
+// resendVerifyEmail / requestPasswordReset / resetPassword
+//
+// Backend contracts FROZEN by Phase 5.1. The login error MUST be
+// no-enumerating: any 401 produces the SAME thrown error shape regardless
+// of which credential side failed. Resend + request-reset always resolve
+// (idempotent — backend returns 200 even for unknown emails). resetPassword
+// uses snake_case `new_password` per the FROZEN backend contract.
+// ---------------------------------------------------------------------------
+
+describe("ApiClient — auth (Phase 6 additions)", () => {
+  function jsonResponse(body: unknown, status = 200) {
+    return new Response(JSON.stringify(body), {
+      status,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  // Phase 5.1 idempotent endpoints (resend / request-reset) return 200 with
+  // a JSON envelope. The body is intentionally generic ({} or
+  // {message:"..."}) so the same response shape is used for unknown-email
+  // AND fresh-issuance paths — defeating enumeration via response inspection.
+  function emptyJsonResponse(status = 200) {
+    return new Response("{}", {
+      status,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  // signup ------------------------------------------------------------------
+
+  it("signup: 200 returns LoginResponse and posts {email, password, name}", async () => {
+    const fetchMock = vi.fn().mockResolvedValueOnce(
+      jsonResponse({ token: "tok-1", user: { id: "u-1", email: "x@y.test", name: "X" } }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new ApiClient("https://api.example.test");
+    const res = await client.signup({
+      email: "x@y.test",
+      password: "supersecret-password-12",
+      name: "X",
+    });
+
+    expect(res).toEqual({
+      token: "tok-1",
+      user: { id: "u-1", email: "x@y.test", name: "X" },
+    });
+
+    const [url, init] = fetchMock.mock.calls[0]!;
+    expect(url).toBe("https://api.example.test/auth/signup");
+    expect(init?.method).toBe("POST");
+    expect(init?.body).toBe(
+      JSON.stringify({
+        email: "x@y.test",
+        password: "supersecret-password-12",
+        name: "X",
+      }),
+    );
+  });
+
+  it("signup: 400 throws ApiError with status 400", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(jsonResponse({ error: "weak password" }, 400)),
+    );
+
+    const client = new ApiClient("https://api.example.test");
+    await expect(
+      client.signup({ email: "x@y.test", password: "short", name: "X" }),
+    ).rejects.toMatchObject({
+      name: "ApiError",
+      status: 400,
+    });
+  });
+
+  it("signup: 403 throws ApiError with status 403 (signup gated)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(jsonResponse({ error: "signup gated" }, 403)),
+    );
+
+    const client = new ApiClient("https://api.example.test");
+    await expect(
+      client.signup({ email: "x@y.test", password: "supersecret-password-12", name: "X" }),
+    ).rejects.toMatchObject({ name: "ApiError", status: 403 });
+  });
+
+  it("signup: 409 throws ApiError with status 409 (duplicate email)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(jsonResponse({ error: "duplicate email" }, 409)),
+    );
+
+    const client = new ApiClient("https://api.example.test");
+    await expect(
+      client.signup({ email: "x@y.test", password: "supersecret-password-12", name: "X" }),
+    ).rejects.toMatchObject({ name: "ApiError", status: 409 });
+  });
+
+  // login -------------------------------------------------------------------
+
+  it("login: 200 returns LoginResponse and posts {email, password}", async () => {
+    const fetchMock = vi.fn().mockResolvedValueOnce(
+      jsonResponse({ token: "tok-2", user: { id: "u-1", email: "x@y.test", name: "X" } }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new ApiClient("https://api.example.test");
+    const res = await client.login({ email: "x@y.test", password: "supersecret-password-12" });
+
+    expect(res).toEqual({
+      token: "tok-2",
+      user: { id: "u-1", email: "x@y.test", name: "X" },
+    });
+
+    const [url, init] = fetchMock.mock.calls[0]!;
+    expect(url).toBe("https://api.example.test/auth/login");
+    expect(init?.method).toBe("POST");
+    expect(init?.body).toBe(
+      JSON.stringify({ email: "x@y.test", password: "supersecret-password-12" }),
+    );
+  });
+
+  it("login: 401 produces a no-enumeration error (same shape regardless of which credential side failed)", async () => {
+    // Simulation 1: backend would have classified this as unknown email.
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(jsonResponse({ error: "invalid credentials" }, 401)),
+    );
+    let unknownEmailErr: unknown;
+    const client1 = new ApiClient("https://api.example.test");
+    try {
+      await client1.login({ email: "ghost@y.test", password: "anything-is-12-bytes" });
+    } catch (e) {
+      unknownEmailErr = e;
+    }
+
+    // Simulation 2: backend would have classified this as wrong password.
+    vi.unstubAllGlobals();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(jsonResponse({ error: "invalid credentials" }, 401)),
+    );
+    let wrongPwErr: unknown;
+    const client2 = new ApiClient("https://api.example.test");
+    try {
+      await client2.login({ email: "real@y.test", password: "wrong-but-12-bytes-x" });
+    } catch (e) {
+      wrongPwErr = e;
+    }
+
+    // The thrown errors must have IDENTICAL discriminating shape — same
+    // class, same status, same statusText. The caller cannot distinguish
+    // which 401 path the backend took (no `reason` discriminator).
+    expect(unknownEmailErr).toBeInstanceOf(ApiError);
+    expect(wrongPwErr).toBeInstanceOf(ApiError);
+    expect((unknownEmailErr as ApiError).status).toBe(401);
+    expect((wrongPwErr as ApiError).status).toBe(401);
+    expect((unknownEmailErr as ApiError).statusText).toBe(
+      (wrongPwErr as ApiError).statusText,
+    );
+    // Whatever the message is, both branches produce the same constant —
+    // the backend deliberately collapses both 401 paths into one body.
+    expect((unknownEmailErr as ApiError).message).toBe(
+      (wrongPwErr as ApiError).message,
+    );
+  });
+
+  // verifyEmail -------------------------------------------------------------
+
+  it("verifyEmail: 200 returns the user and posts {token}", async () => {
+    const fetchMock = vi.fn().mockResolvedValueOnce(
+      jsonResponse({ id: "u-1", email: "x@y.test", name: "X" }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new ApiClient("https://api.example.test");
+    const res = await client.verifyEmail({ token: "verify-token-abc" });
+    expect(res).toEqual({ id: "u-1", email: "x@y.test", name: "X" });
+
+    const [url, init] = fetchMock.mock.calls[0]!;
+    expect(url).toBe("https://api.example.test/auth/email-verify");
+    expect(init?.method).toBe("POST");
+    expect(init?.body).toBe(JSON.stringify({ token: "verify-token-abc" }));
+  });
+
+  it("verifyEmail: 401 throws ApiError (single shape covers reused/expired/invalid)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(jsonResponse({ error: "invalid token" }, 401)),
+    );
+
+    const client = new ApiClient("https://api.example.test");
+    await expect(
+      client.verifyEmail({ token: "bad-token" }),
+    ).rejects.toMatchObject({ name: "ApiError", status: 401 });
+  });
+
+  // resendVerifyEmail -------------------------------------------------------
+
+  it("resendVerifyEmail: 200 with idempotent JSON body resolves (does NOT throw)", async () => {
+    const fetchMock = vi.fn().mockResolvedValueOnce(emptyJsonResponse(200));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new ApiClient("https://api.example.test");
+    // Backend always returns 200 even for unknown emails — the function MUST resolve.
+    await expect(
+      client.resendVerifyEmail({ email: "anyone@y.test" }),
+    ).resolves.toBeUndefined();
+
+    const [url, init] = fetchMock.mock.calls[0]!;
+    expect(url).toBe("https://api.example.test/auth/email-verify/resend");
+    expect(init?.method).toBe("POST");
+    expect(init?.body).toBe(JSON.stringify({ email: "anyone@y.test" }));
+  });
+
+  // requestPasswordReset ----------------------------------------------------
+
+  it("requestPasswordReset: 200 with idempotent JSON body resolves (does NOT throw)", async () => {
+    const fetchMock = vi.fn().mockResolvedValueOnce(emptyJsonResponse(200));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new ApiClient("https://api.example.test");
+    await expect(
+      client.requestPasswordReset({ email: "anyone@y.test" }),
+    ).resolves.toBeUndefined();
+
+    const [url, init] = fetchMock.mock.calls[0]!;
+    expect(url).toBe("https://api.example.test/auth/password-reset/request");
+    expect(init?.method).toBe("POST");
+    expect(init?.body).toBe(JSON.stringify({ email: "anyone@y.test" }));
+  });
+
+  // resetPassword -----------------------------------------------------------
+
+  it("resetPassword: 200 returns {message} and posts {token, new_password} (snake_case)", async () => {
+    const fetchMock = vi.fn().mockResolvedValueOnce(
+      jsonResponse({ message: "Password updated. Please log in." }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = new ApiClient("https://api.example.test");
+    const res = await client.resetPassword({
+      token: "reset-token-xyz",
+      new_password: "supersecret-password-12",
+    });
+    expect(res).toEqual({ message: "Password updated. Please log in." });
+
+    const [url, init] = fetchMock.mock.calls[0]!;
+    expect(url).toBe("https://api.example.test/auth/password-reset/confirm");
+    expect(init?.method).toBe("POST");
+    // Body MUST use snake_case `new_password` per FROZEN Phase 5.1 contract.
+    expect(init?.body).toBe(
+      JSON.stringify({
+        token: "reset-token-xyz",
+        new_password: "supersecret-password-12",
+      }),
+    );
+    // Sanity: caller never sees `newPassword` in the wire payload.
+    expect(init?.body).not.toContain("newPassword");
+  });
+
+  it("resetPassword: 400 throws ApiError with status 400 (weak password)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(jsonResponse({ error: "weak password" }, 400)),
+    );
+
+    const client = new ApiClient("https://api.example.test");
+    await expect(
+      client.resetPassword({ token: "tok", new_password: "short" }),
+    ).rejects.toMatchObject({ name: "ApiError", status: 400 });
+  });
+
+  it("resetPassword: 401 throws ApiError with status 401 (bad/expired/reused token)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(jsonResponse({ error: "invalid token" }, 401)),
+    );
+
+    const client = new ApiClient("https://api.example.test");
+    await expect(
+      client.resetPassword({ token: "bad", new_password: "supersecret-password-12" }),
+    ).rejects.toMatchObject({ name: "ApiError", status: 401 });
+  });
+});
