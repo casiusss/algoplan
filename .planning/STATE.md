@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v0.4.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 05-05 Wave-4 E2E specs (KBN-01..04 + issues.spec selector update); Phase 5 exit gate green code-side; live E2E run deferred to user
-last_updated: "2026-04-26T07:36:28.277Z"
+stopped_at: Completed 05.1-00 (Auth Backend Foundation)
+last_updated: "2026-04-26T07:36:55.230Z"
 last_activity: 2026-04-25
 progress:
   total_phases: 8
@@ -98,8 +98,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-25T17:55:00.000Z
-Stopped at: Completed 05-05 Wave-4 E2E specs (KBN-01..04 + issues.spec selector update); Phase 5 exit gate green code-side; live E2E run deferred to user
+Last session: 2026-04-26T07:36:55.225Z
+Stopped at: Completed 05.1-00 (Auth Backend Foundation)
 Resume file: None
 
 **Planned Phase:** 01 (token-foundation-typography) — 6 plans — 2026-04-24T23:07:23.601Z
