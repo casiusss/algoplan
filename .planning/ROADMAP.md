@@ -190,7 +190,7 @@ Plans:
   6. Targeted grep across user-visible Go strings, Makefile help, docker-compose env names, and CLI help output returns zero `multica` matches — excludes git history, `.planning/` historical artifacts, and the migration shim files themselves
 
 **Phase annotation**: This phase ships migration shims FIRST (Wave 0) so subsequent renames cascade safely. localStorage migration MUST be idempotent (test for double-boot). Env var dual-read shim is one-release-cycle compatibility — schedule removal for v0.6.0 or v0.7.0. Homebrew publish targets `multica-ai/homebrew-tap` which is read-only for this fork — recommend deferring Homebrew until `algoplan-ai` org exists OR pointing at a `casiusss/homebrew-tap` repo. CLI binary rename should ship a `multica` shim binary that delegates to `algoplan` and prints a deprecation warning, dropped in a later release.
-**Plans**: 9 plans
+**Plans**: 10 plans
 
 Plans:
 - [ ] 08-00-PLAN.md — Wave 0: localStorage migration helper (`packages/core/migrations/localstorage.ts`) — idempotent multica_*/multica:* → algoplan_*/algoplan:* shim with 8+ Vitest cases (D-2, RBR-08)
@@ -198,6 +198,7 @@ Plans:
 - [ ] 08-02-PLAN.md — Wave 0 (parallel-safe with 08-00/01): CLI config-dir migration helper (`server/internal/cli/configdir.go`) — atomic copy ~/.multica/ → ~/.algoplan/ with rename-aside rollback (D-4, RBR-10)
 - [ ] 08-03-PLAN.md — Wave 1: @multica/* → @algoplan/* mass rename across 9 workspace packages, source imports, tsconfig extends, turbo filters, CI workflow + grep-rebrand.sh exclusion update (D-1, RBR-07)
 - [ ] 08-04-PLAN.md — Wave 2 (after 08-00 + 08-03): wire migrateLocalStorage into CoreProvider boot + flip theme-provider, auth store, chat store, storage-cleanup to algoplan_*/algoplan:* keys + update Plan 07-05 regression-lock tests (D-2, RBR-08)
+- [ ] 08-04b-PLAN.md — Wave 2 (after 08-00 + 08-03 + 08-04): workspace-scoped localStorage migration via shared useWorkspaceStorageMigration hook wired from apps/web + apps/desktop workspace route layouts (B-04 fix from plan-checker iter 1; D-2 / RBR-08)
 - [ ] 08-05-PLAN.md — Wave 3 (after 08-01): rewrite Go env-var call sites to config.GetEnv("ALGOPLAN_X") + flip docker-compose, Makefile, .env.example, turbo.json env names + end-to-end legacy-fallback test (D-3, RBR-09)
 - [ ] 08-06-PLAN.md — Wave 4 (after 08-02 + 08-05): git mv server/cmd/multica/ → server/cmd/algoplan/ + flip ~/.multica/ → ~/.algoplan/ in config.go + wire MigrateConfigDir at bootstrap + multica shim binary + Makefile + help-text sweep (D-4, RBR-10)
 - [ ] 08-07-PLAN.md — Wave 5 (after 08-03 + 08-06; CHECKPOINT for D-6 Homebrew decision): GoReleaser project_name + builds + archives → algoplan; release.yml ghcr image NAMES → algoplan-{backend,web}; docker-compose default images → algoplan-*; email FROM → noreply@algoplan.ai; releaseAssetCandidates lookup order algoplan-cli > multica-cli > multica_ (D-5/D-6/D-7, RBR-11/12/13)
@@ -218,4 +219,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 5.1. Auth Backend Endpoints (INSERTED) | 4/4 | Complete (27/27 integration tests GREEN) | 2026-04-26 |
 | 6. Issue Detail + Remaining Views | 0/TBD | Not started | - |
 | 7. Rebrand Pass | 6/6 | Complete (v0.4.0 shipped 2026-04-26) | 2026-04-26 |
-| 8. Internal Rebrand Completion | 0/9 | Plans created (planner) | - |
+| 8. Internal Rebrand Completion | 0/10 | Plans created (planner; revision 1) | - |
