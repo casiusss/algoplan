@@ -260,7 +260,45 @@ describe("PasswordStrengthMeter atom (UI-CHECK FLAG-5.1)", () => {
   });
 
   // -------------------------------------------------------------------------
-  // 7. File-lifetime sanity: by the end of the suite, the lazy import
+  // 7. onScoreChange callback — used by SignupPage / ResetPasswordPage to
+  //    gate the submit button on `score >= 2`. The meter remains the single
+  //    owner of scoring; the callback is a one-way notification.
+  //
+  //    Empty password → fires with `null`.
+  //    Non-empty (after debounce + zxcvbn resolves) → fires with 0..4.
+  // -------------------------------------------------------------------------
+  it("invokes onScoreChange with the new score after the debounce + zxcvbn resolve", async () => {
+    const PasswordStrengthMeter = await loadMeter();
+    const onScoreChange = vi.fn();
+    const { rerender } = render(
+      <PasswordStrengthMeter password="" onScoreChange={onScoreChange} />,
+    );
+
+    // Empty render fires onScoreChange with null on mount (initial score state
+    // is null and the effect runs once on mount).
+    await waitFor(() => {
+      expect(onScoreChange).toHaveBeenCalledWith(null);
+    });
+
+    rerender(
+      <PasswordStrengthMeter
+        password="correct horse battery staple"
+        onScoreChange={onScoreChange}
+      />,
+    );
+
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+    });
+
+    await waitFor(() => {
+      // Last call must be with the resolved score (4 for the chosen mock string).
+      expect(onScoreChange).toHaveBeenCalledWith(4);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // 8. File-lifetime sanity: by the end of the suite, the lazy import
   //    factory MUST have been invoked exactly once across all tests
   //    combined (proof that the dynamic import fired at least once + that
   //    the meter never accidentally added a second eager import).

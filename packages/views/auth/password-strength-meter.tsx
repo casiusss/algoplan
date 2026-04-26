@@ -5,6 +5,17 @@ import { cn } from "@multica/ui/lib/utils";
 
 interface PasswordStrengthMeterProps {
   password: string;
+  /**
+   * Optional callback fired whenever the computed score changes.
+   * - Empty password → fires with `null` (no score yet).
+   * - Non-empty password (after the 200ms debounce + zxcvbn resolves) → fires
+   *   with the new 0..4 score.
+   *
+   * Used by parent forms (e.g. SignupPage, ResetPasswordPage) to gate the
+   * submit button on `score >= 2`. Keeps the meter the single owner of
+   * scoring while still letting forms react to it.
+   */
+  onScoreChange?: (score: number | null) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -119,7 +130,10 @@ function useDebounce<T>(value: T, delay: number): T {
  *
  * Per UI-SPEC §PasswordStrengthMeter atom + UI-CHECK FLAG-5.1.
  */
-export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) {
+export function PasswordStrengthMeter({
+  password,
+  onScoreChange,
+}: PasswordStrengthMeterProps) {
   const debounced = useDebounce(password, 200);
   const [score, setScore] = useState<0 | 1 | 2 | 3 | 4 | null>(null);
 
@@ -138,6 +152,14 @@ export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) 
       cancelled = true;
     };
   }, [debounced]);
+
+  // Notify the parent of every score transition (including back-to-null when
+  // the password is cleared). Run as an effect so React batches the call into
+  // the same commit as the local setScore — never inside the loadZxcvbn
+  // promise body, which would couple the callback to the async resolution.
+  useEffect(() => {
+    onScoreChange?.(score);
+  }, [score, onScoreChange]);
 
   const bucket = score !== null ? BUCKETS[score] : null;
 
