@@ -167,12 +167,52 @@ func (s *EmailService) SendPasswordResetEmail(to, resetToken string) error {
 	return nil
 }
 
-// SendEmailVerification queues the verify-email resend triggered from
-// POST /auth/email-verify/resend. Stub for Phase 5.1 Plan 00 —
-// Plan 02 fills in the Resend wiring and adds buildEmailVerifyParams.
+// SendEmailVerification sends a fresh email-verification link, used by the
+// POST /auth/email-verify/resend endpoint. Subject + body are English +
+// "Multica" branding (Phase 7 will rebrand). Mirrors SendSignupVerification:
+// the only difference is the user-facing copy ("New verification email" vs
+// "Welcome") because the resend flow is triggered by the user clicking
+// "resend" rather than by initial signup.
+//
+// In dev mode (no RESEND_API_KEY → s.client == nil) the verify URL is
+// printed to stdout. The caller treats any error here as best-effort.
 func (s *EmailService) SendEmailVerification(to, verifyToken string) error {
-	slog.Info("[STUB] SendEmailVerification", "to", to, "token_len", len(verifyToken))
-	return nil
+	appURL := strings.TrimSpace(os.Getenv("FRONTEND_ORIGIN"))
+	if appURL == "" {
+		appURL = "https://app.multica.ai"
+	}
+	verifyURL := fmt.Sprintf("%s/auth/verify-email?token=%s", appURL, verifyToken)
+
+	if s.client == nil {
+		fmt.Printf("[DEV] Resend verify email to %s: %s\n", to, verifyURL)
+		return nil
+	}
+
+	params := buildEmailVerifyParams(s.fromEmail, to, verifyURL)
+	_, err := s.client.Emails.Send(params)
+	return err
+}
+
+// buildEmailVerifyParams assembles the Resend request for the resend-verify
+// email. Separated for unit testability without mocking the Resend SDK. The
+// verify URL is HTML-escaped before substitution as defense-in-depth — today
+// the URL is server-built from base64url token bytes, but escaping keeps the
+// helper safe if a future caller passes user-controlled URL fragments.
+func buildEmailVerifyParams(from, to, verifyURL string) *resend.SendEmailRequest {
+	safeURL := html.EscapeString(verifyURL)
+	body := fmt.Sprintf(`<div style="font-family: sans-serif; max-width: 480px;">
+  <h1>Verify your email</h1>
+  <p>You requested a new verification email. The link below expires in 24 hours.</p>
+  <p><a href="%s">Verify email</a></p>
+  <p style="color: #666; font-size: 12px;">If the link doesn't work, copy this URL into your browser:<br/>%s</p>
+</div>`, safeURL, safeURL)
+
+	return &resend.SendEmailRequest{
+		From:    from,
+		To:      []string{to},
+		Subject: "New verification email for Multica",
+		Html:    body,
+	}
 }
 
 // sanitizeSubjectField prepares user-controlled text for the email Subject line.
