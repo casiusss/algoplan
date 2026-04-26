@@ -110,6 +110,11 @@ These mirror `scripts/grep-rebrand.sh` `EXCLUDE` regex. **When a new exclusion i
 | `multica-ai/multica` git remote / GitHub org | Repo URL stays — GitHub org rename out of scope.                        | D-4        |
 | `multica.git` repo URL fragment              | Same — out of scope.                                                    | D-4        |
 | `multica-desktop-` artifactName template     | Internal release filename in `electron-builder.yml`; not visible in app chrome. | (internal) |
+| `multica-cli-` archive prefix                | CLI release archive filename (Goreleaser output: `multica-cli-<v>-<os>-<arch>.<ext>`); same rationale as `multica-desktop-`. | (internal) |
+| `multica_<os>_<arch>` legacy archive name    | Legacy CLI archive name pattern preserved for older releases (`cli-release-asset.ts` legacyName fallback) — Q1 + internal release identity. | Q1         |
+| `"multica"` / `"multica.exe"` binary basenames | CLI binary filename strings inside `cli-bootstrap.ts` / `daemon-manager.ts`; preserved per Q1. | Q1         |
+| `~/.multica` config dir paths (`.multica/`, `.multica"`, `` `multica.exe` ``) | Daemon manager + cli-bootstrap reference user config dir on disk; preserved per Q1. | Q1         |
+| `bin/multica` packaged-binary path           | `apps/desktop/resources/bin/multica` — bundled CLI path comment in `daemon-manager.ts`; preserved per Q1. | Q1         |
 | `server/cmd/multica` CLI binary path         | Developer-facing CLI; rename out of scope.                              | Q1         |
 | `MulticaIcon` / `multica-icon.tsx`           | Aesthetic asterisk component — NOT the wordmark. `AlgoPlanWordmark` is the brand atom; this file decorates other surfaces. Kept verbatim. | (visual)   |
 | `multica` reserved slug in `packages/core/paths/reserved-slugs.ts:31` | Anti-impersonation guard — prevents users creating workspace slug `multica`. KEEP and ADD `algoplan` alongside (per Plan 07-01 task). | (security) |
