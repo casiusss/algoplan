@@ -124,9 +124,14 @@ func TestEmailVerify_Invalid(t *testing.T) {
 
 // TestResendEmailVerify_Unverified: 200, fresh token written (different
 // from any prior verify hash, expiry ~24h in future).
+//
+// Backdated expiry: issuedAt = expires_at - 24h, so we set
+// expires_at = now + 24h - 2min to make the prior-token issuance
+// timestamp appear 2 minutes ago — past the 60s resend cooldown
+// (W5 fix in ResendEmailVerify reconstructs issuedAt this way).
 func TestResendEmailVerify_Unverified(t *testing.T) {
 	const email = "resend-unverified@example.com"
-	_, oldPlain := verifyUserWithToken(t, email, 24*time.Hour)
+	_, oldPlain := verifyUserWithToken(t, email, 24*time.Hour-2*time.Minute)
 	oldHash := auth.HashToken(oldPlain)
 
 	rec := postJSON(t, testHandler.ResendEmailVerify, "/auth/email-verify/resend",
@@ -209,9 +214,14 @@ func TestResendEmailVerify_UnknownEmail(t *testing.T) {
 
 // TestResendEmailVerify_RateLimit: 2nd call within 60s → 429.
 // Deterministic via DB-stored issuance timestamp (W5 fix).
+//
+// Same backdating trick as TestResendEmailVerify_Unverified: the prior
+// token must appear issued > 60s ago so the FIRST resend succeeds. The
+// SECOND resend is naturally rate-limited because the first call
+// stamped expires_at = now + 24h, making issuedAt ≈ now.
 func TestResendEmailVerify_RateLimit(t *testing.T) {
 	const email = "resend-ratelimit@example.com"
-	verifyUserWithToken(t, email, 24*time.Hour)
+	verifyUserWithToken(t, email, 24*time.Hour-2*time.Minute)
 
 	first := postJSON(t, testHandler.ResendEmailVerify, "/auth/email-verify/resend",
 		map[string]string{"email": email})
