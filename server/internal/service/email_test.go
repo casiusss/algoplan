@@ -217,9 +217,32 @@ func TestBuildPasswordResetParams(t *testing.T) {
 	t.Skip("implemented in Plan 03")
 }
 
-// TestBuildEmailVerifyParams is a Phase 5.1 Plan 00 placeholder.
-// Plan 02 will introduce buildEmailVerifyParams and replace this
-// skip with real assertions including the 24-hour expiry text.
+// TestBuildEmailVerifyParams asserts the Resend request shape for the
+// resend-verify email: From / To / Subject branding, no control chars
+// in Subject, body contains the verify URL verbatim and the 24-hour
+// expiry mention. Phase 5.1 Plan 02.
 func TestBuildEmailVerifyParams(t *testing.T) {
-	t.Skip("implemented in Plan 02")
+	p := buildEmailVerifyParams(
+		"noreply@multica.ai",
+		"user@example.com",
+		"https://app.multica.ai/auth/verify-email?token=resendToken-_42",
+	)
+	if p.From != "noreply@multica.ai" {
+		t.Errorf("From wrong: %s", p.From)
+	}
+	if len(p.To) != 1 || p.To[0] != "user@example.com" {
+		t.Errorf("To wrong: %v", p.To)
+	}
+	if !strings.Contains(p.Subject, "Multica") {
+		t.Errorf("Subject missing brand: %s", p.Subject)
+	}
+	if strings.ContainsAny(p.Subject, "\r\n\t") {
+		t.Errorf("Subject control chars: %q", p.Subject)
+	}
+	if !strings.Contains(p.Html, "verify-email?token=resendToken-_42") {
+		t.Errorf("Body missing URL: %s", p.Html)
+	}
+	if !strings.Contains(p.Html, "24 hours") {
+		t.Errorf("Body missing expiry mention: %s", p.Html)
+	}
 }
