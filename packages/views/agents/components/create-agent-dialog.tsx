@@ -95,7 +95,7 @@ export function CreateAgentDialog({
       });
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to create agent");
+      toast.error(err instanceof Error ? err.message : "Agent konnte nicht erstellt werden");
       setCreating(false);
     }
   };
@@ -104,9 +104,9 @@ export function CreateAgentDialog({
     <Dialog open onOpenChange={(v) => { if (!v) onClose(); }}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Create Agent</DialogTitle>
+          <DialogTitle>Agent erstellen</DialogTitle>
           <DialogDescription>
-            Create a new AI agent for your workspace.
+            Erstelle einen neuen KI-Agenten für deinen Workspace.
           </DialogDescription>
         </DialogHeader>
 
@@ -118,25 +118,25 @@ export function CreateAgentDialog({
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Deep Research Agent"
+              placeholder="z. B. Deep Research Agent"
               className="mt-1"
               onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
             />
           </div>
 
           <div>
-            <Label className="text-xs text-muted-foreground">Description</Label>
+            <Label className="text-xs text-muted-foreground">Beschreibung</Label>
             <Input
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="What does this agent do?"
+              placeholder="Was macht dieser Agent?"
               className="mt-1"
             />
           </div>
 
           <div>
-            <Label className="text-xs text-muted-foreground">Visibility</Label>
+            <Label className="text-xs text-muted-foreground">Sichtbarkeit</Label>
             <div className="mt-1.5 flex gap-2">
               <button
                 type="button"
@@ -150,7 +150,7 @@ export function CreateAgentDialog({
                 <Globe className="h-4 w-4 shrink-0 text-muted-foreground" />
                 <div className="text-left">
                   <div className="font-medium">Workspace</div>
-                  <div className="text-xs text-muted-foreground">All members can assign</div>
+                  <div className="text-xs text-muted-foreground">Alle Mitglieder können zuweisen</div>
                 </div>
               </button>
               <button
@@ -164,8 +164,8 @@ export function CreateAgentDialog({
               >
                 <Lock className="h-4 w-4 shrink-0 text-muted-foreground" />
                 <div className="text-left">
-                  <div className="font-medium">Private</div>
-                  <div className="text-xs text-muted-foreground">Only you can assign</div>
+                  <div className="font-medium">Privat</div>
+                  <div className="text-xs text-muted-foreground">Nur du kannst zuweisen</div>
                 </div>
               </button>
             </div>
@@ -185,7 +185,7 @@ export function CreateAgentDialog({
                         : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    Mine
+                    Meine
                   </button>
                   <button
                     type="button"
@@ -196,7 +196,7 @@ export function CreateAgentDialog({
                         : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    All
+                    Alle
                   </button>
                 </div>
               )}
@@ -216,7 +216,7 @@ export function CreateAgentDialog({
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="truncate font-medium">
-                      {runtimesLoading ? "Loading runtimes..." : (selectedRuntime?.name ?? "No runtime available")}
+                      {runtimesLoading ? "Runtimes werden geladen…" : (selectedRuntime?.name ?? "Keine Runtime verfügbar")}
                     </span>
                     {selectedRuntime?.runtime_mode === "cloud" && (
                       <span className="shrink-0 rounded bg-info/10 px-1.5 py-0.5 text-xs font-medium text-info">
@@ -227,7 +227,7 @@ export function CreateAgentDialog({
                   <div className="truncate text-xs text-muted-foreground">
                     {selectedRuntime
                       ? (getOwnerMember(selectedRuntime.owner_id)?.name ?? selectedRuntime.device_info)
-                      : "Register a runtime before creating an agent"}
+                      : "Registriere eine Runtime, bevor du einen Agenten erstellst"}
                   </div>
                 </div>
                 <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${runtimeOpen ? "rotate-180" : ""}`} />
@@ -290,13 +290,13 @@ export function CreateAgentDialog({
 
         <DialogFooter>
           <Button variant="ghost" onClick={onClose}>
-            Cancel
+            Abbrechen
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={creating || !name.trim() || !selectedRuntime}
           >
-            {creating ? "Creating..." : "Create"}
+            {creating ? "Wird erstellt…" : "Erstellen"}
           </Button>
         </DialogFooter>
       </DialogContent>

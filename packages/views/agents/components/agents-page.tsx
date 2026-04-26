@@ -19,6 +19,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useWorkspaceId } from "@multica/core/hooks";
 import { agentListOptions, memberListOptions, workspaceKeys } from "@multica/core/workspace/queries";
 import { PageHeader } from "../../layout/page-header";
+import { EmptyState } from "../../workspace/empty-state";
 import { CreateAgentDialog } from "./create-agent-dialog";
 import { AgentListItem } from "./agent-list-item";
 import { AgentDetail } from "./agent-detail";
@@ -61,9 +62,9 @@ export function AgentsPage() {
     try {
       await api.updateAgent(id, data as UpdateAgentRequest);
       qc.invalidateQueries({ queryKey: workspaceKeys.agents(wsId) });
-      toast.success("Agent updated");
+      toast.success("Agent aktualisiert");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed to update agent");
+      toast.error(e instanceof Error ? e.message : "Agent konnte nicht aktualisiert werden");
       throw e;
     }
   };
@@ -72,9 +73,9 @@ export function AgentsPage() {
     try {
       await api.archiveAgent(id);
       qc.invalidateQueries({ queryKey: workspaceKeys.agents(wsId) });
-      toast.success("Agent archived");
+      toast.success("Agent archiviert");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed to archive agent");
+      toast.error(e instanceof Error ? e.message : "Agent konnte nicht archiviert werden");
     }
   };
 
@@ -82,9 +83,9 @@ export function AgentsPage() {
     try {
       await api.restoreAgent(id);
       qc.invalidateQueries({ queryKey: workspaceKeys.agents(wsId) });
-      toast.success("Agent restored");
+      toast.success("Agent wiederhergestellt");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed to restore agent");
+      toast.error(e instanceof Error ? e.message : "Agent konnte nicht wiederhergestellt werden");
     }
   };
 
@@ -141,14 +142,14 @@ export function AgentsPage() {
         {/* Left column — agent list */}
         <div className="overflow-y-auto h-full border-r">
           <PageHeader className="justify-between">
-            <h1 className="text-sm font-semibold">Agents</h1>
+            <h1 className="text-sm font-semibold">Agenten</h1>
             <div className="flex items-center gap-1">
               {archivedCount > 0 && (
                 <Button
                   variant={showArchived ? "secondary" : "ghost"}
                   size="icon-sm"
                   onClick={() => setShowArchived(!showArchived)}
-                  title={showArchived ? "Show active agents" : "Show archived agents"}
+                  title={showArchived ? "Aktive Agenten anzeigen" : "Archivierte Agenten anzeigen"}
                 >
                   <Archive className="text-muted-foreground" />
                 </Button>
@@ -163,22 +164,21 @@ export function AgentsPage() {
             </div>
           </PageHeader>
           {filteredAgents.length === 0 ? (
-            <div className="flex flex-col items-center justify-center px-4 py-12">
-              <Bot className="h-8 w-8 text-muted-foreground/40" />
-              <p className="mt-3 text-sm text-muted-foreground">
-                {showArchived ? "No archived agents" : archivedCount > 0 ? "No active agents" : "No agents yet"}
-              </p>
-              {!showArchived && (
-                <Button
-                  onClick={() => setShowCreate(true)}
-                  size="xs"
-                  className="mt-3"
-                >
-                  <Plus className="h-3 w-3" />
-                  Create Agent
-                </Button>
-              )}
-            </div>
+            <EmptyState
+              illustration={<Bot className="h-8 w-8 text-muted-foreground/40" />}
+              heading={
+                showArchived
+                  ? "Keine archivierten Agenten"
+                  : archivedCount > 0
+                    ? "Keine aktiven Agenten"
+                    : "Noch keine Agenten"
+              }
+              cta={
+                !showArchived
+                  ? { label: "Agent erstellen", onClick: () => setShowCreate(true) }
+                  : undefined
+              }
+            />
           ) : (
             <div className="divide-y">
               {filteredAgents.map((agent) => (
@@ -212,14 +212,14 @@ export function AgentsPage() {
         ) : (
           <div className="flex h-full flex-col items-center justify-center text-muted-foreground">
             <Bot className="h-10 w-10 text-muted-foreground/30" />
-            <p className="mt-3 text-sm">Select an agent to view details</p>
+            <p className="mt-3 text-sm">Wähle einen Agenten.</p>
             <Button
               onClick={() => setShowCreate(true)}
               size="xs"
               className="mt-3"
             >
               <Plus className="h-3 w-3" />
-              Create Agent
+              Agent erstellen
             </Button>
           </div>
         )}
