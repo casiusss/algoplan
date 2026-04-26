@@ -1,5 +1,5 @@
 /* =============================================================================
- * Multica shared base styles — imported by all apps
+ * AlgoPlan shared base styles — imported by all apps
  *
  * Reviewed 2026-04-24 (Plan 01-01) for AlgoPlan token compatibility:
  *   - Scrollbar (var(--scrollbar-thumb / -hover / -track)) — no change required;
@@ -22,7 +22,7 @@
   color: var(--shiki-dark) !important;
 }
 
-/* Multica icon: entrance spin animation */
+/* AlgoPlan icon: entrance spin animation */
 @keyframes entrance-spin {
   0% { transform: rotate(0deg); opacity: 0; }
   50% { opacity: 1; }
