@@ -19,7 +19,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Issues Views + Kanban + dnd-kit Migration** - `@dnd-kit/react` v0.4.0 migration, board restyle, list restyle, view toggle, inline task-add, WS race fix
 - [ ] **Phase 5.1: Auth Backend Endpoints** (INSERTED) - Signup, password-reset request/confirm, email-verify, resend verification — backend Go endpoints + DB schema for AUTH-02..05 unblock
 - [ ] **Phase 6: Issue Detail + Remaining Views** - Issue detail, auth flows, inbox, settings, agents, workspace, error states
-- [ ] **Phase 7: Rebrand Pass** - Strings, assets, metadata, deep-link scheme, Electron chrome, test updates
+- [x] **Phase 7: Rebrand Pass** - Strings, assets, metadata, deep-link scheme, Electron chrome, test updates
+- [ ] **Phase 8: Internal Rebrand Completion** - `@multica/*` packages, `multica_*` localStorage, `MULTICA_*` env vars, `multica` CLI binary, `~/.multica/` config dir, Docker images, GoReleaser, Homebrew tap, default email FROM — with backwards-compat migration shims
 
 ## Phase Details
 
@@ -176,6 +177,32 @@ Plans:
 - [x] 07-04-PLAN.md — Wave 3: atomic multica:// → algoplan:// deep-link flip (web callback + login + extracted desktop deep-link.ts + 8-test contract lock)
 - [ ] 07-05-PLAN.md — Wave 4: PWA manifest + asset wiring in layout + localStorage preservation regression-lock + final 6-check verification gate
 
+### Phase 8: Internal Rebrand Completion
+**Goal**: Every internal "Multica" reference that Phase 7 deliberately preserved is renamed to AlgoPlan, with backwards-compatible migration shims so no existing user loses state and no self-hoster's `.env` file silently breaks. Covers `@multica/*` package scope, `multica_*` localStorage keys, `MULTICA_*` env vars, `multica` CLI binary + `~/.multica/` config dir, Docker image names, GoReleaser config + Homebrew tap, and default email FROM
+**Depends on**: Phase 7
+**Requirements**: RBR-07, RBR-08, RBR-09, RBR-10, RBR-11, RBR-12, RBR-13, RBR-14
+**Success Criteria** (what must be TRUE):
+  1. `pnpm install && pnpm typecheck && pnpm test` all green after `@multica/*` → `@algoplan/*` mass-rename across 9 workspace packages
+  2. Existing user with `multica_theme=dark` in localStorage retains dark mode after upgrade — migration test asserts `algoplan_theme=dark` is set and `multica_theme` is removed (idempotent across reloads)
+  3. Self-hoster running with `MULTICA_BACKEND_IMAGE=...` in `.env` sees a one-time deprecation warning but the app still resolves the value via the `ALGOPLAN_BACKEND_IMAGE` dual-read shim
+  4. CLI user with existing `~/.multica/config.json` runs `algoplan daemon start` and the daemon auto-migrates state to `~/.algoplan/config.json` without losing the workspace_id or token
+  5. `git push origin v0.5.0` triggers the Release workflow with all jobs green — Docker images publish to `ghcr.io/${{ github.repository_owner }}/algoplan-{backend,web}` and the Homebrew job is either deferred (recommended) or publishes to a fork-owned tap
+  6. Targeted grep across user-visible Go strings, Makefile help, docker-compose env names, and CLI help output returns zero `multica` matches — excludes git history, `.planning/` historical artifacts, and the migration shim files themselves
+
+**Phase annotation**: This phase ships migration shims FIRST (Wave 0) so subsequent renames cascade safely. localStorage migration MUST be idempotent (test for double-boot). Env var dual-read shim is one-release-cycle compatibility — schedule removal for v0.6.0 or v0.7.0. Homebrew publish targets `multica-ai/homebrew-tap` which is read-only for this fork — recommend deferring Homebrew until `algoplan-ai` org exists OR pointing at a `casiusss/homebrew-tap` repo. CLI binary rename should ship a `multica` shim binary that delegates to `algoplan` and prints a deprecation warning, dropped in a later release.
+**Plans**: 9 plans
+
+Plans:
+- [ ] 08-00-PLAN.md — Wave 0: localStorage migration helper (`packages/core/migrations/localstorage.ts`) — idempotent multica_*/multica:* → algoplan_*/algoplan:* shim with 8+ Vitest cases (D-2, RBR-08)
+- [ ] 08-01-PLAN.md — Wave 0 (parallel-safe with 08-00/02): Go env-var dual-read shim (`server/internal/config/env.go`) — config.GetEnv("ALGOPLAN_X") with one-shot deprecation warning per legacy MULTICA_X var (D-3, RBR-09)
+- [ ] 08-02-PLAN.md — Wave 0 (parallel-safe with 08-00/01): CLI config-dir migration helper (`server/internal/cli/configdir.go`) — atomic copy ~/.multica/ → ~/.algoplan/ with rename-aside rollback (D-4, RBR-10)
+- [ ] 08-03-PLAN.md — Wave 1: @multica/* → @algoplan/* mass rename across 9 workspace packages, source imports, tsconfig extends, turbo filters, CI workflow + grep-rebrand.sh exclusion update (D-1, RBR-07)
+- [ ] 08-04-PLAN.md — Wave 2 (after 08-00 + 08-03): wire migrateLocalStorage into CoreProvider boot + flip theme-provider, auth store, chat store, storage-cleanup to algoplan_*/algoplan:* keys + update Plan 07-05 regression-lock tests (D-2, RBR-08)
+- [ ] 08-05-PLAN.md — Wave 3 (after 08-01): rewrite Go env-var call sites to config.GetEnv("ALGOPLAN_X") + flip docker-compose, Makefile, .env.example, turbo.json env names + end-to-end legacy-fallback test (D-3, RBR-09)
+- [ ] 08-06-PLAN.md — Wave 4 (after 08-02 + 08-05): git mv server/cmd/multica/ → server/cmd/algoplan/ + flip ~/.multica/ → ~/.algoplan/ in config.go + wire MigrateConfigDir at bootstrap + multica shim binary + Makefile + help-text sweep (D-4, RBR-10)
+- [ ] 08-07-PLAN.md — Wave 5 (after 08-03 + 08-06; CHECKPOINT for D-6 Homebrew decision): GoReleaser project_name + builds + archives → algoplan; release.yml ghcr image NAMES → algoplan-{backend,web}; docker-compose default images → algoplan-*; email FROM → noreply@algoplan.ai; releaseAssetCandidates lookup order algoplan-cli > multica-cli > multica_ (D-5/D-6/D-7, RBR-11/12/13)
+- [ ] 08-08-PLAN.md — Wave 6 (after all): scripts/verify-rebrand.sh 6-check ship gate + grep-rebrand.sh Phase 8 exclusion update (migrations/, configdir, env shim, cookies) + 07-PATTERNS.md §2 co-update + USER CHECKPOINT for v0.5.0 tag (D-8, RBR-14)
+
 ## Progress
 
 **Execution Order:**
@@ -190,4 +217,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 5. Issues Views + Kanban + dnd-kit Migration | 6/6 | Complete (code-side); awaiting user live-E2E sign-off | 2026-04-25 |
 | 5.1. Auth Backend Endpoints (INSERTED) | 4/4 | Complete (27/27 integration tests GREEN) | 2026-04-26 |
 | 6. Issue Detail + Remaining Views | 0/TBD | Not started | - |
-| 7. Rebrand Pass | 5/6 | In progress (Wave 0..3 complete — audit + assets + strings + chrome + atomic deep-link flip; Wave 4 PWA manifest + final verify pending) | 2026-04-26 |
+| 7. Rebrand Pass | 6/6 | Complete (v0.4.0 shipped 2026-04-26) | 2026-04-26 |
+| 8. Internal Rebrand Completion | 0/9 | Plans created (planner) | - |
