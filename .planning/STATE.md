@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v0.4.0
 milestone_name: milestone
 status: completed
-stopped_at: "Completed 05.1-03-PLAN.md (password-reset request + confirm + SendPasswordResetEmail). Phase 5.1 fully GREEN: 27/27 integration tests."
-last_updated: "2026-04-26T08:40:22.133Z"
+stopped_at: Completed 06-00-PLAN.md (Wave-0 atoms + dragstrip gate + zxcvbn catalog). 9 reqs marked, 3 commits.
+last_updated: "2026-04-26T09:59:45.496Z"
 last_activity: 2026-04-25
 progress:
   total_phases: 8
   completed_phases: 6
-  total_plans: 33
-  completed_plans: 33
-  percent: 100
+  total_plans: 41
+  completed_plans: 34
+  percent: 83
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 
 ## Current Position
 
-Phase: 5
-Plan: 05 (complete — Wave 4 E2E specs); Phase 5 exit gate green (code-side)
-Status: Phase 5 complete; awaiting user live-E2E sign-off
-Last activity: 2026-04-25
+Phase: 6
+Plan: 00 (complete — Wave-0 atoms + dragstrip-coverage gate + zxcvbn catalog); ready for Wave-1 (06-01..06-04)
+Status: Phase 6 Wave-0 complete; Wave-1 unblocked
+Last activity: 2026-04-26
 
-Progress: [██████████] 100%
+Progress: [████████░░] 83%
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Progress: [██████████] 100%
 | Phase 5 P05 | 584 | 6 tasks | 5 created, 2 modified (4 new E2E specs + selector update + fixture helpers) |
 | Phase 05.1 P02 | 6min | 3 tasks | 4 files |
 | Phase 05.1 P03 | 5min | 3 tasks | 3 files |
+| Phase 06 P00 | 13 | 3 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,7 @@ Recent decisions affecting current work:
 - Plan 02 (email-verify): Established 'idempotent OK shape' idiom — same 200 body for unknown-email / already-verified / fresh-issuance paths. Defeats enumeration via response inspection. Plan 03 will reuse for POST /auth/password-reset/request.
 - Plan 02 (email-verify): Established 'deterministic rate-limit reconstruction from server-stamped expiry' idiom — derive issuedAt from expires_at minus the known 24h issuance window instead of trusting time.Until against a far-future expiry. Robust to clock skew at the cooldown boundary (W5 fix). Plan 03 will reuse for password_reset_expires_at with 1h window.
 - Phase 5.1 P03: Idempotent password-reset request (no enumeration), atomic single-SQL password+token rotation, intentional no-auto-login on confirm
+- Phase 6 Wave-0: Shipped 5 atoms + useNavigationFlash + automated dragstrip-coverage gate + @zxcvbn-ts/* catalog. Resolved UI-CHECK FLAG-5.1 (lazy import gate) and FLAG-5.3 (DragStrip audit promoted to test). language-en pinned at ^3.0.2 (registry latest in v3.x).
 
 ### Pending Todos
 
@@ -104,8 +106,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-26T08:40:22.126Z
-Stopped at: Completed 05.1-03-PLAN.md (password-reset request + confirm + SendPasswordResetEmail). Phase 5.1 fully GREEN: 27/27 integration tests.
+Last session: 2026-04-26T09:59:34.515Z
+Stopped at: Completed 06-00-PLAN.md (Wave-0 atoms + dragstrip gate + zxcvbn catalog). 9 reqs marked, 3 commits.
 Resume file: None
 
 **Planned Phase:** 01 (token-foundation-typography) — 6 plans — 2026-04-24T23:07:23.601Z

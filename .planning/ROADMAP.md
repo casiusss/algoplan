@@ -134,15 +134,25 @@ Plans:
 ### Phase 6: Issue Detail + Remaining Views
 **Goal**: Every user-facing view outside the shell and issues list — issue detail modal, auth flows, inbox, settings, agents, workspace management, and error states — is fully restyled in the AlgoPlan design system with DragStrip on all desktop full-window views
 **Depends on**: Phase 5
-**Requirements**: DTL-01, DTL-02, DTL-03, DTL-04, AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, INB-01, INB-02, INB-03, SET-01, SET-02, SET-03, WS-01, WS-02, WS-03, WS-04, WS-05
+**Requirements**: DTL-01, DTL-02, DTL-04, AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, INB-01, INB-02, INB-03, SET-01, SET-02, SET-03, WS-01, WS-02, WS-03, WS-04, WS-05
 **Success Criteria** (what must be TRUE):
   1. The issue detail modal opens two-pane: title and comments on the left, status/priority/tags/assignees on the right; priority is a SegmentedControl P0-P3 (not a dropdown)
   2. Login, signup, email-verify, and password-reset pages render with AlgoPlan wordmark and Inter italic title; signup shows a 4-level password strength meter
   3. macOS desktop users can drag the window on every pre-workspace view (login, signup, create-workspace, invite) — `DragStrip` is the first flex child on each
   4. Settings page has a Danger Zone section with typed-name confirmation before Leave/Delete; Dark-mode radio (Light/Dark/System) saves and persists
   5. Inbox shows items grouped by date (Today/Yesterday/This Week/Older) with a mark-all-read button and keyboard shortcut `E`
-**Plans**: TBD
+**Plans**: 8 plans
 **UI hint**: yes
+
+Plans:
+- [x] 06-00-PLAN.md — Wave 0: shared atoms (AlgoPlanWordmark, PasswordStrengthMeter, SettingsSection, EmptyState, NotFoundPage), useNavigationFlash util, dragstrip-coverage automated gate, @zxcvbn-ts/* catalog entries
+- [ ] 06-01-PLAN.md — Wave 1 DTL: issue-detail modal restructure (modal-footer, IssuePrioritySegmentedControl, German strings) + extend Phase 2 SegmentedControl with colorByValue
+- [ ] 06-02-PLAN.md — Wave 1 INB: date-bucket grouping, Alle-gelesen button + E shortcut (input-focus guard), TagChip type filter (useInboxFilterStore in @multica/core/inbox), AccentBar unread
+- [ ] 06-03-PLAN.md — Wave 1 SET: SettingsSection wrappers, German strings, Gefahrenzone quick-jump, dark-mode check-icon overlay (preserves safe-order + typed-name gate verbatim)
+- [ ] 06-04-PLAN.md — Wave 1 WS: Agents German + EmptyState + AvatarInitial fallback, NoAccessPage German + AlgoPlanWordmark, workspace-switcher German strings, web 404 route
+- [ ] 06-05-PLAN.md — Wave 2 AUTH: 6 new api client methods (signup/login/verifyEmail/resend/requestReset/resetPassword), LoginPage RESTYLE + password sub-mode + constant-401 message, ForgotPasswordPage + ResendVerifyEmailPage (idempotent success + 60s cooldown)
+- [ ] 06-06-PLAN.md — Wave 3 AUTH: SignupPage (strength-meter-gated submit + 409 distinct), VerifyEmailPage (one-shot ref-guarded, NOT polling), ResetPasswordPage (NO auto-login, setFlash+push to /auth/login)
+- [ ] 06-07-PLAN.md — Wave 4 AUTH: 5 NEW Next.js (auth) routes, 5 NEW WindowOverlay types + render branches + nav translation (verify-email-resend before verify-email), NewWorkspacePage + InvitePage + OnboardingFlow restyle
 
 ### Phase 7: Rebrand Pass
 **Goal**: Every user-visible "Multica" reference is replaced with "AlgoPlan" — strings, logos, favicons, metadata, Electron chrome, and the `multica://` deep-link scheme — while `multica_*` localStorage keys and `@multica/*` package imports are deliberately left unchanged

@@ -53,15 +53,20 @@ Requirements für initialen Release. Jedes mappt zu genau einer Roadmap-Phase.
 - [ ] **DTL-01**: `issue-detail.tsx` redesigned zweispaltig: links Titel + Beschreibung + Kommentare, rechts Status / Priority / Kategorie / Assignees / Tags
 - [ ] **DTL-02**: Priority als `SegmentedControl` P0/P1/P2/P3 (ersetzt Dropdown)
 - [ ] **DTL-03**: Tag-Chip-Row mit X-to-remove je Chip, "+ Neues Tag"-Input darunter
-- [ ] **DTL-04**: Modal-Footer mit "Löschen" links, "Esc schließen" + "Fertig" rechts wie im Mock
+- [x] **DTL-04
+**: Modal-Footer mit "Löschen" links, "Esc schließen" + "Fertig" rechts wie im Mock
 
 ### Auth / Pre-Workspace
 
-- [ ] **AUTH-01**: `login-page.tsx`, `signup-page.tsx`, `email-verify-page.tsx`, `password-reset-page.tsx` im neuen Look — AlgoPlan-Wordmark, zentrierte Card, Inter italic für Title
-- [ ] **AUTH-02**: Password-Strength-Meter bei Signup mittels `@zxcvbn-ts/core` (+ language pack), 4-Level-Indikator
+- [x] **AUTH-01
+**: `login-page.tsx`, `signup-page.tsx`, `email-verify-page.tsx`, `password-reset-page.tsx` im neuen Look — AlgoPlan-Wordmark, zentrierte Card, Inter italic für Title
+- [x] **AUTH-02
+**: Password-Strength-Meter bei Signup mittels `@zxcvbn-ts/core` (+ language pack), 4-Level-Indikator
 - [ ] **AUTH-03**: Create-Workspace Flow redesigned (Web: Route `/workspaces/new`, Desktop: `WindowOverlay`) mit gemeinsamer `NewWorkspacePage`-View
-- [ ] **AUTH-04**: Invite-Accept-Flow redesigned (shared view, Overlay-wrap auf Desktop)
-- [ ] **AUTH-05**: Desktop-Pre-Workspace-Views haben `<DragStrip />` als erster Flex-Child (macOS draggable window)
+- [x] **AUTH-04
+**: Invite-Accept-Flow redesigned (shared view, Overlay-wrap auf Desktop)
+- [x] **AUTH-05
+**: Desktop-Pre-Workspace-Views haben `<DragStrip />` als erster Flex-Child (macOS draggable window)
 - [ ] **AUTH-06**: Test-Strings in `login-page.test.tsx` und verwandten Tests auf "AlgoPlan" aktualisiert
 
 ### Inbox
@@ -72,16 +77,20 @@ Requirements für initialen Release. Jedes mappt zu genau einer Roadmap-Phase.
 
 ### Settings
 
-- [ ] **SET-01**: Settings-Page mit sectioned layout (Account / Notifications / Appearance / Workspace / Danger Zone)
+- [x] **SET-01
+**: Settings-Page mit sectioned layout (Account / Notifications / Appearance / Workspace / Danger Zone)
 - [ ] **SET-02**: Dark-Mode-Toggle in Appearance-Section (Light / Dark / System radio)
-- [ ] **SET-03**: Destructive Actions (Leave Workspace, Delete Workspace) in eigener "Danger Zone"-Section mit typed-name Confirmation Modal
+- [x] **SET-03
+**: Destructive Actions (Leave Workspace, Delete Workspace) in eigener "Danger Zone"-Section mit typed-name Confirmation Modal
 
 ### Workspace / Agents / Error States
 
 - [ ] **WS-01**: Workspace-Switcher im neuen Look (Dropdown aus Sidebar-Wordmark oder User-Menü)
 - [ ] **WS-02**: Agents-View redesigned (Liste mit `AvatarInitial`, Agent-Profile-Detail)
-- [ ] **WS-03**: Empty-States (leeres Board, leere Inbox, keine Ergebnisse) im neuen Look mit Illustration-Slot
-- [ ] **WS-04**: Error-States (NoAccessPage auf Web, 404) redesigned
+- [x] **WS-03
+**: Empty-States (leeres Board, leere Inbox, keine Ergebnisse) im neuen Look mit Illustration-Slot
+- [x] **WS-04
+**: Error-States (NoAccessPage auf Web, 404) redesigned
 - [ ] **WS-05**: Desktop-Destructive-Ops (Leave / Delete) folgen weiterhin der safe order: read destination → `setCurrentWorkspace(null, null)` → `navigation.push` → mutate
 
 ### Rebrand Pass
