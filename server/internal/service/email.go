@@ -3,7 +3,6 @@ package service
 import (
 	"fmt"
 	"html"
-	"log/slog"
 	"os"
 	"strings"
 	"unicode"
@@ -159,12 +158,54 @@ func buildSignupVerificationParams(from, to, verifyURL string) *resend.SendEmail
 	}
 }
 
-// SendPasswordResetEmail queues the reset email triggered from
-// POST /auth/password-reset/request. Stub for Phase 5.1 Plan 00 —
-// Plan 03 fills in the Resend wiring and adds buildPasswordResetParams.
+// SendPasswordResetEmail sends the time-bound password-reset link issued
+// from POST /auth/password-reset/request. Subject + body are English +
+// "Multica" branding (Phase 7 rebrand will sweep). Mirrors the structure
+// of SendSignupVerification: in dev mode (no RESEND_API_KEY → s.client
+// == nil) the reset URL is printed to stdout instead of being sent. The
+// caller treats any error as best-effort — the reset row already exists
+// in DB and the user can request another link via the cooldown.
 func (s *EmailService) SendPasswordResetEmail(to, resetToken string) error {
-	slog.Info("[STUB] SendPasswordResetEmail", "to", to, "token_len", len(resetToken))
-	return nil
+	appURL := strings.TrimSpace(os.Getenv("FRONTEND_ORIGIN"))
+	if appURL == "" {
+		appURL = "https://app.multica.ai"
+	}
+	resetURL := fmt.Sprintf("%s/auth/reset-password?token=%s", appURL, resetToken)
+
+	if s.client == nil {
+		fmt.Printf("[DEV] Password reset email to %s: %s\n", to, resetURL)
+		return nil
+	}
+
+	params := buildPasswordResetParams(s.fromEmail, to, resetURL)
+	_, err := s.client.Emails.Send(params)
+	return err
+}
+
+// buildPasswordResetParams assembles the Resend request for the password-
+// reset email. Separated for unit testability without mocking the Resend
+// SDK. The reset URL is HTML-escaped before substitution as defense-in-
+// depth — today the URL is server-built from base64url token bytes, but
+// escaping keeps the helper safe if a future caller passes user-controlled
+// URL fragments. The "did not request" safety note is required by
+// password-reset UX best practice (informs the user that doing nothing
+// preserves their existing password).
+func buildPasswordResetParams(from, to, resetURL string) *resend.SendEmailRequest {
+	safeURL := html.EscapeString(resetURL)
+	body := fmt.Sprintf(`<div style="font-family: sans-serif; max-width: 480px;">
+  <h1>Reset your password</h1>
+  <p>Click the link below to reset your Multica password. This link expires in 1 hour.</p>
+  <p><a href="%s">Reset password</a></p>
+  <p style="color: #666; font-size: 12px;">If you did not request this, ignore this email — your password remains unchanged.</p>
+  <p style="color: #666; font-size: 12px;">If the link doesn't work, copy this URL into your browser:<br/>%s</p>
+</div>`, safeURL, safeURL)
+
+	return &resend.SendEmailRequest{
+		From:    from,
+		To:      []string{to},
+		Subject: "Reset your Multica password",
+		Html:    body,
+	}
 }
 
 // SendEmailVerification sends a fresh email-verification link, used by the
