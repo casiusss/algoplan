@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v0.4.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 06-00-PLAN.md (Wave-0 atoms + dragstrip gate + zxcvbn catalog). 9 reqs marked, 3 commits.
-last_updated: "2026-04-26T09:59:45.496Z"
-last_activity: 2026-04-25
+stopped_at: Completed 06-02-PLAN.md (INB inbox restyle — bucketing + Alle gelesen + E shortcut + filter chips)
+last_updated: "2026-04-26T10:16:09.634Z"
+last_activity: 2026-04-26
 progress:
   total_phases: 8
   completed_phases: 6
   total_plans: 41
-  completed_plans: 34
-  percent: 83
+  completed_plans: 35
+  percent: 85
 ---
 
 # Project State
@@ -30,7 +30,7 @@ Plan: 00 (complete — Wave-0 atoms + dragstrip-coverage gate + zxcvbn catalog);
 Status: Phase 6 Wave-0 complete; Wave-1 unblocked
 Last activity: 2026-04-26
 
-Progress: [████████░░] 83%
+Progress: [█████████░] 85%
 
 ## Performance Metrics
 
@@ -61,6 +61,7 @@ Progress: [████████░░] 83%
 | Phase 05.1 P02 | 6min | 3 tasks | 4 files |
 | Phase 05.1 P03 | 5min | 3 tasks | 3 files |
 | Phase 06 P00 | 13 | 3 tasks | 13 files |
+| Phase 06 P02 | 9m | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,8 @@ Recent decisions affecting current work:
 - Plan 02 (email-verify): Established 'deterministic rate-limit reconstruction from server-stamped expiry' idiom — derive issuedAt from expires_at minus the known 24h issuance window instead of trusting time.Until against a far-future expiry. Robust to clock skew at the cooldown boundary (W5 fix). Plan 03 will reuse for password_reset_expires_at with 1h window.
 - Phase 5.1 P03: Idempotent password-reset request (no enumeration), atomic single-SQL password+token rotation, intentional no-auto-login on confirm
 - Phase 6 Wave-0: Shipped 5 atoms + useNavigationFlash + automated dragstrip-coverage gate + @zxcvbn-ts/* catalog. Resolved UI-CHECK FLAG-5.1 (lazy import gate) and FLAG-5.3 (DragStrip audit promoted to test). language-en pinned at ^3.0.2 (registry latest in v3.x).
+- useInboxFilterStore lives in packages/core/inbox/ per CLAUDE.md state-management — no persist (ephemeral filter)
+- InboxTypeFilter collapses 14 InboxItemType enum values into 4 user-facing chip categories (Erwähnungen/Zuweisungen/Kommentare/System)
 
 ### Pending Todos
 
@@ -106,8 +109,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-26T09:59:34.515Z
-Stopped at: Completed 06-00-PLAN.md (Wave-0 atoms + dragstrip gate + zxcvbn catalog). 9 reqs marked, 3 commits.
+Last session: 2026-04-26T10:16:09.626Z
+Stopped at: Completed 06-02-PLAN.md (INB inbox restyle — bucketing + Alle gelesen + E shortcut + filter chips)
 Resume file: None
 
 **Planned Phase:** 01 (token-foundation-typography) — 6 plans — 2026-04-24T23:07:23.601Z

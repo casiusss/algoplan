@@ -71,9 +71,12 @@ Requirements für initialen Release. Jedes mappt zu genau einer Roadmap-Phase.
 
 ### Inbox
 
-- [ ] **INB-01**: Inbox-View redesigned mit Date-Grouping (Heute / Gestern / Diese Woche / Älter)
-- [ ] **INB-02**: Mark-all-read Button in Header, keyboard shortcut `E`
-- [ ] **INB-03**: Filter-by-type Chips (Mentions / Assignments / Comments / System) — falls `type`-Feld existiert; sonst als Annotation vermerkt und UI-only Mock
+- [x] **INB-01
+**: Inbox-View redesigned mit Date-Grouping (Heute / Gestern / Diese Woche / Älter)
+- [x] **INB-02
+**: Mark-all-read Button in Header, keyboard shortcut `E`
+- [x] **INB-03
+**: Filter-by-type Chips (Mentions / Assignments / Comments / System) — falls `type`-Feld existiert; sonst als Annotation vermerkt und UI-only Mock
 
 ### Settings
 
