@@ -210,11 +210,34 @@ func TestBuildSignupVerificationParams(t *testing.T) {
 	}
 }
 
-// TestBuildPasswordResetParams is a Phase 5.1 Plan 00 placeholder.
-// Plan 03 will introduce buildPasswordResetParams and replace this
-// skip with real assertions including the 1-hour expiry text.
+// TestBuildPasswordResetParams asserts the Resend request shape for the
+// password-reset email: From / To / Subject branding, no control chars
+// in Subject, body contains the reset URL verbatim, the 1-hour expiry
+// mention, and the "did not request" safety note. Phase 5.1 Plan 03.
 func TestBuildPasswordResetParams(t *testing.T) {
-	t.Skip("implemented in Plan 03")
+	p := buildPasswordResetParams("noreply@multica.ai", "user@example.com",
+		"https://app.multica.ai/auth/reset-password?token=resetToken-_99")
+	if p.From != "noreply@multica.ai" {
+		t.Errorf("From wrong: %s", p.From)
+	}
+	if len(p.To) != 1 || p.To[0] != "user@example.com" {
+		t.Errorf("To wrong: %v", p.To)
+	}
+	if !strings.Contains(p.Subject, "Multica") {
+		t.Errorf("Subject missing brand: %s", p.Subject)
+	}
+	if strings.ContainsAny(p.Subject, "\r\n\t") {
+		t.Errorf("Subject control chars: %q", p.Subject)
+	}
+	if !strings.Contains(p.Html, "reset-password?token=resetToken-_99") {
+		t.Errorf("Body missing URL: %s", p.Html)
+	}
+	if !strings.Contains(p.Html, "1 hour") {
+		t.Errorf("Body missing 1h expiry: %s", p.Html)
+	}
+	if !strings.Contains(p.Html, "did not request") {
+		t.Errorf("Body missing didn't-request safety note: %s", p.Html)
+	}
 }
 
 // TestBuildEmailVerifyParams asserts the Resend request shape for the
