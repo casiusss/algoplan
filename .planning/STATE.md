@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v0.4.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 05.1-00 (Auth Backend Foundation)
-last_updated: "2026-04-26T07:36:55.230Z"
+stopped_at: Completed 05.1-02-PLAN.md (email-verify confirm + resend + SendEmailVerification)
+last_updated: "2026-04-26T08:31:55.201Z"
 last_activity: 2026-04-25
 progress:
   total_phases: 8
   completed_phases: 5
   total_plans: 33
-  completed_plans: 30
-  percent: 91
+  completed_plans: 32
+  percent: 97
 ---
 
 # Project State
@@ -30,7 +30,7 @@ Plan: 05 (complete — Wave 4 E2E specs); Phase 5 exit gate green (code-side)
 Status: Phase 5 complete; awaiting user live-E2E sign-off
 Last activity: 2026-04-25
 
-Progress: [█████████░] 91%
+Progress: [██████████] 97%
 
 ## Performance Metrics
 
@@ -58,6 +58,7 @@ Progress: [█████████░] 91%
 *Updated after each plan completion*
 | Phase 5 P00 | 289 | 4 tasks | 9 files |
 | Phase 5 P05 | 584 | 6 tasks | 5 created, 2 modified (4 new E2E specs + selector update + fixture helpers) |
+| Phase 05.1 P02 | 6min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,9 @@ Recent decisions affecting current work:
 - Phase 4 Plan 01: Pre-existing typecheck error in packages/ui/components/ui/calendar.tsx:141 (duplicate @types/react drift) logged in deferred-items.md; out-of-scope per SCOPE BOUNDARY
 - Phase 5 Wave 0: pinned @dnd-kit/{abstract,dom,helpers,react}@0.4.0 in catalog (no caret); removed legacy @dnd-kit/{core,sortable,utilities} from apps/web + apps/desktop (transitive via @multica/views, .npmrc shamefully-hoist=true); KEPT @dnd-kit/modifiers in apps/desktop (only consumer); priorityToAccentColor helper landed in packages/views/issues/utils/ (lifted from Plan 02 per B-1).
 - Phase 5 Wave 4: 4 neue Playwright-Specs (board-inline-add KBN-03, issues-view-toggle KBN-04, board-scroll-collision KBN-02, board-drag-ws-race KBN-01) + 1 selector-update (issues.spec.ts text=List → getByRole('group',{name:'Ansicht wechseln'}).getByText('Liste')). TestApiClient erweitert um trackIssue + updateIssue (Rule 3 deviation). Live E2E in dieser Worktree-Env nicht ausführbar (auch dashboard-shell.spec.ts schlägt mit demselben loginAsDefault timeout fehl — env-issue, nicht Plan-05-Regression). Specs verifiziert via tsc + Playwright --list; KBN-05 grep clean; vitest issues/ 102/102 GREEN.
+- Plan 02 (email-verify): Used pgtype.Text wrap for the SHA-256 hash arg to GetUserByEmailVerifyTokenHash — sqlc codegen always uses pgtype.Text for nullable columns regardless of caller intent. Same pattern as Plan 01 CreateUserWithPassword call site.
+- Plan 02 (email-verify): Established 'idempotent OK shape' idiom — same 200 body for unknown-email / already-verified / fresh-issuance paths. Defeats enumeration via response inspection. Plan 03 will reuse for POST /auth/password-reset/request.
+- Plan 02 (email-verify): Established 'deterministic rate-limit reconstruction from server-stamped expiry' idiom — derive issuedAt from expires_at minus the known 24h issuance window instead of trusting time.Until against a far-future expiry. Robust to clock skew at the cooldown boundary (W5 fix). Plan 03 will reuse for password_reset_expires_at with 1h window.
 
 ### Pending Todos
 
@@ -98,8 +102,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-26T07:36:55.225Z
-Stopped at: Completed 05.1-00 (Auth Backend Foundation)
+Last session: 2026-04-26T08:31:55.193Z
+Stopped at: Completed 05.1-02-PLAN.md (email-verify confirm + resend + SendEmailVerification)
 Resume file: None
 
 **Planned Phase:** 01 (token-foundation-typography) — 6 plans — 2026-04-24T23:07:23.601Z
