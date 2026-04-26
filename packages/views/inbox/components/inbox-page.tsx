@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { Fragment, useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useDefaultLayout } from "react-resizable-panels";
 import { useQuery } from "@tanstack/react-query";
 import { useWorkspaceId } from "@multica/core/hooks";
@@ -17,6 +17,10 @@ import {
   useArchiveAllReadInbox,
   useArchiveCompletedInbox,
 } from "@multica/core/inbox/mutations";
+import {
+  useInboxFilterStore,
+  applyInboxFilter,
+} from "@multica/core/inbox";
 import { IssueDetail } from "../../issues/components";
 import { useNavigation } from "../../navigation";
 import { toast } from "sonner";
@@ -42,11 +46,20 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
 } from "@multica/ui/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@multica/ui/components/ui/tooltip";
 import { useIsMobile } from "@multica/ui/hooks/use-mobile";
 import { PageHeader } from "../../layout/page-header";
+import { EmptyState } from "../../workspace/empty-state";
 import { InboxListItem, timeAgo } from "./inbox-list-item";
+import { InboxBucketHeader } from "./inbox-bucket-header";
+import { InboxTypeFilter } from "./inbox-type-filter";
+import { groupInboxByDate } from "../utils/group-by-date";
+import { useInboxShortcut } from "../hooks/use-inbox-shortcut";
 import { typeLabels } from "./inbox-detail-label";
 
 export function InboxPage() {
@@ -64,6 +77,16 @@ export function InboxPage() {
   const wsId = useWorkspaceId();
   const { data: rawItems = [], isLoading: loading } = useQuery(inboxListOptions(wsId));
   const items = useMemo(() => deduplicateInboxItems(rawItems), [rawItems]);
+
+  // Type-filter chip state lives in the Zustand store (packages/core/inbox).
+  // applyInboxFilter returns the input list reference unchanged when the
+  // filter set is empty — preserves TanStack identity for downstream memos.
+  const selectedTypes = useInboxFilterStore((s) => s.selectedTypes);
+  const filteredItems = useMemo(
+    () => applyInboxFilter(items, selectedTypes),
+    [items, selectedTypes],
+  );
+  const groups = useMemo(() => groupInboxByDate(filteredItems), [filteredItems]);
 
   const selected = items.find((i) => (i.issue_id ?? i.id) === selectedKey) ?? null;
 
@@ -133,11 +156,18 @@ export function InboxPage() {
   };
 
   // Batch operations
-  const handleMarkAllRead = () => {
+  const handleMarkAllRead = useCallback(() => {
     markAllReadMutation.mutate(undefined, {
-      onError: () => toast.error("Failed to mark all as read"),
+      onError: () =>
+        toast.error("Konnte nicht als gelesen markiert werden"),
     });
-  };
+  }, [markAllReadMutation]);
+
+  // UI-SPEC §Sub-Phase INB §Mark-all-read button — bare `E` keypress fires
+  // the mark-all-read mutation. The hook guards against input-focus and
+  // modifier keys so we don't capture Cmd+E (browser shortcut) or interrupt
+  // typing in the comment composer.
+  useInboxShortcut("e", handleMarkAllRead);
 
   const handleArchiveAll = () => {
     setSelectedKey("");
@@ -166,63 +196,80 @@ export function InboxPage() {
   const listHeader = (
     <PageHeader className="justify-between">
       <div className="flex items-center gap-2">
-        <h1 className="text-sm font-semibold">Inbox</h1>
+        <h1 className="text-sm font-semibold">Posteingang</h1>
         {unreadCount > 0 && (
           <span className="text-xs text-muted-foreground">
             {unreadCount}
           </span>
         )}
       </div>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="text-muted-foreground"
-            />
-          }
-        >
-          <MoreHorizontal className="h-4 w-4" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-auto">
-          <DropdownMenuItem onClick={handleMarkAllRead}>
-            <CheckCheck className="h-4 w-4" />
-            Mark all as read
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleArchiveAll}>
-            <Archive className="h-4 w-4" />
-            Archive all
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleArchiveAllRead}>
-            <BookCheck className="h-4 w-4" />
-            Archive all read
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleArchiveCompleted}>
-            <ListChecks className="h-4 w-4" />
-            Archive completed
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex items-center gap-1">
+        {unreadCount > 0 && (
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleMarkAllRead}
+                  className="gap-1.5 text-muted-foreground hover:text-brand"
+                />
+              }
+            >
+              <CheckCheck className="size-4" />
+              Alle gelesen
+            </TooltipTrigger>
+            <TooltipContent>Alle als gelesen markieren (E)</TooltipContent>
+          </Tooltip>
+        )}
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="text-muted-foreground"
+              />
+            }
+          >
+            <MoreHorizontal className="h-4 w-4" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-auto">
+            <DropdownMenuItem onClick={handleArchiveAll}>
+              <Archive className="h-4 w-4" />
+              Archive all
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleArchiveAllRead}>
+              <BookCheck className="h-4 w-4" />
+              Archive all read
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleArchiveCompleted}>
+              <ListChecks className="h-4 w-4" />
+              Archive completed
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </PageHeader>
   );
 
-  const listBody = items.length === 0 ? (
-    <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
-      <Inbox className="mb-3 h-8 w-8 text-muted-foreground/50" />
-      <p className="text-sm">No notifications</p>
-    </div>
+  const listBody = groups.length === 0 ? (
+    <EmptyState heading="Keine Benachrichtigungen" />
   ) : (
     <div>
-      {items.map((item) => (
-        <InboxListItem
-          key={item.id}
-          item={item}
-          isSelected={(item.issue_id ?? item.id) === selectedKey}
-          onClick={() => handleSelect(item)}
-          onArchive={() => handleArchive(item.id)}
-        />
+      {groups.map((group) => (
+        <Fragment key={group.bucket}>
+          <InboxBucketHeader bucket={group.bucket} count={group.items.length} />
+          {group.items.map((item) => (
+            <InboxListItem
+              key={item.id}
+              item={item}
+              isSelected={(item.issue_id ?? item.id) === selectedKey}
+              onClick={() => handleSelect(item)}
+              onArchive={() => handleArchive(item.id)}
+            />
+          ))}
+        </Fragment>
       ))}
     </div>
   );
@@ -306,7 +353,7 @@ export function InboxPage() {
               className="gap-1.5 text-muted-foreground"
             >
               <ArrowLeft className="h-4 w-4" />
-              Inbox
+              Posteingang
             </Button>
           </div>
           <div className="flex-1 min-h-0 overflow-y-auto">
@@ -320,6 +367,7 @@ export function InboxPage() {
     return (
       <div className="flex flex-1 flex-col min-h-0">
         {listHeader}
+        <InboxTypeFilter />
         <div className="flex-1 min-h-0 overflow-y-auto">
           {listBody}
         </div>
@@ -366,6 +414,7 @@ export function InboxPage() {
       <ResizablePanel id="list" defaultSize={320} minSize={240} maxSize={480} groupResizeBehavior="preserve-pixel-size">
       <div className="flex flex-col border-r h-full">
         {listHeader}
+        <InboxTypeFilter />
         <div className="flex-1 min-h-0 overflow-y-auto">
           {listBody}
         </div>
@@ -379,8 +428,8 @@ export function InboxPage() {
             <Inbox className="mb-3 h-10 w-10 text-muted-foreground/30" />
             <p className="text-sm">
               {items.length === 0
-                ? "Your inbox is empty"
-                : "Select a notification to view details"}
+                ? "Posteingang ist leer"
+                : "Benachrichtigung auswählen für Details"}
             </p>
           </div>
         )}
