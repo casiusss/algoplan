@@ -42,11 +42,15 @@ const LABEL_TO_ENUM: Record<PLabel, Exclude<IssuePriority, "none">> = {
   p3: "low",
 };
 
+// Phase 6 REVIEW CR-01: Tailwind v4's content scanner cannot detect class
+// strings composed at runtime. The full `data-[pressed]:text-tag-pN` literal
+// MUST appear here so the CSS rule is generated. The atom now applies these
+// strings verbatim — see SegmentedControl docs.
 const COLOR_BY_LABEL: Record<PLabel, string> = {
-  p0: "text-tag-p0",
-  p1: "text-tag-p1",
-  p2: "text-tag-p2",
-  p3: "text-tag-p3",
+  p0: "data-[pressed]:text-tag-p0",
+  p1: "data-[pressed]:text-tag-p1",
+  p2: "data-[pressed]:text-tag-p2",
+  p3: "data-[pressed]:text-tag-p3",
 };
 
 interface IssuePrioritySegmentedControlProps {

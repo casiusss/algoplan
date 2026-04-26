@@ -173,15 +173,18 @@ describe("SegmentedControl — colorByValue (Phase 6 extension)", () => {
     expect(p0.className).not.toMatch(/data-\[pressed\]:text-tag-/);
   });
 
-  it("with colorByValue, the matching item carries its data-[pressed]:<class>", () => {
+  it("with colorByValue, the matching item carries the FULL static class string", () => {
+    // REVIEW CR-01: Caller MUST pass the complete `data-[pressed]:` literal so
+    // Tailwind v4's content scanner can detect it. The atom no longer
+    // composes the variant prefix at runtime.
     render(
       <ColorHarness
         initial="p0"
         colorByValue={{
-          p0: "text-tag-p0",
-          p1: "text-tag-p1",
-          p2: "text-tag-p2",
-          p3: "text-tag-p3",
+          p0: "data-[pressed]:text-tag-p0",
+          p1: "data-[pressed]:text-tag-p1",
+          p2: "data-[pressed]:text-tag-p2",
+          p3: "data-[pressed]:text-tag-p3",
         }}
       />,
     );
@@ -200,7 +203,10 @@ describe("SegmentedControl — colorByValue (Phase 6 extension)", () => {
       <ColorHarness
         initial="p0"
         // Intentionally only provides p0 + p2 — p1 and p3 should render plain.
-        colorByValue={{ p0: "text-tag-p0", p2: "text-tag-p2" }}
+        colorByValue={{
+          p0: "data-[pressed]:text-tag-p0",
+          p2: "data-[pressed]:text-tag-p2",
+        }}
       />,
     );
     const p1 = screen.getByRole("button", { name: "P1" });

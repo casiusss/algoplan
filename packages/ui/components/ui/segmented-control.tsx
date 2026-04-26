@@ -29,12 +29,15 @@ import { cn } from "@multica/ui/lib/utils"
  *    deselect so a value is always defined.
  *
  * Phase 6 extension — `colorByValue?: Record<string, string>`:
- *    Maps an item's `value` to a Tailwind text-color class that is applied
- *    ONLY when that item is the active one (data-pressed). Implemented via
- *    the `data-[pressed]:<class>` Tailwind variant so the color disappears
- *    automatically when another item becomes active. Plumbed via a small
- *    module-private React Context so SegmentedControlItem can read its
- *    own color without each call site repeating the prop.
+ *    Maps an item's `value` to a Tailwind class string that is applied
+ *    verbatim on the item. The caller is responsible for supplying a
+ *    COMPLETE static class string (e.g. `"data-[pressed]:text-tag-p0"`)
+ *    — the atom no longer composes the `data-[pressed]:` variant at
+ *    runtime because Tailwind v4's content-detection cannot match
+ *    interpolated variant prefixes. See Phase 6 REVIEW CR-01.
+ *    Plumbed via a small module-private React Context so
+ *    SegmentedControlItem can read its own color without each call
+ *    site repeating the prop.
  */
 
 const ColorByValueContext = React.createContext<
@@ -49,9 +52,11 @@ interface SegmentedControlProps {
   className?: string
   disabled?: boolean
   /**
-   * Per-value Tailwind text-color class applied ONLY on the active item via
-   * the `data-[pressed]:` variant. Items whose value is not in the map render
-   * unchanged. See Phase 6 UI-SPEC §Sub-Phase DTL §Priority SegmentedControl.
+   * Per-value Tailwind class string applied verbatim on the item. Caller
+   * MUST supply a COMPLETE static class (including any `data-[pressed]:`
+   * prefix) so Tailwind v4's content scanner can detect it. Items whose
+   * value is not in the map render unchanged. See Phase 6 UI-SPEC
+   * §Sub-Phase DTL §Priority SegmentedControl + REVIEW CR-01.
    */
   colorByValue?: Record<string, string>
 }
@@ -116,8 +121,10 @@ function SegmentedControlItem({
         "focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
         "data-[pressed]:bg-background data-[pressed]:text-foreground data-[pressed]:shadow-sm",
         "disabled:pointer-events-none disabled:opacity-50",
-        // Phase 6: per-value active color override (only takes effect when pressed)
-        colorClass && `data-[pressed]:${colorClass}`,
+        // Phase 6: per-value active color override. The caller supplies a
+        // COMPLETE static class (e.g. "data-[pressed]:text-tag-p0") so
+        // Tailwind v4's content scanner can detect it. See REVIEW CR-01.
+        colorClass,
         className,
       )}
     >
