@@ -110,19 +110,26 @@ Plans:
 - [x] 05-05-PLAN.md — Wave 4 E2E specs (KBN-01 WS race, KBN-02 scroll, KBN-03 inline, KBN-04 toggle persistence)
 
 ### Phase 5.1: Auth Backend Endpoints (INSERTED)
-**Goal**: Add password-based auth backend endpoints (signup, password-reset request/confirm, email-verify, resend verification) so Phase 6 can build the AUTH-02..05 frontend pages — current `server/internal/handler/auth.go` is OTP-only with no password column or reset-token machinery
+**Goal**: Add password-based auth backend endpoints (signup, login, password-reset request/confirm, email-verify, resend verification) so Phase 6 can build the AUTH-02..05 frontend pages — current `server/internal/handler/auth.go` is OTP-only with no password column or reset-token machinery
 **Depends on**: Phase 5 (no shared frontend; pure backend insertion)
-**Requirements**: AUTH-BE-01 (signup), AUTH-BE-02 (password-reset request), AUTH-BE-03 (password-reset confirm), AUTH-BE-04 (email-verify), AUTH-BE-05 (resend verification)
+**Requirements**: AUTH-BE-01 (signup), AUTH-BE-02 (password-reset request), AUTH-BE-03 (password-reset confirm), AUTH-BE-04 (email-verify), AUTH-BE-05 (resend verification), AUTH-BE-06 (login — added per security review Open Q §6)
 **Success Criteria** (what must be TRUE):
-  1. `POST /api/auth/signup` accepts `{email, password, name}`, hashes password (bcrypt), inserts user + sends verify email, returns session token
-  2. `POST /api/auth/password-reset/request` accepts `{email}`, generates time-bound reset token, sends reset email (idempotent — same response for unknown emails)
-  3. `POST /api/auth/password-reset/confirm` accepts `{token, newPassword}`, validates token, updates password hash, invalidates token
-  4. `POST /api/auth/email-verify` accepts `{token}`, marks user `email_verified_at`, invalidates token
-  5. `POST /api/auth/email-verify/resend` accepts `{email}`, generates new verify token, sends email (rate-limited)
-  6. DB migration adds `password_hash`, `email_verified_at`, `password_reset_token`, `password_reset_expires_at`, `email_verify_token`, `email_verify_expires_at` columns to `users` table
-  7. All endpoints have integration tests (`server/internal/handler/auth_*_test.go`); existing OTP login flow remains functional
-**Plans**: TBD
+  1. `POST /auth/signup` accepts `{email, password, name}`, hashes password (bcrypt cost 12), inserts user + sends verify email, returns session token + sets cookies
+  2. `POST /auth/password-reset/request` accepts `{email}`, generates time-bound reset token, sends reset email (idempotent — same response for unknown emails)
+  3. `POST /auth/password-reset/confirm` accepts `{token, newPassword}`, validates token, updates password hash, invalidates token, does NOT auto-login
+  4. `POST /auth/email-verify` accepts `{token}`, marks user `email_verified_at`, invalidates token
+  5. `POST /auth/email-verify/resend` accepts `{email}`, generates new verify token, sends email (rate-limited)
+  6. DB migration 059 adds `password_hash`, `email_verified_at`, `password_reset_token_hash`, `password_reset_expires_at`, `email_verify_token_hash`, `email_verify_expires_at` columns to `user` table
+  7. All endpoints have integration tests (`server/internal/handler/auth_password_test.go`, `auth_email_verify_test.go`); existing OTP login flow remains functional
+  8. `POST /auth/login` accepts `{email, password}`, bcrypt-compares against `password_hash`, returns 200+JWT+cookies on success or constant 401 on failure (added per security review)
+**Plans**: 4 plans
 **UI hint**: no (backend-only)
+
+Plans:
+- [ ] 05.1-00-PLAN.md — Wave 0: migration 059 + sqlc regen + bcrypt dep + auth.GenerateAuthToken + EmailService stubs + 6 router stubs + RED test scaffolds (Nyquist gate)
+- [ ] 05.1-01-PLAN.md — Wave 1: Signup (AUTH-BE-01) + Login (AUTH-BE-06 NEW) + SendSignupVerification — auth_password.go (Signup half) + email.go
+- [ ] 05.1-02-PLAN.md — Wave 1 (parallel-safe with 01): EmailVerify (AUTH-BE-04) + ResendEmailVerify (AUTH-BE-05) + SendEmailVerification — auth_email_verify.go (own file) + email.go (different methods)
+- [ ] 05.1-03-PLAN.md — Wave 2 (after 01): PasswordResetRequest (AUTH-BE-02) + PasswordResetConfirm (AUTH-BE-03) + SendPasswordResetEmail — auth_password.go (sequential with 01) + email.go
 
 ### Phase 6: Issue Detail + Remaining Views
 **Goal**: Every user-facing view outside the shell and issues list — issue detail modal, auth flows, inbox, settings, agents, workspace management, and error states — is fully restyled in the AlgoPlan design system with DragStrip on all desktop full-window views
@@ -163,5 +170,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. Storybook Showroom | 0/TBD | Not started | - |
 | 4. Dashboard Shell Redesign | 2/7 | In progress | - |
 | 5. Issues Views + Kanban + dnd-kit Migration | 6/6 | Complete (code-side); awaiting user live-E2E sign-off | 2026-04-25 |
+| 5.1. Auth Backend Endpoints (INSERTED) | 0/4 | Not started | - |
 | 6. Issue Detail + Remaining Views | 0/TBD | Not started | - |
 | 7. Rebrand Pass | 0/TBD | Not started | - |
