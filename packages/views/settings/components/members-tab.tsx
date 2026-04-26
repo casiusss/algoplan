@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Crown, Shield, User, Plus, MoreHorizontal, UserMinus, Users, Clock, X, Mail } from "lucide-react";
+import { Crown, Shield, User, Plus, MoreHorizontal, UserMinus, Clock, X, Mail } from "lucide-react";
 import { ActorAvatar } from "../../common/actor-avatar";
 import type { MemberWithUser, MemberRole, Invitation } from "@multica/core/types";
 import { Input } from "@multica/ui/components/ui/input";
 import { Button } from "@multica/ui/components/ui/button";
-import { Card, CardContent } from "@multica/ui/components/ui/card";
 import { Badge } from "@multica/ui/components/ui/badge";
 import {
   AlertDialog,
@@ -42,11 +41,12 @@ import { useWorkspaceId } from "@multica/core/hooks";
 import { useCurrentWorkspace } from "@multica/core/paths";
 import { memberListOptions, invitationListOptions, workspaceKeys } from "@multica/core/workspace/queries";
 import { api } from "@multica/core/api";
+import { SettingsSection } from "./settings-section";
 
 const roleConfig: Record<MemberRole, { label: string; icon: typeof Crown; description: string }> = {
-  owner: { label: "Owner", icon: Crown, description: "Full access, manage all settings" },
-  admin: { label: "Admin", icon: Shield, description: "Manage members and settings" },
-  member: { label: "Member", icon: User, description: "Create and work on issues" },
+  owner: { label: "Owner", icon: Crown, description: "Voller Zugriff, alle Einstellungen verwalten" },
+  admin: { label: "Admin", icon: Shield, description: "Mitglieder und Einstellungen verwalten" },
+  member: { label: "Mitglied", icon: User, description: "Issues erstellen und bearbeiten" },
 };
 
 function MemberRow({
@@ -93,7 +93,7 @@ function MemberRow({
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
                   <Shield className="h-3.5 w-3.5" />
-                  Change role
+                  Rolle ändern
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent className="w-auto">
                   {(Object.entries(roleConfig) as [MemberRole, (typeof roleConfig)[MemberRole]][]).map(
@@ -126,7 +126,7 @@ function MemberRow({
             {canRemove && (
               <DropdownMenuItem variant="destructive" onClick={onRemove}>
                 <UserMinus className="h-3.5 w-3.5" />
-                Remove from workspace
+                Aus Workspace entfernen
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>
@@ -162,7 +162,7 @@ function InvitationRow({
         <div className="text-sm font-medium truncate">{invitation.invitee_email}</div>
         <div className="flex items-center gap-1 text-xs text-muted-foreground">
           <Clock className="h-3 w-3" />
-          <span>Pending</span>
+          <span>Ausstehend</span>
         </div>
       </div>
       {canManage && (
@@ -171,7 +171,7 @@ function InvitationRow({
           size="icon-sm"
           disabled={busy}
           onClick={onRevoke}
-          title="Revoke invitation"
+          title="Einladung zurückziehen"
         >
           <X className="h-4 w-4 text-muted-foreground" />
         </Button>
@@ -218,9 +218,9 @@ export function MembersTab() {
       setInviteEmail("");
       setInviteRole("member");
       qc.invalidateQueries({ queryKey: workspaceKeys.invitations(wsId) });
-      toast.success("Invitation sent");
+      toast.success("Einladung gesendet");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed to send invitation");
+      toast.error(e instanceof Error ? e.message : "Einladung konnte nicht gesendet werden");
     } finally {
       setInviteLoading(false);
     }
@@ -229,17 +229,17 @@ export function MembersTab() {
   const handleRevokeInvitation = (invitation: Invitation) => {
     if (!workspace) return;
     setConfirmAction({
-      title: "Revoke invitation",
-      description: `Revoke the invitation to ${invitation.invitee_email}? They will no longer be able to join this workspace.`,
+      title: "Einladung zurückziehen",
+      description: `Einladung an ${invitation.invitee_email} zurückziehen? Diese Person kann dem Workspace dann nicht mehr beitreten.`,
       variant: "destructive",
       onConfirm: async () => {
         setInvitationActionId(invitation.id);
         try {
           await api.revokeInvitation(workspace.id, invitation.id);
           qc.invalidateQueries({ queryKey: workspaceKeys.invitations(wsId) });
-          toast.success("Invitation revoked");
+          toast.success("Einladung zurückgezogen");
         } catch (e) {
-          toast.error(e instanceof Error ? e.message : "Failed to revoke invitation");
+          toast.error(e instanceof Error ? e.message : "Einladung konnte nicht zurückgezogen werden");
         } finally {
           setInvitationActionId(null);
         }
@@ -253,9 +253,9 @@ export function MembersTab() {
     try {
       await api.updateMember(workspace.id, memberId, { role });
       qc.invalidateQueries({ queryKey: workspaceKeys.members(wsId) });
-      toast.success("Role updated");
+      toast.success("Rolle aktualisiert");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed to update member");
+      toast.error(e instanceof Error ? e.message : "Mitglied konnte nicht aktualisiert werden");
     } finally {
       setMemberActionId(null);
     }
@@ -264,17 +264,17 @@ export function MembersTab() {
   const handleRemoveMember = (member: MemberWithUser) => {
     if (!workspace) return;
     setConfirmAction({
-      title: `Remove ${member.name}`,
-      description: `Remove ${member.name} from ${workspace.name}? They will lose access to this workspace.`,
+      title: `${member.name} entfernen`,
+      description: `${member.name} aus ${workspace.name} entfernen? Diese Person verliert den Zugriff auf diesen Workspace.`,
       variant: "destructive",
       onConfirm: async () => {
         setMemberActionId(member.id);
         try {
           await api.deleteMember(workspace.id, member.id);
           qc.invalidateQueries({ queryKey: workspaceKeys.members(wsId) });
-          toast.success("Member removed");
+          toast.success("Mitglied entfernt");
         } catch (e) {
-          toast.error(e instanceof Error ? e.message : "Failed to remove member");
+          toast.error(e instanceof Error ? e.message : "Mitglied konnte nicht entfernt werden");
         } finally {
           setMemberActionId(null);
         }
@@ -286,25 +286,20 @@ export function MembersTab() {
 
   return (
     <div className="space-y-8">
-      <section className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Users className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-sm font-semibold">Members ({members.length})</h2>
-        </div>
-
-        {canManageWorkspace && (
-          <Card>
-            <CardContent className="space-y-3">
+      <SettingsSection heading={`Mitglieder (${members.length})`}>
+        <div className="space-y-4">
+          {canManageWorkspace && (
+            <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Plus className="h-4 w-4 text-muted-foreground" />
-                <h3 className="text-sm font-medium">Invite member</h3>
+                <h3 className="text-sm font-medium">Mitglied einladen</h3>
               </div>
               <div className="grid gap-3 sm:grid-cols-[1fr_120px_auto]">
                 <Input
                   type="email"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
-                  placeholder="user@company.com"
+                  placeholder="user@firma.de"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && inviteEmail.trim()) handleInviteMember();
                   }}
@@ -312,7 +307,7 @@ export function MembersTab() {
                 <Select value={inviteRole} onValueChange={(value) => setInviteRole(value as MemberRole)}>
                   <SelectTrigger size="sm"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="member">Member</SelectItem>
+                    <SelectItem value="member">Mitglied</SelectItem>
                     <SelectItem value="admin">Admin</SelectItem>
                   </SelectContent>
                 </Select>
@@ -320,40 +315,36 @@ export function MembersTab() {
                   onClick={handleInviteMember}
                   disabled={inviteLoading || !inviteEmail.trim()}
                 >
-                  {inviteLoading ? "Inviting..." : "Invite"}
+                  {inviteLoading ? "Wird eingeladen…" : "Einladen"}
                 </Button>
               </div>
-            </CardContent>
-          </Card>
-        )}
+            </div>
+          )}
 
-        {members.length > 0 ? (
-          <div className="overflow-hidden rounded-xl ring-1 ring-foreground/10">
-            {members.map((m, i) => (
-              <div key={m.id} className={i > 0 ? "border-t border-border/50" : ""}>
-                <MemberRow
-                  member={m}
-                  canManage={canManageWorkspace}
-                  canManageOwners={isOwner}
-                  isSelf={m.user_id === user?.id}
-                  busy={memberActionId === m.id}
-                  onRoleChange={(role) => handleRoleChange(m.id, role)}
-                  onRemove={() => handleRemoveMember(m)}
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-sm text-muted-foreground">No members found.</p>
-        )}
-      </section>
+          {members.length > 0 ? (
+            <div className="overflow-hidden rounded-xl ring-1 ring-foreground/10">
+              {members.map((m, i) => (
+                <div key={m.id} className={i > 0 ? "border-t border-border/50" : ""}>
+                  <MemberRow
+                    member={m}
+                    canManage={canManageWorkspace}
+                    canManageOwners={isOwner}
+                    isSelf={m.user_id === user?.id}
+                    busy={memberActionId === m.id}
+                    onRoleChange={(role) => handleRoleChange(m.id, role)}
+                    onRemove={() => handleRemoveMember(m)}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">Keine Mitglieder gefunden.</p>
+          )}
+        </div>
+      </SettingsSection>
 
       {invitations.length > 0 && (
-        <section className="space-y-4">
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-muted-foreground" />
-            <h2 className="text-sm font-semibold">Pending invitations ({invitations.length})</h2>
-          </div>
+        <SettingsSection heading={`Ausstehende Einladungen (${invitations.length})`}>
           <div className="overflow-hidden rounded-xl ring-1 ring-foreground/10">
             {invitations.map((inv, i) => (
               <div key={inv.id} className={i > 0 ? "border-t border-border/50" : ""}>
@@ -366,7 +357,7 @@ export function MembersTab() {
               </div>
             ))}
           </div>
-        </section>
+        </SettingsSection>
       )}
 
       <AlertDialog open={!!confirmAction} onOpenChange={(v) => { if (!v) setConfirmAction(null); }}>
@@ -376,7 +367,7 @@ export function MembersTab() {
             <AlertDialogDescription>{confirmAction?.description}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
             <AlertDialogAction
               variant={confirmAction?.variant === "destructive" ? "destructive" : "default"}
               onClick={async () => {
@@ -384,7 +375,7 @@ export function MembersTab() {
                 setConfirmAction(null);
               }}
             >
-              Confirm
+              Bestätigen
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

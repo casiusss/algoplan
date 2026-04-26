@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Save, Plus, Trash2 } from "lucide-react";
 import { Input } from "@multica/ui/components/ui/input";
 import { Button } from "@multica/ui/components/ui/button";
-import { Card, CardContent } from "@multica/ui/components/ui/card";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@multica/core/auth";
@@ -13,6 +12,7 @@ import { useCurrentWorkspace } from "@multica/core/paths";
 import { memberListOptions, workspaceKeys } from "@multica/core/workspace/queries";
 import { api } from "@multica/core/api";
 import type { Workspace, WorkspaceRepo } from "@multica/core/types";
+import { SettingsSection } from "./settings-section";
 
 export function RepositoriesTab() {
   const user = useAuthStore((s) => s.user);
@@ -39,9 +39,11 @@ export function RepositoriesTab() {
       qc.setQueryData(workspaceKeys.list(), (old: Workspace[] | undefined) =>
         old?.map((ws) => (ws.id === updated.id ? updated : ws)),
       );
-      toast.success("Repositories saved");
+      toast.success("Repositories gespeichert");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed to save repositories");
+      toast.error(
+        e instanceof Error ? e.message : "Repositories konnten nicht gespeichert werden",
+      );
     } finally {
       setSaving(false);
     }
@@ -63,73 +65,69 @@ export function RepositoriesTab() {
 
   return (
     <div className="space-y-8">
-      <section className="space-y-4">
-        <h2 className="text-sm font-semibold">Repositories</h2>
+      <SettingsSection heading="Repositories">
+        <div className="space-y-3">
+          <p className="text-xs text-muted-foreground">
+            Git-Repositories, die mit diesem Workspace verknüpft sind. Agenten klonen sie und arbeiten am Code.
+          </p>
 
-        <Card>
-          <CardContent className="space-y-3">
-            <p className="text-xs text-muted-foreground">
-              Git repositories associated with this workspace. Agents use these to clone and work on code.
-            </p>
-
-            {repos.map((repo, index) => (
-              <div key={index} className="flex gap-2">
-                <div className="flex-1 space-y-1.5">
-                  <Input
-                    type="url"
-                    value={repo.url}
-                    onChange={(e) => handleRepoChange(index, "url", e.target.value)}
-                    disabled={!canManageWorkspace}
-                    placeholder="https://git.example.com/org/repo.git"
-                    className="text-sm"
-                  />
-                  <Input
-                    type="text"
-                    value={repo.description}
-                    onChange={(e) => handleRepoChange(index, "description", e.target.value)}
-                    disabled={!canManageWorkspace}
-                    placeholder="Description (e.g. Go backend + Next.js frontend)"
-                    className="text-sm"
-                  />
-                </div>
-                {canManageWorkspace && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="mt-0.5 shrink-0 text-muted-foreground hover:text-destructive"
-                    onClick={() => handleRemoveRepo(index)}
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                )}
+          {repos.map((repo, index) => (
+            <div key={index} className="flex gap-2">
+              <div className="flex-1 space-y-1.5">
+                <Input
+                  type="url"
+                  value={repo.url}
+                  onChange={(e) => handleRepoChange(index, "url", e.target.value)}
+                  disabled={!canManageWorkspace}
+                  placeholder="https://git.example.com/org/repo.git"
+                  className="text-sm"
+                />
+                <Input
+                  type="text"
+                  value={repo.description}
+                  onChange={(e) => handleRepoChange(index, "description", e.target.value)}
+                  disabled={!canManageWorkspace}
+                  placeholder="Beschreibung (z. B. Go-Backend + Next.js-Frontend)"
+                  className="text-sm"
+                />
               </div>
-            ))}
-
-            {canManageWorkspace && (
-              <div className="flex items-center justify-between pt-1">
-                <Button variant="outline" size="sm" onClick={handleAddRepo}>
-                  <Plus className="h-3 w-3" />
-                  Add repository
-                </Button>
+              {canManageWorkspace && (
                 <Button
-                  size="sm"
-                  onClick={handleSave}
-                  disabled={saving}
+                  variant="ghost"
+                  size="icon"
+                  className="mt-0.5 shrink-0 text-muted-foreground hover:text-destructive"
+                  onClick={() => handleRemoveRepo(index)}
                 >
-                  <Save className="h-3 w-3" />
-                  {saving ? "Saving..." : "Save"}
+                  <Trash2 className="h-3.5 w-3.5" />
                 </Button>
-              </div>
-            )}
+              )}
+            </div>
+          ))}
 
-            {!canManageWorkspace && (
-              <p className="text-xs text-muted-foreground">
-                Only admins and owners can manage repositories.
-              </p>
-            )}
-          </CardContent>
-        </Card>
-      </section>
+          {canManageWorkspace && (
+            <div className="flex items-center justify-between pt-1">
+              <Button variant="outline" size="sm" onClick={handleAddRepo}>
+                <Plus className="h-3 w-3" />
+                Repository hinzufügen
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleSave}
+                disabled={saving}
+              >
+                <Save className="h-3 w-3" />
+                {saving ? "Wird gespeichert…" : "Speichern"}
+              </Button>
+            </div>
+          )}
+
+          {!canManageWorkspace && (
+            <p className="text-xs text-muted-foreground">
+              Nur Admins und Owner können Repositories verwalten.
+            </p>
+          )}
+        </div>
+      </SettingsSection>
     </div>
   );
 }

@@ -28,6 +28,8 @@ import { Button } from "@multica/ui/components/ui/button";
  * Input value resets whenever the dialog closes so reopening doesn't
  * leak the previous attempt (which might have been for a different
  * workspace after a swap).
+ *
+ * Phase 6: German strings only — visual + behavior unchanged.
  */
 export function DeleteWorkspaceDialog({
   workspaceName,
@@ -62,20 +64,20 @@ export function DeleteWorkspaceDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete workspace</DialogTitle>
+          <DialogTitle>Workspace löschen</DialogTitle>
           <DialogDescription>
-            This cannot be undone. All issues, agents, and data will be
-            permanently removed.
+            Diese Aktion kann nicht rückgängig gemacht werden. Alle Issues,
+            Agenten und Daten werden dauerhaft entfernt.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-2">
           <Label htmlFor="delete-workspace-confirm" className="text-xs">
-            To confirm, type{" "}
+            Zur Bestätigung tippe{" "}
             <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">
               {workspaceName}
             </code>{" "}
-            below.
+            unten ein.
           </Label>
           <Input
             id="delete-workspace-confirm"
@@ -104,7 +106,7 @@ export function DeleteWorkspaceDialog({
             onClick={() => onOpenChange(false)}
             disabled={loading}
           >
-            Cancel
+            Abbrechen
           </Button>
           <Button
             type="button"
@@ -112,7 +114,7 @@ export function DeleteWorkspaceDialog({
             onClick={submit}
             disabled={!matched || loading}
           >
-            {loading ? "Deleting..." : "Delete workspace"}
+            {loading ? "Wird gelöscht…" : "Workspace löschen"}
           </Button>
         </DialogFooter>
       </DialogContent>
