@@ -1,5 +1,5 @@
-appId: ai.multica.desktop
-productName: Multica
+appId: ai.algoplan.desktop
+productName: AlgoPlan
 directories:
   buildResources: build
 files:
@@ -9,9 +9,9 @@ files:
   - "!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}"
   - "!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}"
 protocols:
-  - name: Multica
+  - name: AlgoPlan
     schemes:
-      - multica
+      - algoplan
 asarUnpack:
   - resources/**
 mac:

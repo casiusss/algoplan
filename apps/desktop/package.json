@@ -2,16 +2,16 @@
   "name": "@multica/desktop",
   "version": "0.1.0",
   "private": true,
-  "description": "Multica Desktop — native desktop client for the Multica platform.",
-  "homepage": "https://multica.ai",
+  "description": "AlgoPlan Desktop — native desktop client for the AlgoPlan platform.",
+  "homepage": "https://plan.algoview.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/multica-ai/multica.git",
     "directory": "apps/desktop"
   },
   "author": {
-    "name": "Multica",
-    "email": "support@multica.ai"
+    "name": "AlgoPlan",
+    "email": "support@algoplan.ai"
   },
   "license": "UNLICENSED",
   "main": "./out/main/index.js",
@@ -66,6 +66,7 @@
     "react-dom": "catalog:",
     "tailwindcss": "^4",
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "yaml": "^2.8.3"
   }
 }
