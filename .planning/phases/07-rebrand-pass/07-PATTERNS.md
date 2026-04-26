@@ -101,7 +101,7 @@ These mirror `scripts/grep-rebrand.sh` `EXCLUDE` regex. **When a new exclusion i
 
 | Pattern                                      | Why preserved                                                          | Decision   |
 | -------------------------------------------- | ---------------------------------------------------------------------- | ---------- |
-| `@multica/*` package imports (1127 hits)     | Internal monorepo package names — renaming would force `pnpm install` cascading + break editor go-to-definition for every consumer. NOT user-visible. | D-3        |
+| ~~`@multica/*` package imports (1127 hits)~~ — **Renamed to `@algoplan/*` in Phase 8 D-1 (2026-04-27)** — exclusion REMOVED from grep-rebrand.sh; re-introduction now surfaces as a leak. | ~~Internal monorepo package names — renaming would force `pnpm install` cascading + break editor go-to-definition for every consumer. NOT user-visible.~~ | Phase 8 D-1 |
 | `multica_*` localStorage keys                | Renaming would silently lose user preferences (theme, drafts, view state) on the first run after upgrade. | D-2        |
 | `multica:chat`, `multica:backlog` localStorage | Same data-loss risk as `multica_*`; `multica:` colon-prefixed keys are extension of D-2. | D-2 ext.   |
 | `multica:navigate` custom DOM event          | Internal pub/sub channel between window/router — never rendered or logged to user. Renaming forces atomic edit at every emitter + listener. | (internal) |
