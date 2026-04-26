@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { FilePlus2, Play } from "lucide-react";
-import type { AutopilotExecutionMode } from "@multica/core/types";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@multica/ui/components/ui/tooltip";
+import type { AutopilotExecutionMode } from "@algoplan/core/types";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@algoplan/ui/components/ui/tooltip";
 import {
   PropertyPicker,
   PickerItem,

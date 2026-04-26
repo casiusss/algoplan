@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import type { InboxItem } from "@multica/core/types";
+import type { InboxItem } from "@algoplan/core/types";
 
 // ---------------------------------------------------------------------------
 // Hoisted mock state
@@ -31,7 +31,7 @@ const {
   mockToastError: vi.fn(),
 }));
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     listInbox: () => mockListInbox(),
     markInboxRead: vi.fn(),
@@ -43,9 +43,9 @@ vi.mock("@multica/core/api", () => ({
   },
 }));
 
-vi.mock("@multica/core/inbox/queries", async () => {
-  const actual = await vi.importActual<typeof import("@multica/core/inbox/queries")>(
-    "@multica/core/inbox/queries",
+vi.mock("@algoplan/core/inbox/queries", async () => {
+  const actual = await vi.importActual<typeof import("@algoplan/core/inbox/queries")>(
+    "@algoplan/core/inbox/queries",
   );
   return {
     ...actual,
@@ -53,7 +53,7 @@ vi.mock("@multica/core/inbox/queries", async () => {
   };
 });
 
-vi.mock("@multica/core/inbox/mutations", () => ({
+vi.mock("@algoplan/core/inbox/mutations", () => ({
   useMarkInboxRead: () => ({ mutate: mockMarkRead }),
   useArchiveInbox: () => ({ mutate: mockArchive }),
   useMarkAllInboxRead: () => ({ mutate: mockMarkAllRead }),
@@ -62,18 +62,18 @@ vi.mock("@multica/core/inbox/mutations", () => ({
   useArchiveCompletedInbox: () => ({ mutate: mockArchiveCompleted }),
 }));
 
-vi.mock("@multica/core/hooks", () => ({
+vi.mock("@algoplan/core/hooks", () => ({
   useWorkspaceId: () => "ws-1",
 }));
 
-vi.mock("@multica/core/paths", () => ({
+vi.mock("@algoplan/core/paths", () => ({
   useWorkspacePaths: () => ({
     inbox: () => "/ws-1/inbox",
     issueDetail: (id: string) => `/ws-1/issues/${id}`,
   }),
 }));
 
-vi.mock("@multica/core/workspace/hooks", () => ({
+vi.mock("@algoplan/core/workspace/hooks", () => ({
   useActorName: () => ({
     getActorName: () => "Tester",
     getActorInitials: () => "TT",
@@ -118,7 +118,7 @@ vi.mock("../../issues/components", async () => {
   };
 });
 
-vi.mock("@multica/ui/hooks/use-mobile", () => ({
+vi.mock("@algoplan/ui/hooks/use-mobile", () => ({
   useIsMobile: () => false,
 }));
 
@@ -131,8 +131,8 @@ vi.mock("sonner", () => ({
 // ---------------------------------------------------------------------------
 
 import { InboxPage } from "./inbox-page";
-import { useInboxFilterStore } from "@multica/core/inbox";
-import type { InboxItemType } from "@multica/core/types";
+import { useInboxFilterStore } from "@algoplan/core/inbox";
+import type { InboxItemType } from "@algoplan/core/types";
 
 function makeItem(overrides: Partial<InboxItem> = {}): InboxItem {
   return {

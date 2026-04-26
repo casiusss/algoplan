@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { cn } from "@multica/ui/lib/utils";
+import { cn } from "@algoplan/ui/lib/utils";
 
 interface PasswordStrengthMeterProps {
   password: string;

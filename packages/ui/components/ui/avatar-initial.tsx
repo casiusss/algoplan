@@ -4,14 +4,14 @@ import {
   AVATAR_PALETTE,
   extractInitials,
   hashToPaletteIndex,
-} from "@multica/ui/lib/avatar-color"
-import { cn } from "@multica/ui/lib/utils"
+} from "@algoplan/ui/lib/avatar-color"
+import { cn } from "@algoplan/ui/lib/utils"
 
 /**
  * AvatarInitial — circular initials badge with deterministic per-name color.
  *
  * Background + foreground colors come from the locked AVATAR_PALETTE in
- * @multica/ui/lib/avatar-color (8-entry table bound to Phase 1 tokens).
+ * @algoplan/ui/lib/avatar-color (8-entry table bound to Phase 1 tokens).
  * Initials extraction is the pure helper from that same module.
  *
  * The `after:` ring uses `mix-blend-darken` / `mix-blend-lighten` paired with

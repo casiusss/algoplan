@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { MulticaIcon } from "@multica/ui/components/common/multica-icon";
-import { cn } from "@multica/ui/lib/utils";
-import { useAuthStore } from "@multica/core/auth";
-import { captureDownloadIntent } from "@multica/core/analytics";
+import { MulticaIcon } from "@algoplan/ui/components/common/multica-icon";
+import { cn } from "@algoplan/ui/lib/utils";
+import { useAuthStore } from "@algoplan/core/auth";
+import { captureDownloadIntent } from "@algoplan/core/analytics";
 import { XMark, GitHubMark, githubUrl, twitterUrl } from "./shared";
 import { useLocale, locales, localeLabels } from "../i18n";
 

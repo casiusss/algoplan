@@ -41,25 +41,25 @@ const {
   mockClipboardWrite: vi.fn(() => Promise.resolve()),
 }));
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     searchIssues: mockSearchIssues,
     searchProjects: mockSearchProjects,
   },
 }));
 
-vi.mock("@multica/core/issues/stores", () => ({
+vi.mock("@algoplan/core/issues/stores", () => ({
   useRecentIssuesStore: (selector?: (state: { items: typeof mockRecentItems.current }) => unknown) => {
     const state = { items: mockRecentItems.current };
     return selector ? selector(state) : state;
   },
 }));
 
-vi.mock("@multica/core", () => ({
+vi.mock("@algoplan/core", () => ({
   useWorkspaceId: () => "ws-test",
 }));
 
-vi.mock("@multica/core/paths", () => ({
+vi.mock("@algoplan/core/paths", () => ({
   paths: {
     workspace: (slug: string) => ({
       issues: () => `/${slug}/issues`,
@@ -80,17 +80,17 @@ vi.mock("@multica/core/paths", () => ({
   }),
 }));
 
-vi.mock("@multica/core/issues/queries", () => ({
+vi.mock("@algoplan/core/issues/queries", () => ({
   issueDetailOptions: (_wsId: string, id: string) => ({
     queryKey: ["issues", "ws-test", "detail", id],
   }),
 }));
 
-vi.mock("@multica/core/workspace/queries", () => ({
+vi.mock("@algoplan/core/workspace/queries", () => ({
   workspaceListOptions: () => ({ queryKey: ["workspaces", "list"], enabled: false }),
 }));
 
-vi.mock("@multica/core/modals", () => ({
+vi.mock("@algoplan/core/modals", () => ({
   useModalStore: Object.assign(vi.fn(), {
     getState: () => ({ open: mockOpenModal }),
   }),
@@ -124,7 +124,7 @@ vi.mock("../navigation", () => ({
   }),
 }));
 
-vi.mock("@multica/ui/components/common/theme-provider", () => ({
+vi.mock("@algoplan/ui/components/common/theme-provider", () => ({
   useTheme: () => ({ theme: mockTheme.current, setTheme: mockSetTheme }),
 }));
 

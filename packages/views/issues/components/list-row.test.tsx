@@ -1,19 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { Issue, IssuePriority } from "@multica/core/types";
+import type { Issue, IssuePriority } from "@algoplan/core/types";
 
 // ---------------------------------------------------------------------------
 // Mocks (mirror issues-page.test.tsx patterns)
 // ---------------------------------------------------------------------------
 
-vi.mock("@multica/core/hooks", () => ({
+vi.mock("@algoplan/core/hooks", () => ({
   useWorkspaceId: () => "ws-1",
 }));
 
-vi.mock("@multica/core/paths", async () => {
-  const actual = await vi.importActual<typeof import("@multica/core/paths")>(
-    "@multica/core/paths",
+vi.mock("@algoplan/core/paths", async () => {
+  const actual = await vi.importActual<typeof import("@algoplan/core/paths")>(
+    "@algoplan/core/paths",
   );
   return {
     ...actual,
@@ -40,7 +40,7 @@ const mockSelectionState = {
   deselect: vi.fn(),
 };
 
-vi.mock("@multica/core/issues/stores/selection-store", () => ({
+vi.mock("@algoplan/core/issues/stores/selection-store", () => ({
   useIssueSelectionStore: Object.assign(
     (selector?: any) => (selector ? selector(mockSelectionState) : mockSelectionState),
     { getState: () => mockSelectionState },
@@ -58,20 +58,20 @@ const mockViewState = {
   },
 };
 
-vi.mock("@multica/core/issues/stores/view-store-context", () => ({
+vi.mock("@algoplan/core/issues/stores/view-store-context", () => ({
   ViewStoreProvider: ({ children }: { children: React.ReactNode }) => children,
   useViewStore: (selector?: any) => (selector ? selector(mockViewState) : mockViewState),
   useViewStoreApi: () => ({ getState: () => mockViewState, setState: vi.fn(), subscribe: vi.fn() }),
 }));
 
-vi.mock("@multica/core/projects/queries", () => ({
+vi.mock("@algoplan/core/projects/queries", () => ({
   projectListOptions: (_wsId: string) => ({
     queryKey: ["projects", _wsId],
     queryFn: async () => [],
   }),
 }));
 
-vi.mock("@multica/core/issues/config", () => ({
+vi.mock("@algoplan/core/issues/config", () => ({
   PRIORITY_CONFIG: {
     urgent: { label: "Urgent", bars: 4, color: "text-destructive" },
     high: { label: "High", bars: 3, color: "text-warning" },

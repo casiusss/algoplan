@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Save } from "lucide-react";
-import { Input } from "@multica/ui/components/ui/input";
-import { Textarea } from "@multica/ui/components/ui/textarea";
-import { Label } from "@multica/ui/components/ui/label";
-import { Button } from "@multica/ui/components/ui/button";
+import { Input } from "@algoplan/ui/components/ui/input";
+import { Textarea } from "@algoplan/ui/components/ui/textarea";
+import { Label } from "@algoplan/ui/components/ui/label";
+import { Button } from "@algoplan/ui/components/ui/button";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -15,25 +15,25 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@multica/ui/components/ui/alert-dialog";
+} from "@algoplan/ui/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useAuthStore } from "@multica/core/auth";
-import { useLeaveWorkspace, useDeleteWorkspace } from "@multica/core/workspace/mutations";
-import { useWorkspaceId } from "@multica/core/hooks";
+import { useAuthStore } from "@algoplan/core/auth";
+import { useLeaveWorkspace, useDeleteWorkspace } from "@algoplan/core/workspace/mutations";
+import { useWorkspaceId } from "@algoplan/core/hooks";
 import {
   memberListOptions,
   workspaceKeys,
   workspaceListOptions,
-} from "@multica/core/workspace/queries";
-import { api } from "@multica/core/api";
+} from "@algoplan/core/workspace/queries";
+import { api } from "@algoplan/core/api";
 import {
   resolvePostAuthDestination,
   useCurrentWorkspace,
   useHasOnboarded,
-} from "@multica/core/paths";
-import { setCurrentWorkspace } from "@multica/core/platform";
-import type { Workspace } from "@multica/core/types";
+} from "@algoplan/core/paths";
+import { setCurrentWorkspace } from "@algoplan/core/platform";
+import type { Workspace } from "@algoplan/core/types";
 import { useNavigation } from "../../navigation";
 import { DeleteWorkspaceDialog } from "./delete-workspace-dialog";
 import { SettingsSection } from "./settings-section";

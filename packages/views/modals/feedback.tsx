@@ -8,19 +8,19 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@multica/ui/components/ui/dialog";
-import { Button } from "@multica/ui/components/ui/button";
+} from "@algoplan/ui/components/ui/dialog";
+import { Button } from "@algoplan/ui/components/ui/button";
 import {
   ContentEditor,
   type ContentEditorRef,
   useFileDropZone,
   FileDropOverlay,
 } from "../editor";
-import { useCreateFeedback } from "@multica/core/feedback";
-import { useCurrentWorkspace } from "@multica/core/paths";
-import { useFileUpload } from "@multica/core/hooks/use-file-upload";
-import { api } from "@multica/core/api";
-import { captureFeedbackOpened } from "@multica/core/analytics";
+import { useCreateFeedback } from "@algoplan/core/feedback";
+import { useCurrentWorkspace } from "@algoplan/core/paths";
+import { useFileUpload } from "@algoplan/core/hooks/use-file-upload";
+import { api } from "@algoplan/core/api";
+import { captureFeedbackOpened } from "@algoplan/core/analytics";
 
 const MAX_MESSAGE_LEN = 10000;
 

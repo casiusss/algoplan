@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority"
 
-import { cn } from "@multica/ui/lib/utils"
+import { cn } from "@algoplan/ui/lib/utils"
 
 const accentBarVariants = cva("flex overflow-hidden rounded-sm", {
   variants: {

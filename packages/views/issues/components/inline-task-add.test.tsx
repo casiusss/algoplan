@@ -14,11 +14,11 @@ const { mockMutate, toastError, toastSuccess, pendingRef } = vi.hoisted(() => ({
   pendingRef: { current: false },
 }));
 
-vi.mock("@multica/core/hooks", () => ({
+vi.mock("@algoplan/core/hooks", () => ({
   useWorkspaceId: () => "ws-1",
 }));
 
-vi.mock("@multica/core/issues/mutations", () => ({
+vi.mock("@algoplan/core/issues/mutations", () => ({
   useCreateIssue: () => ({
     mutate: mockMutate,
     isPending: pendingRef.current,

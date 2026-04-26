@@ -29,16 +29,16 @@ vi.mock("sonner", () => ({
   toast: { error: vi.fn(), success: vi.fn() },
 }));
 
-vi.mock("@multica/core/auth", () => ({
+vi.mock("@algoplan/core/auth", () => ({
   useAuthStore: (selector: (s: { user: { id: string } }) => unknown) =>
     selector({ user: { id: "user-1" } }),
 }));
 
-vi.mock("@multica/core/hooks", () => ({
+vi.mock("@algoplan/core/hooks", () => ({
   useWorkspaceId: () => "ws-1",
 }));
 
-vi.mock("@multica/core/paths", () => ({
+vi.mock("@algoplan/core/paths", () => ({
   useCurrentWorkspace: () => ({
     id: "ws-1",
     name: "Acme",
@@ -46,7 +46,7 @@ vi.mock("@multica/core/paths", () => ({
   }),
 }));
 
-vi.mock("@multica/core/workspace/queries", () => ({
+vi.mock("@algoplan/core/workspace/queries", () => ({
   memberListOptions: () => ({ queryKey: ["members"], queryFn: async () => [] }),
   invitationListOptions: () => ({
     queryKey: ["invitations"],
@@ -58,7 +58,7 @@ vi.mock("@multica/core/workspace/queries", () => ({
   },
 }));
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     createMember: vi.fn(),
     updateMember: vi.fn(),
@@ -71,7 +71,7 @@ vi.mock("../../common/actor-avatar", () => ({
   ActorAvatar: () => <div data-testid="actor-avatar" />,
 }));
 
-vi.mock("@multica/ui/components/ui/alert-dialog", () => ({
+vi.mock("@algoplan/ui/components/ui/alert-dialog", () => ({
   AlertDialog: ({ children, open }: { children: ReactNode; open: boolean }) =>
     open ? <div>{children}</div> : null,
   AlertDialogContent: ({ children }: { children: ReactNode }) => <div>{children}</div>,
@@ -83,7 +83,7 @@ vi.mock("@multica/ui/components/ui/alert-dialog", () => ({
   AlertDialogAction: ({ children }: { children: ReactNode }) => <button>{children}</button>,
 }));
 
-vi.mock("@multica/ui/components/ui/dropdown-menu", () => ({
+vi.mock("@algoplan/ui/components/ui/dropdown-menu", () => ({
   DropdownMenu: ({ children }: { children: ReactNode }) => <div>{children}</div>,
   DropdownMenuTrigger: () => null,
   DropdownMenuContent: ({ children }: { children: ReactNode }) => <div>{children}</div>,

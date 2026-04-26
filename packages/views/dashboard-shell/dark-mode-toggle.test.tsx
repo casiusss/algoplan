@@ -7,7 +7,7 @@ const { mockTheme, mockSetTheme } = vi.hoisted(() => ({
   mockSetTheme: vi.fn(),
 }));
 
-vi.mock("@multica/ui/components/common/theme-provider", () => ({
+vi.mock("@algoplan/ui/components/common/theme-provider", () => ({
   useTheme: () => ({
     theme: mockTheme.current,
     resolvedTheme: mockTheme.current,

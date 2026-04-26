@@ -3,21 +3,21 @@
 import { useState, useEffect, useMemo } from "react";
 import { useDefaultLayout } from "react-resizable-panels";
 import { Bot, Plus, Archive } from "lucide-react";
-import type { CreateAgentRequest, UpdateAgentRequest } from "@multica/core/types";
+import type { CreateAgentRequest, UpdateAgentRequest } from "@algoplan/core/types";
 import {
   ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle,
-} from "@multica/ui/components/ui/resizable";
-import { Button } from "@multica/ui/components/ui/button";
+} from "@algoplan/ui/components/ui/resizable";
+import { Button } from "@algoplan/ui/components/ui/button";
 import { toast } from "sonner";
-import { Skeleton } from "@multica/ui/components/ui/skeleton";
-import { api } from "@multica/core/api";
-import { useAuthStore } from "@multica/core/auth";
-import { runtimeListOptions } from "@multica/core/runtimes/queries";
+import { Skeleton } from "@algoplan/ui/components/ui/skeleton";
+import { api } from "@algoplan/core/api";
+import { useAuthStore } from "@algoplan/core/auth";
+import { runtimeListOptions } from "@algoplan/core/runtimes/queries";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useWorkspaceId } from "@multica/core/hooks";
-import { agentListOptions, memberListOptions, workspaceKeys } from "@multica/core/workspace/queries";
+import { useWorkspaceId } from "@algoplan/core/hooks";
+import { agentListOptions, memberListOptions, workspaceKeys } from "@algoplan/core/workspace/queries";
 import { PageHeader } from "../../layout/page-header";
 import { EmptyState } from "../../workspace/empty-state";
 import { CreateAgentDialog } from "./create-agent-dialog";

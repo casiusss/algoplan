@@ -10,7 +10,7 @@ vi.mock("sonner", () => ({
   toast: { error: vi.fn(), success: vi.fn() },
 }));
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     listPersonalAccessTokens: mockListTokens,
     createPersonalAccessToken: vi.fn(),
@@ -18,13 +18,13 @@ vi.mock("@multica/core/api", () => ({
   },
 }));
 
-vi.mock("@multica/ui/components/ui/tooltip", () => ({
+vi.mock("@algoplan/ui/components/ui/tooltip", () => ({
   Tooltip: ({ children }: { children: ReactNode }) => <div>{children}</div>,
   TooltipTrigger: ({ render }: { render: ReactNode }) => <>{render}</>,
   TooltipContent: ({ children }: { children: ReactNode }) => <span>{children}</span>,
 }));
 
-vi.mock("@multica/ui/components/ui/alert-dialog", () => ({
+vi.mock("@algoplan/ui/components/ui/alert-dialog", () => ({
   AlertDialog: ({ children, open }: { children: ReactNode; open: boolean }) =>
     open ? <div>{children}</div> : null,
   AlertDialogContent: ({ children }: { children: ReactNode }) => <div>{children}</div>,
@@ -36,7 +36,7 @@ vi.mock("@multica/ui/components/ui/alert-dialog", () => ({
   AlertDialogAction: ({ children }: { children: ReactNode }) => <button>{children}</button>,
 }));
 
-vi.mock("@multica/ui/components/ui/dialog", () => ({
+vi.mock("@algoplan/ui/components/ui/dialog", () => ({
   Dialog: ({ children, open }: { children: ReactNode; open: boolean }) =>
     open ? <div>{children}</div> : null,
   DialogContent: ({ children }: { children: ReactNode }) => <div>{children}</div>,

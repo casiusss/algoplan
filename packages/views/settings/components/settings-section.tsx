@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { cn } from "@multica/ui/lib/utils";
+import { cn } from "@algoplan/ui/lib/utils";
 
 interface SettingsSectionProps {
   /** Italic display heading shown above the body (German source-of-truth in Phase 6). */

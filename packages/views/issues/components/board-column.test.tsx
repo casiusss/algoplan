@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { Issue, IssueStatus } from "@multica/core/types";
+import type { Issue, IssueStatus } from "@algoplan/core/types";
 
 // ---------------------------------------------------------------------------
 // Mocks (mirror issues-page.test.tsx pattern; v0.4 dnd-kit surface)
@@ -36,7 +36,7 @@ vi.mock("@dnd-kit/abstract", () => ({
   CollisionPriority: { Lowest: 0, Low: 1, Normal: 2, High: 3, Highest: 4 },
 }));
 
-vi.mock("@multica/core/issues/config", () => ({
+vi.mock("@algoplan/core/issues/config", () => ({
   STATUS_CONFIG: {
     backlog: { label: "Backlog", iconColor: "text-muted-foreground", hoverBg: "hover:bg-accent", dividerColor: "bg-muted-foreground/40", badgeBg: "bg-muted", badgeText: "text-muted-foreground", columnBg: "bg-muted/40" },
     todo: { label: "Todo", iconColor: "text-muted-foreground", hoverBg: "hover:bg-accent", dividerColor: "bg-muted-foreground/40", badgeBg: "bg-muted", badgeText: "text-muted-foreground", columnBg: "bg-muted/40" },
@@ -56,7 +56,7 @@ vi.mock("@multica/core/issues/config", () => ({
 }));
 
 const modalOpen = vi.fn();
-vi.mock("@multica/core/modals", () => ({
+vi.mock("@algoplan/core/modals", () => ({
   useModalStore: Object.assign(
     () => ({ open: modalOpen }),
     { getState: () => ({ open: modalOpen }) },
@@ -64,7 +64,7 @@ vi.mock("@multica/core/modals", () => ({
 }));
 
 const hideStatusFn = vi.fn();
-vi.mock("@multica/core/issues/stores/view-store-context", () => ({
+vi.mock("@algoplan/core/issues/stores/view-store-context", () => ({
   useViewStore: (selector?: any) => {
     const state = { cardProperties: { priority: false, description: false, assignee: false, dueDate: false, project: false, childProgress: false } };
     return selector ? selector(state) : state;
@@ -76,7 +76,7 @@ vi.mock("@multica/core/issues/stores/view-store-context", () => ({
   }),
 }));
 
-// DraggableBoardCard would otherwise drag in @multica/core/hooks etc. Mock it as
+// DraggableBoardCard would otherwise drag in @algoplan/core/hooks etc. Mock it as
 // a passive renderer — Plan 02 doesn't test card behaviour from the column.
 vi.mock("./board-card", () => ({
   DraggableBoardCard: ({ issue }: any) => <div data-testid={`card-${issue.id}`}>{issue.title}</div>,

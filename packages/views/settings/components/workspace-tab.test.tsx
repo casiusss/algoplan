@@ -79,12 +79,12 @@ vi.mock("sonner", () => ({
   },
 }));
 
-vi.mock("@multica/core/auth", () => ({
+vi.mock("@algoplan/core/auth", () => ({
   useAuthStore: (selector: (s: { user: typeof mockUser.current }) => unknown) =>
     selector({ user: mockUser.current }),
 }));
 
-vi.mock("@multica/core/workspace/mutations", () => ({
+vi.mock("@algoplan/core/workspace/mutations", () => ({
   useLeaveWorkspace: () => ({
     mutateAsync: vi.fn(async (id: string) => {
       callOrder.push("leave-mutate");
@@ -99,11 +99,11 @@ vi.mock("@multica/core/workspace/mutations", () => ({
   }),
 }));
 
-vi.mock("@multica/core/hooks", () => ({
+vi.mock("@algoplan/core/hooks", () => ({
   useWorkspaceId: () => "ws-1",
 }));
 
-vi.mock("@multica/core/workspace/queries", () => ({
+vi.mock("@algoplan/core/workspace/queries", () => ({
   memberListOptions: () => ({ queryKey: ["members"], queryFn: async () => [] }),
   workspaceKeys: {
     list: () => ["workspaces"],
@@ -115,14 +115,14 @@ vi.mock("@multica/core/workspace/queries", () => ({
   }),
 }));
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     updateWorkspace: (id: string, patch: Record<string, unknown>) =>
       mockUpdateWorkspace(id, patch),
   },
 }));
 
-vi.mock("@multica/core/paths", () => ({
+vi.mock("@algoplan/core/paths", () => ({
   resolvePostAuthDestination: (...args: unknown[]) => {
     callOrder.push("resolve-dest-read");
     return mockResolvePostAuthDestination(...args);
@@ -131,7 +131,7 @@ vi.mock("@multica/core/paths", () => ({
   useHasOnboarded: () => mockHasOnboarded.current,
 }));
 
-vi.mock("@multica/core/platform", () => ({
+vi.mock("@algoplan/core/platform", () => ({
   setCurrentWorkspace: (slug: string | null, uuid: string | null) => {
     callOrder.push("set-current-workspace-null");
     return mockSetCurrentWorkspace(slug, uuid);
@@ -161,7 +161,7 @@ vi.mock("@tanstack/react-query", () => ({
 
 // Strip Base UI portal-heavy AlertDialog/Dialog primitives — same approach as
 // delete-workspace-dialog.test.tsx. Confirm/Cancel buttons stay reachable.
-vi.mock("@multica/ui/components/ui/alert-dialog", () => ({
+vi.mock("@algoplan/ui/components/ui/alert-dialog", () => ({
   AlertDialog: ({ children, open }: { children: ReactNode; open: boolean }) =>
     open ? <div>{children}</div> : null,
   AlertDialogContent: ({ children }: { children: ReactNode }) => <div>{children}</div>,

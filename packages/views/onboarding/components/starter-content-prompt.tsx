@@ -4,15 +4,15 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { api } from "@multica/core/api";
-import { useAuthStore } from "@multica/core/auth";
-import { useNavigation } from "@multica/views/navigation";
-import { useCurrentWorkspace, paths } from "@multica/core/paths";
-import type { QuestionnaireAnswers } from "@multica/core/onboarding";
-import { pinKeys } from "@multica/core/pins";
-import { projectKeys } from "@multica/core/projects";
-import { issueKeys } from "@multica/core/issues/queries";
-import { Button } from "@multica/ui/components/ui/button";
+import { api } from "@algoplan/core/api";
+import { useAuthStore } from "@algoplan/core/auth";
+import { useNavigation } from "@algoplan/views/navigation";
+import { useCurrentWorkspace, paths } from "@algoplan/core/paths";
+import type { QuestionnaireAnswers } from "@algoplan/core/onboarding";
+import { pinKeys } from "@algoplan/core/pins";
+import { projectKeys } from "@algoplan/core/projects";
+import { issueKeys } from "@algoplan/core/issues/queries";
+import { Button } from "@algoplan/ui/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@multica/ui/components/ui/dialog";
+} from "@algoplan/ui/components/ui/dialog";
 import { buildImportPayload } from "../utils/starter-content-templates";
 
 /**

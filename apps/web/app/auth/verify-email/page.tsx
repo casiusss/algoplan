@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { VerifyEmailPage } from "@multica/views/auth";
+import { VerifyEmailPage } from "@algoplan/views/auth";
 
 /**
  * Web wrapper for the shared VerifyEmailPage.

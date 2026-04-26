@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo } from "react";
-import { Button } from "@multica/ui/components/ui/button";
-import { cn } from "@multica/ui/lib/utils";
-import { useIssueViewStore } from "@multica/core/issues/stores/view-store";
-import { useIssueCountByPriority } from "@multica/core/issues/derived";
-import type { IssuePriority } from "@multica/core/types";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { cn } from "@algoplan/ui/lib/utils";
+import { useIssueViewStore } from "@algoplan/core/issues/stores/view-store";
+import { useIssueCountByPriority } from "@algoplan/core/issues/derived";
+import type { IssuePriority } from "@algoplan/core/types";
 
 type CellKey = "p0" | "p1" | "p2" | "p3";
 type CellLabel = "P0" | "P1" | "P2" | "P3";

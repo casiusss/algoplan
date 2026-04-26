@@ -1,9 +1,9 @@
 "use client";
 
-import { STATUS_CONFIG, PRIORITY_CONFIG } from "@multica/core/issues/config";
-import { useActorName } from "@multica/core/workspace/hooks";
+import { STATUS_CONFIG, PRIORITY_CONFIG } from "@algoplan/core/issues/config";
+import { useActorName } from "@algoplan/core/workspace/hooks";
 import { StatusIcon, PriorityIcon } from "../../issues/components";
-import type { InboxItem, InboxItemType, IssueStatus, IssuePriority } from "@multica/core/types";
+import type { InboxItem, InboxItemType, IssueStatus, IssuePriority } from "@algoplan/core/types";
 
 const typeLabels: Record<InboxItemType, string> = {
   issue_assigned: "Assigned",

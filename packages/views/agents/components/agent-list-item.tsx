@@ -1,8 +1,8 @@
 "use client";
 
 import { Cloud, Monitor } from "lucide-react";
-import type { Agent } from "@multica/core/types";
-import { AvatarInitial } from "@multica/ui/components/ui/avatar-initial";
+import type { Agent } from "@algoplan/core/types";
+import { AvatarInitial } from "@algoplan/ui/components/ui/avatar-initial";
 import { ActorAvatar } from "../../common/actor-avatar";
 import { statusConfig } from "../config";
 

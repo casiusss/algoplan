@@ -2,12 +2,12 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { ListTodo } from "lucide-react";
-import type { Agent, AgentTask, Issue } from "@multica/core/types";
-import { Skeleton } from "@multica/ui/components/ui/skeleton";
-import { api } from "@multica/core/api";
-import { useWorkspaceId } from "@multica/core/hooks";
-import { useWorkspacePaths } from "@multica/core/paths";
-import { issueDetailOptions } from "@multica/core/issues/queries";
+import type { Agent, AgentTask, Issue } from "@algoplan/core/types";
+import { Skeleton } from "@algoplan/ui/components/ui/skeleton";
+import { api } from "@algoplan/core/api";
+import { useWorkspaceId } from "@algoplan/core/hooks";
+import { useWorkspacePaths } from "@algoplan/core/paths";
+import { issueDetailOptions } from "@algoplan/core/issues/queries";
 import { useQueries } from "@tanstack/react-query";
 import { AppLink } from "../../../navigation";
 import { taskStatusConfig } from "../../config";

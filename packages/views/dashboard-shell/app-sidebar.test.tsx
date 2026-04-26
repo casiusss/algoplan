@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import type { InboxItem } from "@multica/core/types";
+import type { InboxItem } from "@algoplan/core/types";
 
 // ---------------------------------------------------------------------------
 // Hoisted mocks (vi.hoisted + Object.assign per CLAUDE.md)
@@ -54,7 +54,7 @@ const {
   mockLogout: vi.fn(),
 }));
 
-vi.mock("@multica/core/auth", () => {
+vi.mock("@algoplan/core/auth", () => {
   const useAuthStore = Object.assign(
     (selector?: (s: { user: typeof mockUser.current }) => unknown) => {
       const state = { user: mockUser.current };
@@ -67,7 +67,7 @@ vi.mock("@multica/core/auth", () => {
   return { useAuthStore };
 });
 
-vi.mock("@multica/core/paths", () => ({
+vi.mock("@algoplan/core/paths", () => ({
   paths: {
     workspace: (slug: string) => ({
       issues: () => `/${slug}/issues`,
@@ -90,7 +90,7 @@ vi.mock("@multica/core/paths", () => ({
   }),
 }));
 
-vi.mock("@multica/core/workspace/queries", () => ({
+vi.mock("@algoplan/core/workspace/queries", () => ({
   workspaceListOptions: () => ({
     queryKey: ["workspace", "list"],
     queryFn: () => Promise.resolve(mockWorkspaces.current),
@@ -105,7 +105,7 @@ vi.mock("@multica/core/workspace/queries", () => ({
   },
 }));
 
-vi.mock("@multica/core/inbox/queries", () => ({
+vi.mock("@algoplan/core/inbox/queries", () => ({
   inboxKeys: {
     all: (wsId: string) => ["inbox", wsId] as const,
     list: (wsId: string) => ["inbox", wsId, "list"] as const,
@@ -113,7 +113,7 @@ vi.mock("@multica/core/inbox/queries", () => ({
   deduplicateInboxItems: (items: InboxItem[]) => items,
 }));
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     listInbox: () => mockListInbox(),
     listWorkspaces: () => Promise.resolve(mockWorkspaces.current),
@@ -123,7 +123,7 @@ vi.mock("@multica/core/api", () => ({
   },
 }));
 
-vi.mock("@multica/core/modals", () => ({
+vi.mock("@algoplan/core/modals", () => ({
   useModalStore: Object.assign(
     () => ({ modal: null }),
     {
@@ -135,11 +135,11 @@ vi.mock("@multica/core/modals", () => ({
   ),
 }));
 
-vi.mock("@multica/core/runtimes/hooks", () => ({
+vi.mock("@algoplan/core/runtimes/hooks", () => ({
   useMyRuntimesNeedUpdate: () => mockHasRuntimeUpdates.current,
 }));
 
-vi.mock("@multica/core/pins/queries", () => ({
+vi.mock("@algoplan/core/pins/queries", () => ({
   pinListOptions: (wsId: string, userId: string) => ({
     queryKey: ["pins", wsId, userId],
     queryFn: () => Promise.resolve(mockPinned.current),
@@ -147,12 +147,12 @@ vi.mock("@multica/core/pins/queries", () => ({
   }),
 }));
 
-vi.mock("@multica/core/pins/mutations", () => ({
+vi.mock("@algoplan/core/pins/mutations", () => ({
   useDeletePin: () => ({ mutate: vi.fn() }),
   useReorderPins: () => ({ mutate: vi.fn() }),
 }));
 
-vi.mock("@multica/core/issues/queries", () => ({
+vi.mock("@algoplan/core/issues/queries", () => ({
   issueDetailOptions: (wsId: string, id: string) => ({
     queryKey: ["issue", wsId, id],
     queryFn: () => Promise.resolve(null),
@@ -162,19 +162,19 @@ vi.mock("@multica/core/issues/queries", () => ({
 // PriorityGrid (Plan 01) consumes useIssueCountByPriority (Plan 05). Mock the
 // derived hook directly so this test stays decoupled from issue-list query
 // internals.
-vi.mock("@multica/core/issues/derived", () => ({
+vi.mock("@algoplan/core/issues/derived", () => ({
   useIssueCountByPriority: () => ({ p0: 0, p1: 0, p2: 0, p3: 0 }),
   useBlockerCount: () => 0,
 }));
 
-vi.mock("@multica/core/projects/queries", () => ({
+vi.mock("@algoplan/core/projects/queries", () => ({
   projectDetailOptions: (wsId: string, id: string) => ({
     queryKey: ["project", wsId, id],
     queryFn: () => Promise.resolve(null),
   }),
 }));
 
-vi.mock("@multica/core/issues/stores/draft-store", () => ({
+vi.mock("@algoplan/core/issues/stores/draft-store", () => ({
   useIssueDraftStore: Object.assign(
     (selector?: (s: { draft: { title: string; description: string } }) => unknown) => {
       const state = { draft: { title: "", description: "" } };
@@ -186,7 +186,7 @@ vi.mock("@multica/core/issues/stores/draft-store", () => ({
   ),
 }));
 
-vi.mock("@multica/core/issues/stores/view-store", () => {
+vi.mock("@algoplan/core/issues/stores/view-store", () => {
   const useIssueViewStore = Object.assign(
     (selector?: (s: typeof mockState.current & { togglePriorityFilter: typeof mockToggle }) => unknown) => {
       const state = {
@@ -205,7 +205,7 @@ vi.mock("@multica/core/issues/stores/view-store", () => {
   return { useIssueViewStore };
 });
 
-vi.mock("@multica/ui/components/common/theme-provider", () => ({
+vi.mock("@algoplan/ui/components/common/theme-provider", () => ({
   useTheme: () => ({
     theme: mockTheme.current,
     resolvedTheme: mockTheme.current,
@@ -244,7 +244,7 @@ vi.mock("../layout/help-launcher", () => ({
 }));
 
 import { AppSidebar } from "./app-sidebar";
-import { SidebarProvider } from "@multica/ui/components/ui/sidebar";
+import { SidebarProvider } from "@algoplan/ui/components/ui/sidebar";
 
 function renderSidebar(props: Parameters<typeof AppSidebar>[0] = {}) {
   const qc = new QueryClient({

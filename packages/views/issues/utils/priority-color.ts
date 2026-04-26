@@ -1,5 +1,5 @@
-import type { IssuePriority } from "@multica/core/types";
-import type { AccentBarColor } from "@multica/ui/components/ui/accent-bar";
+import type { IssuePriority } from "@algoplan/core/types";
+import type { AccentBarColor } from "@algoplan/ui/components/ui/accent-bar";
 
 export function priorityToAccentColor(p: IssuePriority): AccentBarColor {
   switch (p) {

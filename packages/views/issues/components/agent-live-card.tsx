@@ -2,15 +2,15 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Bot, ChevronRight, ChevronDown, Loader2, ArrowDown, Brain, AlertCircle, Clock, CheckCircle2, XCircle, Square, Maximize2 } from "lucide-react";
-import { api } from "@multica/core/api";
-import { useWSEvent } from "@multica/core/realtime";
-import type { TaskMessagePayload, TaskCompletedPayload, TaskFailedPayload, TaskCancelledPayload } from "@multica/core/types/events";
-import type { AgentTask } from "@multica/core/types/agent";
-import { cn } from "@multica/ui/lib/utils";
+import { api } from "@algoplan/core/api";
+import { useWSEvent } from "@algoplan/core/realtime";
+import type { TaskMessagePayload, TaskCompletedPayload, TaskFailedPayload, TaskCancelledPayload } from "@algoplan/core/types/events";
+import type { AgentTask } from "@algoplan/core/types/agent";
+import { cn } from "@algoplan/ui/lib/utils";
 import { toast } from "sonner";
 import { ActorAvatar } from "../../common/actor-avatar";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@multica/ui/components/ui/collapsible";
-import { useActorName } from "@multica/core/workspace/hooks";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@algoplan/ui/components/ui/collapsible";
+import { useActorName } from "@algoplan/core/workspace/hooks";
 import { redactSecrets } from "../utils/redact";
 import { AgentTranscriptDialog } from "./agent-transcript-dialog";
 

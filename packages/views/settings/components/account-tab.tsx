@@ -2,14 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Camera, Loader2, Save } from "lucide-react";
-import { Input } from "@multica/ui/components/ui/input";
-import { Label } from "@multica/ui/components/ui/label";
-import { Button } from "@multica/ui/components/ui/button";
-import { AvatarInitial } from "@multica/ui/components/ui/avatar-initial";
+import { Input } from "@algoplan/ui/components/ui/input";
+import { Label } from "@algoplan/ui/components/ui/label";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { AvatarInitial } from "@algoplan/ui/components/ui/avatar-initial";
 import { toast } from "sonner";
-import { useAuthStore } from "@multica/core/auth";
-import { api } from "@multica/core/api";
-import { useFileUpload } from "@multica/core/hooks/use-file-upload";
+import { useAuthStore } from "@algoplan/core/auth";
+import { api } from "@algoplan/core/api";
+import { useFileUpload } from "@algoplan/core/hooks/use-file-upload";
 import { SettingsSection } from "./settings-section";
 
 export function AccountTab() {

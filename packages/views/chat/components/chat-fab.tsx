@@ -2,16 +2,16 @@
 
 import { MessageCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { cn } from "@multica/ui/lib/utils";
-import { useChatStore } from "@multica/core/chat";
-import { chatSessionsOptions, pendingChatTasksOptions } from "@multica/core/chat/queries";
-import { useWorkspaceId } from "@multica/core/hooks";
-import { createLogger } from "@multica/core/logger";
+import { cn } from "@algoplan/ui/lib/utils";
+import { useChatStore } from "@algoplan/core/chat";
+import { chatSessionsOptions, pendingChatTasksOptions } from "@algoplan/core/chat/queries";
+import { useWorkspaceId } from "@algoplan/core/hooks";
+import { createLogger } from "@algoplan/core/logger";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from "@multica/ui/components/ui/tooltip";
+} from "@algoplan/ui/components/ui/tooltip";
 
 const logger = createLogger("chat.ui");
 

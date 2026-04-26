@@ -24,7 +24,7 @@ const ApiErrorMock = vi.hoisted(() => {
   };
 });
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     signup: mockApiSignup,
   },

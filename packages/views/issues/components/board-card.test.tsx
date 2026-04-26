@@ -1,17 +1,17 @@
 import { describe, it, expect, vi } from "vitest";
 import { render } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { Issue, IssuePriority } from "@multica/core/types";
+import type { Issue, IssuePriority } from "@algoplan/core/types";
 
 // ---------------------------------------------------------------------------
 // Mocks (mirror issues-page.test.tsx pattern; v0.4 dnd-kit surface)
 // ---------------------------------------------------------------------------
 
-vi.mock("@multica/core/hooks", () => ({
+vi.mock("@algoplan/core/hooks", () => ({
   useWorkspaceId: () => "ws-1",
 }));
 
-vi.mock("@multica/core/auth", () => ({
+vi.mock("@algoplan/core/auth", () => ({
   useAuthStore: Object.assign(
     (selector?: any) => {
       const state = { user: { id: "u-1" }, isAuthenticated: true };
@@ -21,9 +21,9 @@ vi.mock("@multica/core/auth", () => ({
   ),
 }));
 
-vi.mock("@multica/core/paths", async () => {
-  const actual = await vi.importActual<typeof import("@multica/core/paths")>(
-    "@multica/core/paths",
+vi.mock("@algoplan/core/paths", async () => {
+  const actual = await vi.importActual<typeof import("@algoplan/core/paths")>(
+    "@algoplan/core/paths",
   );
   return {
     ...actual,
@@ -39,7 +39,7 @@ vi.mock("../../navigation", () => ({
   ),
 }));
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     listMembers: () => Promise.resolve([]),
     listAgents: () => Promise.resolve([]),
@@ -52,7 +52,7 @@ vi.mock("@multica/core/api", () => ({
   }),
 }));
 
-vi.mock("@multica/core/issues/config", () => ({
+vi.mock("@algoplan/core/issues/config", () => ({
   PRIORITY_CONFIG: {
     urgent: { label: "Urgent", badgeBg: "bg-tag-p0", badgeText: "text-white" },
     high: { label: "High", badgeBg: "bg-tag-p1", badgeText: "text-white" },
@@ -70,16 +70,16 @@ const mockCardProperties = {
   project: false,
   childProgress: false,
 };
-vi.mock("@multica/core/issues/stores/view-store-context", () => ({
+vi.mock("@algoplan/core/issues/stores/view-store-context", () => ({
   useViewStore: (selector?: any) =>
     selector ? selector({ cardProperties: mockCardProperties }) : { cardProperties: mockCardProperties },
 }));
 
-vi.mock("@multica/core/issues/mutations", () => ({
+vi.mock("@algoplan/core/issues/mutations", () => ({
   useUpdateIssue: () => ({ mutate: vi.fn(), isPending: false }),
 }));
 
-vi.mock("@multica/core/projects/queries", () => ({
+vi.mock("@algoplan/core/projects/queries", () => ({
   projectListOptions: () => ({ queryKey: ["projects"], queryFn: () => Promise.resolve([]) }),
 }));
 

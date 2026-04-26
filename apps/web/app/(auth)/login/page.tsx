@@ -3,29 +3,29 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { sanitizeNextUrl, useAuthStore } from "@multica/core/auth";
-import { useConfigStore } from "@multica/core/config";
-import { workspaceKeys } from "@multica/core/workspace/queries";
+import { sanitizeNextUrl, useAuthStore } from "@algoplan/core/auth";
+import { useConfigStore } from "@algoplan/core/config";
+import { workspaceKeys } from "@algoplan/core/workspace/queries";
 import {
   paths,
   resolvePostAuthDestination,
   useHasOnboarded,
-} from "@multica/core/paths";
-import { api } from "@multica/core/api";
-import type { Workspace } from "@multica/core/types";
+} from "@algoplan/core/paths";
+import { api } from "@algoplan/core/api";
+import type { Workspace } from "@algoplan/core/types";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from "@multica/ui/components/ui/card";
-import { Button } from "@multica/ui/components/ui/button";
+} from "@algoplan/ui/components/ui/card";
+import { Button } from "@algoplan/ui/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { captureDownloadIntent } from "@multica/core/analytics";
+import { captureDownloadIntent } from "@algoplan/core/analytics";
 import { setLoggedInCookie } from "@/features/auth/auth-cookie";
 import Link from "next/link";
-import { LoginPage, validateCliCallback } from "@multica/views/auth";
+import { LoginPage, validateCliCallback } from "@algoplan/views/auth";
 
 function LoginPageContent() {
   const router = useRouter();

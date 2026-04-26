@@ -3,9 +3,9 @@ import type { DataRouter } from "react-router-dom";
 import {
   NavigationProvider,
   type NavigationAdapter,
-} from "@multica/views/navigation";
-import { useAuthStore } from "@multica/core/auth";
-import { isReservedSlug } from "@multica/core/paths";
+} from "@algoplan/views/navigation";
+import { useAuthStore } from "@algoplan/core/auth";
+import { isReservedSlug } from "@algoplan/core/paths";
 import {
   useTabStore,
   resolveRouteIcon,
@@ -75,7 +75,7 @@ function tryRouteToOverlay(path: string, router?: DataRouter): boolean {
   }
   // Phase 6 AUTH (Plan 07) — pre-workspace auth flows on desktop are
   // overlays, not tab routes (per UI-SPEC §Hard Constraints #2). The 5
-  // shared @multica/views/auth pages dispatch overlays here when shared
+  // shared @algoplan/views/auth pages dispatch overlays here when shared
   // code calls `useNavigation().push("/auth/...")`.
   //
   // Order matters for two pairs:
@@ -269,7 +269,7 @@ function currentActiveTab() {
  * Per-tab navigation provider rendered inside each tab's Activity wrapper.
  * Subscribes to the tab's own router for up-to-date pathname.
  *
- * This is what @multica/views page components read via useNavigation().
+ * This is what @algoplan/views page components read via useNavigation().
  */
 export function TabNavigationProvider({
   router,

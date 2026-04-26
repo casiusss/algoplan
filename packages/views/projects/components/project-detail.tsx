@@ -4,24 +4,24 @@ import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { useDefaultLayout, usePanelRef } from "react-resizable-panels";
 import { Check, ChevronRight, Link2, ListTodo, MoreHorizontal, PanelRight, Pin, PinOff, Trash2, UserMinus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { cn } from "@multica/ui/lib/utils";
+import { cn } from "@algoplan/ui/lib/utils";
 import { toast } from "sonner";
-import type { Issue, IssueStatus, ProjectStatus, ProjectPriority } from "@multica/core/types";
-import { useAuthStore } from "@multica/core/auth";
-import { projectDetailOptions } from "@multica/core/projects/queries";
-import { useUpdateProject, useDeleteProject } from "@multica/core/projects/mutations";
-import { pinListOptions } from "@multica/core/pins";
-import { useCreatePin, useDeletePin } from "@multica/core/pins";
-import { myIssueListOptions, childIssueProgressOptions, type MyIssuesFilter } from "@multica/core/issues/queries";
-import { useUpdateIssue } from "@multica/core/issues/mutations";
-import { memberListOptions, agentListOptions } from "@multica/core/workspace/queries";
-import { useWorkspaceId } from "@multica/core/hooks";
-import { useCurrentWorkspace, useWorkspacePaths } from "@multica/core/paths";
-import { useActorName, useCurrentMemberRole } from "@multica/core/workspace/hooks";
-import { PROJECT_STATUS_ORDER, PROJECT_STATUS_CONFIG, PROJECT_PRIORITY_ORDER, PROJECT_PRIORITY_CONFIG } from "@multica/core/projects/config";
-import { BOARD_STATUSES } from "@multica/core/issues/config";
-import { createIssueViewStore } from "@multica/core/issues/stores/view-store";
-import { ViewStoreProvider, useViewStore } from "@multica/core/issues/stores/view-store-context";
+import type { Issue, IssueStatus, ProjectStatus, ProjectPriority } from "@algoplan/core/types";
+import { useAuthStore } from "@algoplan/core/auth";
+import { projectDetailOptions } from "@algoplan/core/projects/queries";
+import { useUpdateProject, useDeleteProject } from "@algoplan/core/projects/mutations";
+import { pinListOptions } from "@algoplan/core/pins";
+import { useCreatePin, useDeletePin } from "@algoplan/core/pins";
+import { myIssueListOptions, childIssueProgressOptions, type MyIssuesFilter } from "@algoplan/core/issues/queries";
+import { useUpdateIssue } from "@algoplan/core/issues/mutations";
+import { memberListOptions, agentListOptions } from "@algoplan/core/workspace/queries";
+import { useWorkspaceId } from "@algoplan/core/hooks";
+import { useCurrentWorkspace, useWorkspacePaths } from "@algoplan/core/paths";
+import { useActorName, useCurrentMemberRole } from "@algoplan/core/workspace/hooks";
+import { PROJECT_STATUS_ORDER, PROJECT_STATUS_CONFIG, PROJECT_PRIORITY_ORDER, PROJECT_PRIORITY_CONFIG } from "@algoplan/core/projects/config";
+import { BOARD_STATUSES } from "@algoplan/core/issues/config";
+import { createIssueViewStore } from "@algoplan/core/issues/stores/view-store";
+import { ViewStoreProvider, useViewStore } from "@algoplan/core/issues/stores/view-store-context";
 import { filterIssues } from "../../issues/utils/filter";
 import { getProjectIssueMetrics } from "./project-issue-metrics";
 import { ActorAvatar } from "../../common/actor-avatar";
@@ -32,29 +32,29 @@ import { IssuesHeader } from "../../issues/components/issues-header";
 import { BoardView } from "../../issues/components/board-view";
 import { ListView } from "../../issues/components/list-view";
 import { BatchActionToolbar } from "../../issues/components/batch-action-toolbar";
-import { Skeleton } from "@multica/ui/components/ui/skeleton";
-import { Button } from "@multica/ui/components/ui/button";
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@multica/ui/components/ui/resizable";
-import { Sheet, SheetContent } from "@multica/ui/components/ui/sheet";
-import { useIsMobile } from "@multica/ui/hooks/use-mobile";
+import { Skeleton } from "@algoplan/ui/components/ui/skeleton";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@algoplan/ui/components/ui/resizable";
+import { Sheet, SheetContent } from "@algoplan/ui/components/ui/sheet";
+import { useIsMobile } from "@algoplan/ui/hooks/use-mobile";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@multica/ui/components/ui/dropdown-menu";
+} from "@algoplan/ui/components/ui/dropdown-menu";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@multica/ui/components/ui/popover";
+} from "@algoplan/ui/components/ui/popover";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from "@multica/ui/components/ui/tooltip";
-import { EmojiPicker } from "@multica/ui/components/common/emoji-picker";
+} from "@algoplan/ui/components/ui/tooltip";
+import { EmojiPicker } from "@algoplan/ui/components/common/emoji-picker";
 import { PageHeader } from "../../layout/page-header";
 import {
   AlertDialog,
@@ -65,7 +65,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@multica/ui/components/ui/alert-dialog";
+} from "@algoplan/ui/components/ui/alert-dialog";
 
 // ---------------------------------------------------------------------------
 // Repo URL validation — duplicated from create-project modal to keep this

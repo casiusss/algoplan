@@ -1,8 +1,8 @@
 "use client";
 
 import { ArrowLeft, LogOut } from "lucide-react";
-import { Button } from "@multica/ui/components/ui/button";
-import type { Workspace } from "@multica/core/types";
+import { Button } from "@algoplan/ui/components/ui/button";
+import type { Workspace } from "@algoplan/core/types";
 import { AlgoPlanWordmark, useLogout } from "../auth";
 import { DragStrip } from "../platform";
 import { CreateWorkspaceForm } from "./create-workspace-form";

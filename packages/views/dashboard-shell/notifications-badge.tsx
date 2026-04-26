@@ -6,11 +6,11 @@ import { Inbox } from "lucide-react";
 import {
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@multica/ui/components/ui/sidebar";
-import { api } from "@multica/core/api";
-import { inboxKeys, deduplicateInboxItems } from "@multica/core/inbox/queries";
-import { useWorkspacePaths } from "@multica/core/paths";
-import type { InboxItem } from "@multica/core/types";
+} from "@algoplan/ui/components/ui/sidebar";
+import { api } from "@algoplan/core/api";
+import { inboxKeys, deduplicateInboxItems } from "@algoplan/core/inbox/queries";
+import { useWorkspacePaths } from "@algoplan/core/paths";
+import type { InboxItem } from "@algoplan/core/types";
 import { AppLink, useNavigation } from "../navigation";
 
 const EMPTY_INBOX: InboxItem[] = [];

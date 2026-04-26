@@ -19,7 +19,7 @@ const { mockState, mockToggle, mockCounts } = vi.hoisted(() => ({
   },
 }));
 
-vi.mock("@multica/core/issues/stores/view-store", () => {
+vi.mock("@algoplan/core/issues/stores/view-store", () => {
   const useIssueViewStore = Object.assign(
     (selector?: (s: typeof mockState.current & { togglePriorityFilter: typeof mockToggle }) => unknown) => {
       const state = {
@@ -38,7 +38,7 @@ vi.mock("@multica/core/issues/stores/view-store", () => {
   return { useIssueViewStore };
 });
 
-vi.mock("@multica/core/issues/derived", () => ({
+vi.mock("@algoplan/core/issues/derived", () => ({
   useIssueCountByPriority: () => mockCounts.current,
 }));
 

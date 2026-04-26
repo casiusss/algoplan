@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "@multica/ui/lib/utils";
-import { SidebarTrigger, useSidebar } from "@multica/ui/components/ui/sidebar";
+import { cn } from "@algoplan/ui/lib/utils";
+import { SidebarTrigger, useSidebar } from "@algoplan/ui/components/ui/sidebar";
 
 function MobileSidebarTrigger() {
   try {

@@ -9,7 +9,7 @@ import userEvent from "@testing-library/user-event";
 const mockApiRequestPasswordReset = vi.hoisted(() => vi.fn());
 const mockNavigationPush = vi.hoisted(() => vi.fn());
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     requestPasswordReset: mockApiRequestPasswordReset,
   },

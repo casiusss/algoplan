@@ -6,8 +6,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@multica/ui/components/ui/dropdown-menu";
-import { useModalStore } from "@multica/core/modals";
+} from "@algoplan/ui/components/ui/dropdown-menu";
+import { useModalStore } from "@algoplan/core/modals";
 
 const DOCS_URL = "https://plan.algoview.com/docs";
 const CHANGELOG_URL = "https://plan.algoview.com/changelog";

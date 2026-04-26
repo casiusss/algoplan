@@ -4,12 +4,12 @@ import { useCallback } from "react";
 import {
   SegmentedControl,
   SegmentedControlItem,
-} from "@multica/ui/components/ui/segmented-control";
+} from "@algoplan/ui/components/ui/segmented-control";
 import {
   useViewStore,
   useViewStoreApi,
-} from "@multica/core/issues/stores/view-store-context";
-import type { ViewMode } from "@multica/core/issues/stores/view-store";
+} from "@algoplan/core/issues/stores/view-store-context";
+import type { ViewMode } from "@algoplan/core/issues/stores/view-store";
 
 /**
  * KBN-04 — view-mode toggle. Wraps SegmentedControl around viewMode in the

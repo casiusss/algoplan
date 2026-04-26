@@ -2,15 +2,15 @@
 
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigationStore } from "@multica/core/navigation";
-import { useAuthStore } from "@multica/core/auth";
+import { useNavigationStore } from "@algoplan/core/navigation";
+import { useAuthStore } from "@algoplan/core/auth";
 import {
   paths,
   resolvePostAuthDestination,
   useCurrentWorkspace,
   useHasOnboarded,
-} from "@multica/core/paths";
-import { workspaceListOptions } from "@multica/core/workspace";
+} from "@algoplan/core/paths";
+import { workspaceListOptions } from "@algoplan/core/workspace";
 import { useNavigation } from "../navigation";
 
 /**

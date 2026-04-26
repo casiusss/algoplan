@@ -14,7 +14,7 @@ import {
   KeyRound,
   Terminal,
 } from "lucide-react";
-import type { Agent, RuntimeDevice, MemberWithUser } from "@multica/core/types";
+import type { Agent, RuntimeDevice, MemberWithUser } from "@algoplan/core/types";
 import {
   Dialog,
   DialogContent,
@@ -22,15 +22,15 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@multica/ui/components/ui/dialog";
+} from "@algoplan/ui/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@multica/ui/components/ui/dropdown-menu";
-import { Button } from "@multica/ui/components/ui/button";
-import { AvatarInitial } from "@multica/ui/components/ui/avatar-initial";
+} from "@algoplan/ui/components/ui/dropdown-menu";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { AvatarInitial } from "@algoplan/ui/components/ui/avatar-initial";
 import { ActorAvatar } from "../../common/actor-avatar";
 import { statusConfig } from "../config";
 import { InstructionsTab } from "./tabs/instructions-tab";

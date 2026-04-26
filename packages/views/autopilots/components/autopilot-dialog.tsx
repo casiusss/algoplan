@@ -3,26 +3,26 @@
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Calendar, ChevronRight, Maximize2, Minimize2, Rocket, X as XIcon } from "lucide-react";
-import { cn } from "@multica/ui/lib/utils";
+import { cn } from "@algoplan/ui/lib/utils";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
-} from "@multica/ui/components/ui/dialog";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@multica/ui/components/ui/tooltip";
-import { Button } from "@multica/ui/components/ui/button";
-import { useCurrentWorkspace } from "@multica/core/paths";
+} from "@algoplan/ui/components/ui/dialog";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@algoplan/ui/components/ui/tooltip";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { useCurrentWorkspace } from "@algoplan/core/paths";
 import {
   useCreateAutopilot,
   useCreateAutopilotTrigger,
   useUpdateAutopilot,
   useUpdateAutopilotTrigger,
-} from "@multica/core/autopilots/mutations";
+} from "@algoplan/core/autopilots/mutations";
 import type {
   AutopilotExecutionMode,
   AutopilotTrigger,
   IssuePriority,
-} from "@multica/core/types";
+} from "@algoplan/core/types";
 import { TitleEditor, ContentEditor } from "../../editor";
 import { PillButton } from "../../common/pill-button";
 import { PriorityPicker } from "../../issues/components/pickers";

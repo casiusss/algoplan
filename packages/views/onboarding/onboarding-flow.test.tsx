@@ -13,7 +13,7 @@ const authState = vi.hoisted(() => ({
   } as Record<string, unknown> | null,
 }));
 
-vi.mock("@multica/core/auth", () => {
+vi.mock("@algoplan/core/auth", () => {
   const useAuthStore = Object.assign(
     (selector: (s: { user: typeof authState.user }) => unknown) =>
       selector({ user: authState.user }),
@@ -56,7 +56,7 @@ vi.mock("./steps/step-first-issue", () => ({
   StepFirstIssue: () => <div data-testid="step-first-issue-stub" />,
 }));
 
-vi.mock("@multica/core/onboarding", () => ({
+vi.mock("@algoplan/core/onboarding", () => ({
   ONBOARDING_STEP_ORDER: [
     "welcome",
     "questionnaire",
@@ -69,7 +69,7 @@ vi.mock("@multica/core/onboarding", () => ({
   saveQuestionnaire: vi.fn(),
 }));
 
-vi.mock("@multica/core/workspace/queries", () => ({
+vi.mock("@algoplan/core/workspace/queries", () => ({
   workspaceListOptions: () => ({
     queryKey: ["workspaces"],
     queryFn: () => Promise.resolve([]),
@@ -77,7 +77,7 @@ vi.mock("@multica/core/workspace/queries", () => ({
 }));
 
 // Stub DragStrip so the dragstrip-coverage gate's targets stay testable.
-vi.mock("@multica/views/platform", () => ({
+vi.mock("@algoplan/views/platform", () => ({
   DragStrip: () => <div data-testid="drag-strip-stub" />,
 }));
 

@@ -6,10 +6,10 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-} from "@multica/ui/components/ui/card";
-import { Button } from "@multica/ui/components/ui/button";
+} from "@algoplan/ui/components/ui/card";
+import { Button } from "@algoplan/ui/components/ui/button";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
-import { api } from "@multica/core/api";
+import { api } from "@algoplan/core/api";
 import { AlgoPlanWordmark } from "./algoplan-wordmark";
 import { useNavigation } from "../navigation";
 

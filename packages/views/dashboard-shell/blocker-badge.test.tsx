@@ -6,7 +6,7 @@ const { mockBlockerCount } = vi.hoisted(() => ({
   mockBlockerCount: vi.fn<(wsId: string | undefined) => number>(() => 0),
 }));
 
-vi.mock("@multica/core/issues/derived", () => ({
+vi.mock("@algoplan/core/issues/derived", () => ({
   useBlockerCount: (wsId: string | undefined) => mockBlockerCount(wsId),
 }));
 

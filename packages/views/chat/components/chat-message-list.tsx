@@ -2,20 +2,20 @@
 
 import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { cn } from "@multica/ui/lib/utils";
-import { Skeleton } from "@multica/ui/components/ui/skeleton";
+import { cn } from "@algoplan/ui/lib/utils";
+import { Skeleton } from "@algoplan/ui/components/ui/skeleton";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@multica/ui/components/ui/collapsible";
+} from "@algoplan/ui/components/ui/collapsible";
 import { Loader2, ChevronRight, ChevronDown, Brain, AlertCircle } from "lucide-react";
-import { useScrollFade } from "@multica/ui/hooks/use-scroll-fade";
-import { useAutoScroll } from "@multica/ui/hooks/use-auto-scroll";
-import { taskMessagesOptions } from "@multica/core/chat/queries";
-import { Markdown } from "@multica/views/common/markdown";
-import type { ChatMessage, TaskMessagePayload } from "@multica/core/types";
-import type { ChatTimelineItem } from "@multica/core/chat";
+import { useScrollFade } from "@algoplan/ui/hooks/use-scroll-fade";
+import { useAutoScroll } from "@algoplan/ui/hooks/use-auto-scroll";
+import { taskMessagesOptions } from "@algoplan/core/chat/queries";
+import { Markdown } from "@algoplan/views/common/markdown";
+import type { ChatMessage, TaskMessagePayload } from "@algoplan/core/types";
+import type { ChatTimelineItem } from "@algoplan/core/chat";
 
 // ─── Public component ────────────────────────────────────────────────────
 

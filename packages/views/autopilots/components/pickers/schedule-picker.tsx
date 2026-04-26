@@ -5,7 +5,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@multica/ui/components/ui/popover";
+} from "@algoplan/ui/components/ui/popover";
 import {
   TriggerConfigSection,
   type TriggerConfig,

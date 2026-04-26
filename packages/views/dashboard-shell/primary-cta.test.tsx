@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 
 const { mockOpen } = vi.hoisted(() => ({ mockOpen: vi.fn() }));
 
-vi.mock("@multica/core/modals", () => ({
+vi.mock("@algoplan/core/modals", () => ({
   useModalStore: {
     getState: () => ({ open: mockOpen }),
   },

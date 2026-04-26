@@ -3,26 +3,26 @@
 import { useState, useRef } from "react";
 import { useNavigation } from "../navigation";
 import { Check, ChevronRight, Maximize2, Minimize2, X as XIcon } from "lucide-react";
-import { cn } from "@multica/ui/lib/utils";
+import { cn } from "@algoplan/ui/lib/utils";
 import { toast } from "sonner";
-import type { IssueStatus, IssuePriority, IssueAssigneeType } from "@multica/core/types";
+import type { IssueStatus, IssuePriority, IssueAssigneeType } from "@algoplan/core/types";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
-} from "@multica/ui/components/ui/dialog";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@multica/ui/components/ui/tooltip";
-import { Button } from "@multica/ui/components/ui/button";
+} from "@algoplan/ui/components/ui/dialog";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@algoplan/ui/components/ui/tooltip";
+import { Button } from "@algoplan/ui/components/ui/button";
 import { ContentEditor, type ContentEditorRef, TitleEditor, useFileDropZone, FileDropOverlay } from "../editor";
 import { StatusIcon, StatusPicker, PriorityPicker, AssigneePicker, DueDatePicker } from "../issues/components";
 import { BacklogAgentHintContent } from "../issues/components/backlog-agent-hint-dialog";
 import { ProjectPicker } from "../projects/components/project-picker";
-import { useCurrentWorkspace, useWorkspacePaths } from "@multica/core/paths";
-import { useIssueDraftStore } from "@multica/core/issues/stores/draft-store";
-import { useCreateIssue, useUpdateIssue } from "@multica/core/issues/mutations";
-import { useFileUpload } from "@multica/core/hooks/use-file-upload";
-import { api } from "@multica/core/api";
-import { FileUploadButton } from "@multica/ui/components/common/file-upload-button";
+import { useCurrentWorkspace, useWorkspacePaths } from "@algoplan/core/paths";
+import { useIssueDraftStore } from "@algoplan/core/issues/stores/draft-store";
+import { useCreateIssue, useUpdateIssue } from "@algoplan/core/issues/mutations";
+import { useFileUpload } from "@algoplan/core/hooks/use-file-upload";
+import { api } from "@algoplan/core/api";
+import { FileUploadButton } from "@algoplan/ui/components/common/file-upload-button";
 import { PillButton } from "../common/pill-button";
 
 // ---------------------------------------------------------------------------

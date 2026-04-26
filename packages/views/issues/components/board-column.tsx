@@ -2,19 +2,19 @@
 
 import { useState, type ReactNode } from "react";
 import { EyeOff, MoreHorizontal, Plus } from "lucide-react";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@multica/ui/components/ui/tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@algoplan/ui/components/ui/tooltip";
 import { useDroppable } from "@dnd-kit/react";
 import { CollisionPriority } from "@dnd-kit/abstract";
-import type { Issue, IssueStatus } from "@multica/core/types";
-import { Button } from "@multica/ui/components/ui/button";
+import type { Issue, IssueStatus } from "@algoplan/core/types";
+import { Button } from "@algoplan/ui/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@multica/ui/components/ui/dropdown-menu";
-import { STATUS_CONFIG } from "@multica/core/issues/config";
-import { useViewStoreApi } from "@multica/core/issues/stores/view-store-context";
+} from "@algoplan/ui/components/ui/dropdown-menu";
+import { STATUS_CONFIG } from "@algoplan/core/issues/config";
+import { useViewStoreApi } from "@algoplan/core/issues/stores/view-store-context";
 import { StatusIcon } from "./status-icon";
 import { DraggableBoardCard } from "./board-card";
 import { InlineTaskAdd } from "./inline-task-add";

@@ -13,7 +13,7 @@ import { useIssueCountByPriority } from "./use-issue-count-by-priority";
 import { issueKeys } from "../queries";
 import type { Issue, ListIssuesCache } from "../../types";
 
-// Mock @multica/core/api so issueListOptions's queryFn never hits the network.
+// Mock @algoplan/core/api so issueListOptions's queryFn never hits the network.
 const { mockListIssues } = vi.hoisted(() => ({ mockListIssues: vi.fn() }));
 vi.mock("../../api", () => ({
   api: { listIssues: mockListIssues },

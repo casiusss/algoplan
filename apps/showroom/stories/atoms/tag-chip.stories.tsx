@@ -1,11 +1,11 @@
 // UI-SPEC §1 — TagChip stories (Default, AllColors, WithRemove, Polymorphic).
-// Atom source: @multica/ui/components/ui/tag-chip (real source — UI-SPEC §Hard Constraint #1).
+// Atom source: @algoplan/ui/components/ui/tag-chip (real source — UI-SPEC §Hard Constraint #1).
 //
 // Storybook 9 subpath imports (NOT @storybook/test) per RESEARCH §Pitfall 1.
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { fn } from "storybook/test"
 
-import { TagChip, type TagChipColor } from "@multica/ui/components/ui/tag-chip"
+import { TagChip, type TagChipColor } from "@algoplan/ui/components/ui/tag-chip"
 
 const meta = {
   title: "Atoms / TagChip",

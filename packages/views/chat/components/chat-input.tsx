@@ -3,9 +3,9 @@
 import type { ReactNode } from "react";
 import { useRef, useState } from "react";
 import { ContentEditor, type ContentEditorRef } from "../../editor";
-import { SubmitButton } from "@multica/ui/components/common/submit-button";
-import { useChatStore, DRAFT_NEW_SESSION } from "@multica/core/chat";
-import { createLogger } from "@multica/core/logger";
+import { SubmitButton } from "@algoplan/ui/components/common/submit-button";
+import { useChatStore, DRAFT_NEW_SESSION } from "@algoplan/core/chat";
+import { createLogger } from "@algoplan/core/logger";
 
 const logger = createLogger("chat.ui");
 

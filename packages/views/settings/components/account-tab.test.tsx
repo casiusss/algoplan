@@ -15,18 +15,18 @@ vi.mock("sonner", () => ({
   toast: { error: vi.fn(), success: vi.fn() },
 }));
 
-vi.mock("@multica/core/auth", () => ({
+vi.mock("@algoplan/core/auth", () => ({
   useAuthStore: (selector: (s: { user: typeof mockUser.current; setUser: () => void }) => unknown) =>
     selector({ user: mockUser.current, setUser: vi.fn() }),
 }));
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     updateMe: vi.fn(async (patch: object) => ({ ...mockUser.current, ...patch })),
   },
 }));
 
-vi.mock("@multica/core/hooks/use-file-upload", () => ({
+vi.mock("@algoplan/core/hooks/use-file-upload", () => ({
   useFileUpload: () => ({ upload: vi.fn(), uploading: false }),
 }));
 

@@ -2,11 +2,11 @@
 
 import { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAuthStore } from "@multica/core/auth";
-import { workspaceKeys } from "@multica/core/workspace/queries";
-import { clearWorkspaceStorage, defaultStorage } from "@multica/core/platform";
-import { paths } from "@multica/core/paths";
-import type { Workspace } from "@multica/core/types";
+import { useAuthStore } from "@algoplan/core/auth";
+import { workspaceKeys } from "@algoplan/core/workspace/queries";
+import { clearWorkspaceStorage, defaultStorage } from "@algoplan/core/platform";
+import { paths } from "@algoplan/core/paths";
+import type { Workspace } from "@algoplan/core/types";
 import { useNavigation } from "../navigation";
 
 /**

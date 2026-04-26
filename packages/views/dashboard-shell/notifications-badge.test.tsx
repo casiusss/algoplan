@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import type { InboxItem } from "@multica/core/types";
+import type { InboxItem } from "@algoplan/core/types";
 
 const { mockInbox, mockListInbox, mockPathname, mockPush } = vi.hoisted(() => ({
   mockInbox: { current: [] as InboxItem[] },
@@ -11,13 +11,13 @@ const { mockInbox, mockListInbox, mockPathname, mockPush } = vi.hoisted(() => ({
   mockPush: vi.fn(),
 }));
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     listInbox: () => mockListInbox(),
   },
 }));
 
-vi.mock("@multica/core/inbox/queries", () => ({
+vi.mock("@algoplan/core/inbox/queries", () => ({
   inboxKeys: {
     all: (wsId: string) => ["inbox", wsId] as const,
     list: (wsId: string) => ["inbox", wsId, "list"] as const,
@@ -25,7 +25,7 @@ vi.mock("@multica/core/inbox/queries", () => ({
   deduplicateInboxItems: (items: InboxItem[]) => items,
 }));
 
-vi.mock("@multica/core/paths", () => ({
+vi.mock("@algoplan/core/paths", () => ({
   useWorkspacePaths: () => ({
     inbox: () => "/ws-1/inbox",
   }),
@@ -44,7 +44,7 @@ vi.mock("../navigation", () => ({
 }));
 
 import { NotificationsBadge } from "./notifications-badge";
-import { SidebarProvider, SidebarMenu } from "@multica/ui/components/ui/sidebar";
+import { SidebarProvider, SidebarMenu } from "@algoplan/ui/components/ui/sidebar";
 
 function makeItem(overrides: Partial<InboxItem> = {}): InboxItem {
   return {

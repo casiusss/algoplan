@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { Project } from "@multica/core/types";
+import type { Project } from "@algoplan/core/types";
 
 // ---------------------------------------------------------------------------
 // Hoisted mocks
@@ -24,7 +24,7 @@ function setRole(role: "member" | "admin" | "owner" | null) {
 // Module mocks
 // ---------------------------------------------------------------------------
 
-vi.mock("@multica/core/workspace/hooks", () => ({
+vi.mock("@algoplan/core/workspace/hooks", () => ({
   useCurrentMemberRole: () => roleRef.current,
   useActorName: () => ({
     getActorName: () => "",
@@ -35,7 +35,7 @@ vi.mock("@multica/core/workspace/hooks", () => ({
   }),
 }));
 
-vi.mock("@multica/core/projects/mutations", () => ({
+vi.mock("@algoplan/core/projects/mutations", () => ({
   useUpdateProject: () => ({
     mutateAsync: mockUpdateMutateAsync,
     isPending: false,
@@ -46,11 +46,11 @@ vi.mock("@multica/core/projects/mutations", () => ({
   }),
 }));
 
-vi.mock("@multica/core/hooks", () => ({
+vi.mock("@algoplan/core/hooks", () => ({
   useWorkspaceId: () => "00000000-0000-0000-0000-000000000000",
 }));
 
-vi.mock("@multica/core/paths", () => ({
+vi.mock("@algoplan/core/paths", () => ({
   useCurrentWorkspace: () => ({
     id: "00000000-0000-0000-0000-000000000000",
     name: "Test Workspace",
@@ -62,7 +62,7 @@ vi.mock("@multica/core/paths", () => ({
   }),
 }));
 
-vi.mock("@multica/core/auth", () => ({
+vi.mock("@algoplan/core/auth", () => ({
   useAuthStore: Object.assign(
     (selector: (s: { user: { id: string } }) => unknown) => selector({ user: { id: "user-1" } }),
     { getState: () => ({ user: { id: "user-1" } }) },
@@ -72,19 +72,19 @@ vi.mock("@multica/core/auth", () => ({
 // Project detail query: we pull directly from the outer test by reading a ref.
 const projectRef = vi.hoisted(() => ({ current: null as Project | null }));
 
-vi.mock("@multica/core/projects/queries", () => ({
+vi.mock("@algoplan/core/projects/queries", () => ({
   projectDetailOptions: (_wsId: string, _id: string) => ({
     queryKey: ["project-detail"],
     queryFn: async () => projectRef.current,
   }),
 }));
 
-vi.mock("@multica/core/workspace/queries", () => ({
+vi.mock("@algoplan/core/workspace/queries", () => ({
   memberListOptions: () => ({ queryKey: ["members"], queryFn: async () => [] }),
   agentListOptions: () => ({ queryKey: ["agents"], queryFn: async () => [] }),
 }));
 
-vi.mock("@multica/core/issues/queries", () => ({
+vi.mock("@algoplan/core/issues/queries", () => ({
   myIssueListOptions: () => ({ queryKey: ["issues"], queryFn: async () => [] }),
   childIssueProgressOptions: () => ({
     queryKey: ["child-progress"],
@@ -92,21 +92,21 @@ vi.mock("@multica/core/issues/queries", () => ({
   }),
 }));
 
-vi.mock("@multica/core/issues/mutations", () => ({
+vi.mock("@algoplan/core/issues/mutations", () => ({
   useUpdateIssue: () => ({ mutate: vi.fn() }),
 }));
 
-vi.mock("@multica/core/pins", () => ({
+vi.mock("@algoplan/core/pins", () => ({
   pinListOptions: () => ({ queryKey: ["pins"], queryFn: async () => [] }),
   useCreatePin: () => ({ mutate: vi.fn() }),
   useDeletePin: () => ({ mutate: vi.fn() }),
 }));
 
-vi.mock("@multica/core/issues/config", () => ({
+vi.mock("@algoplan/core/issues/config", () => ({
   BOARD_STATUSES: [],
 }));
 
-vi.mock("@multica/core/projects/config", () => ({
+vi.mock("@algoplan/core/projects/config", () => ({
   PROJECT_STATUS_ORDER: ["planned"],
   PROJECT_STATUS_CONFIG: {
     planned: { label: "Planned", dotColor: "bg-muted" },
@@ -125,7 +125,7 @@ vi.mock("@multica/core/projects/config", () => ({
   },
 }));
 
-vi.mock("@multica/core/issues/stores/view-store", () => ({
+vi.mock("@algoplan/core/issues/stores/view-store", () => ({
   createIssueViewStore: () => ({
     getState: () => ({
       sortBy: "position",
@@ -136,7 +136,7 @@ vi.mock("@multica/core/issues/stores/view-store", () => ({
   }),
 }));
 
-vi.mock("@multica/core/issues/stores/view-store-context", () => ({
+vi.mock("@algoplan/core/issues/stores/view-store-context", () => ({
   ViewStoreProvider: ({ children }: { children: ReactNode }) => <>{children}</>,
   useViewStore: (selector: (s: unknown) => unknown) =>
     selector({
@@ -230,19 +230,19 @@ vi.mock("react-resizable-panels", () => ({
   usePanelRef: () => ({ current: null }),
 }));
 
-vi.mock("@multica/ui/hooks/use-mobile", () => ({
+vi.mock("@algoplan/ui/hooks/use-mobile", () => ({
   useIsMobile: () => false,
 }));
 
-vi.mock("@multica/ui/lib/utils", () => ({
+vi.mock("@algoplan/ui/lib/utils", () => ({
   cn: (...values: Array<string | false | null | undefined>) => values.filter(Boolean).join(" "),
 }));
 
-vi.mock("@multica/ui/components/ui/skeleton", () => ({
+vi.mock("@algoplan/ui/components/ui/skeleton", () => ({
   Skeleton: () => <div data-testid="skeleton" />,
 }));
 
-vi.mock("@multica/ui/components/ui/button", () => ({
+vi.mock("@algoplan/ui/components/ui/button", () => ({
   Button: ({
     children,
     disabled,
@@ -264,18 +264,18 @@ vi.mock("@multica/ui/components/ui/button", () => ({
   ),
 }));
 
-vi.mock("@multica/ui/components/ui/resizable", () => ({
+vi.mock("@algoplan/ui/components/ui/resizable", () => ({
   ResizablePanelGroup: ({ children }: { children: ReactNode }) => <div>{children}</div>,
   ResizablePanel: ({ children }: { children: ReactNode }) => <div>{children}</div>,
   ResizableHandle: () => <div />,
 }));
 
-vi.mock("@multica/ui/components/ui/sheet", () => ({
+vi.mock("@algoplan/ui/components/ui/sheet", () => ({
   Sheet: ({ children }: { children: ReactNode }) => <div>{children}</div>,
   SheetContent: ({ children }: { children: ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock("@multica/ui/components/ui/dropdown-menu", () => ({
+vi.mock("@algoplan/ui/components/ui/dropdown-menu", () => ({
   DropdownMenu: ({ children }: { children: ReactNode }) => <div>{children}</div>,
   DropdownMenuTrigger: ({ render }: { render: ReactNode }) => <>{render}</>,
   DropdownMenuContent: ({ children }: { children: ReactNode }) => <div>{children}</div>,
@@ -287,23 +287,23 @@ vi.mock("@multica/ui/components/ui/dropdown-menu", () => ({
   DropdownMenuSeparator: () => <hr />,
 }));
 
-vi.mock("@multica/ui/components/ui/popover", () => ({
+vi.mock("@algoplan/ui/components/ui/popover", () => ({
   Popover: ({ children }: { children: ReactNode }) => <div>{children}</div>,
   PopoverTrigger: ({ render }: { render: ReactNode }) => <>{render}</>,
   PopoverContent: ({ children }: { children: ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock("@multica/ui/components/ui/tooltip", () => ({
+vi.mock("@algoplan/ui/components/ui/tooltip", () => ({
   Tooltip: ({ children }: { children: ReactNode }) => <>{children}</>,
   TooltipTrigger: ({ render }: { render: ReactNode }) => <>{render}</>,
   TooltipContent: ({ children }: { children: ReactNode }) => <>{children}</>,
 }));
 
-vi.mock("@multica/ui/components/common/emoji-picker", () => ({
+vi.mock("@algoplan/ui/components/common/emoji-picker", () => ({
   EmojiPicker: () => <div data-testid="emoji-picker" />,
 }));
 
-vi.mock("@multica/ui/components/ui/alert-dialog", () => ({
+vi.mock("@algoplan/ui/components/ui/alert-dialog", () => ({
   AlertDialog: ({ children }: { children: ReactNode }) => <div>{children}</div>,
   AlertDialogAction: ({ children, onClick }: { children: ReactNode; onClick?: () => void }) => (
     <button onClick={onClick}>{children}</button>

@@ -9,7 +9,7 @@ import userEvent from "@testing-library/user-event";
 const setViewMode = vi.fn();
 let mockViewMode: "board" | "list" = "board";
 
-vi.mock("@multica/core/issues/stores/view-store-context", () => ({
+vi.mock("@algoplan/core/issues/stores/view-store-context", () => ({
   useViewStore: (selector: (s: { viewMode: "board" | "list" }) => unknown) =>
     selector({ viewMode: mockViewMode }),
   useViewStoreApi: () => ({

@@ -1,5 +1,5 @@
 // UI-SPEC §4 — SegmentedControl stories (Default, TwoOptions, WithDisabled, KeyboardInstructions).
-// Atom source: @multica/ui/components/ui/segmented-control (real source).
+// Atom source: @algoplan/ui/components/ui/segmented-control (real source).
 //
 // SegmentedControl is controlled — atom does NOT manage its own value state.
 // We use `useArgs` from `storybook/preview-api` (NOT @storybook/preview-api per
@@ -17,7 +17,7 @@ import { useArgs } from "storybook/preview-api"
 import {
   SegmentedControl,
   SegmentedControlItem,
-} from "@multica/ui/components/ui/segmented-control"
+} from "@algoplan/ui/components/ui/segmented-control"
 
 const meta = {
   title: "Atoms / SegmentedControl",

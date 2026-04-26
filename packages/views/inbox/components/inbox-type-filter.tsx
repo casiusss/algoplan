@@ -1,8 +1,8 @@
 "use client";
 
-import { TagChip } from "@multica/ui/components/ui/tag-chip";
-import { useInboxFilterStore } from "@multica/core/inbox";
-import type { InboxItemType } from "@multica/core/types";
+import { TagChip } from "@algoplan/ui/components/ui/tag-chip";
+import { useInboxFilterStore } from "@algoplan/core/inbox";
+import type { InboxItemType } from "@algoplan/core/types";
 
 /**
  * Type filter chips for the inbox view (UI-SPEC §Sub-Phase INB §Type filter
@@ -14,7 +14,7 @@ import type { InboxItemType } from "@multica/core/types";
  * agent-driven types. The mapping intentionally lives here (not in
  * `InboxItemType`) so future enum changes don't force a UI ripple.
  *
- * Chips read from / write to `useInboxFilterStore` (in @multica/core/inbox
+ * Chips read from / write to `useInboxFilterStore` (in @algoplan/core/inbox
  * per CLAUDE.md state-management rules). The store creates a new Set on
  * every toggle (immutable), so this component re-renders cleanly off
  * Zustand identity.

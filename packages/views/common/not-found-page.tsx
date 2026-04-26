@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@multica/ui/components/ui/button";
+import { Button } from "@algoplan/ui/components/ui/button";
 import { useNavigation } from "../navigation";
 import { DragStrip } from "../platform";
 import { AlgoPlanWordmark } from "../auth/algoplan-wordmark";

@@ -8,15 +8,15 @@ import {
   PenLine,
   Sparkles,
 } from "lucide-react";
-import { Button } from "@multica/ui/components/ui/button";
-import { useScrollFade } from "@multica/ui/hooks/use-scroll-fade";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { useScrollFade } from "@algoplan/ui/hooks/use-scroll-fade";
 import type {
   QuestionnaireAnswers,
   Role,
   TeamSize,
   UseCase,
-} from "@multica/core/onboarding";
-import { DragStrip } from "@multica/views/platform";
+} from "@algoplan/core/onboarding";
+import { DragStrip } from "@algoplan/views/platform";
 import { StepHeader } from "../components/step-header";
 import { OptionCard, OtherOptionCard } from "../components/option-card";
 

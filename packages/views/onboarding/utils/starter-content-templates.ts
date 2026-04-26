@@ -1,8 +1,8 @@
-import type { QuestionnaireAnswers } from "@multica/core/onboarding";
+import type { QuestionnaireAnswers } from "@algoplan/core/onboarding";
 import type {
   ImportStarterContentPayload,
   ImportStarterIssuePayload,
-} from "@multica/core/api";
+} from "@algoplan/core/api";
 
 // =============================================================================
 // Starter content templates.

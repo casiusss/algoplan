@@ -9,20 +9,20 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from "@multica/ui/components/ui/card";
-import { Input } from "@multica/ui/components/ui/input";
-import { Button } from "@multica/ui/components/ui/button";
-import { Label } from "@multica/ui/components/ui/label";
+} from "@algoplan/ui/components/ui/card";
+import { Input } from "@algoplan/ui/components/ui/input";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { Label } from "@algoplan/ui/components/ui/label";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "@multica/ui/components/ui/input-otp";
-import { useAuthStore } from "@multica/core/auth";
-import { workspaceKeys } from "@multica/core/workspace/queries";
-import { api, ApiError } from "@multica/core/api";
-import { useNavigationFlash } from "@multica/core/navigation";
-import type { User } from "@multica/core/types";
+} from "@algoplan/ui/components/ui/input-otp";
+import { useAuthStore } from "@algoplan/core/auth";
+import { workspaceKeys } from "@algoplan/core/workspace/queries";
+import { api, ApiError } from "@algoplan/core/api";
+import { useNavigationFlash } from "@algoplan/core/navigation";
+import type { User } from "@algoplan/core/types";
 import { AlgoPlanWordmark } from "./algoplan-wordmark";
 import { AppLink } from "../navigation";
 

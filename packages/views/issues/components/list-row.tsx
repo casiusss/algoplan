@@ -2,16 +2,16 @@
 
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { AccentBar } from "@multica/ui/components/ui/accent-bar";
-import { cn } from "@multica/ui/lib/utils";
+import { AccentBar } from "@algoplan/ui/components/ui/accent-bar";
+import { cn } from "@algoplan/ui/lib/utils";
 import { AppLink } from "../../navigation";
-import type { Issue } from "@multica/core/types";
+import type { Issue } from "@algoplan/core/types";
 import { ActorAvatar } from "../../common/actor-avatar";
-import { useIssueSelectionStore } from "@multica/core/issues/stores/selection-store";
-import { useWorkspacePaths } from "@multica/core/paths";
-import { useWorkspaceId } from "@multica/core/hooks";
-import { useViewStore } from "@multica/core/issues/stores/view-store-context";
-import { projectListOptions } from "@multica/core/projects/queries";
+import { useIssueSelectionStore } from "@algoplan/core/issues/stores/selection-store";
+import { useWorkspacePaths } from "@algoplan/core/paths";
+import { useWorkspaceId } from "@algoplan/core/hooks";
+import { useViewStore } from "@algoplan/core/issues/stores/view-store-context";
+import { projectListOptions } from "@algoplan/core/projects/queries";
 import { PriorityIcon } from "./priority-icon";
 import { ProgressRing } from "./progress-ring";
 import { priorityToAccentColor } from "../utils/priority-color";

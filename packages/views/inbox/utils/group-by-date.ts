@@ -1,4 +1,4 @@
-import type { InboxItem } from "@multica/core/types";
+import type { InboxItem } from "@algoplan/core/types";
 
 /**
  * Date-bucket assignment for inbox grouping (UI-SPEC §Sub-Phase INB

@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useMemo } from "react";
-import { CoreProvider } from "@multica/core/platform";
+import { CoreProvider } from "@algoplan/core/platform";
 import packageJson from "../package.json";
 import { WebNavigationProvider } from "@/platform/navigation";
 import {

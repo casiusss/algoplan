@@ -1,6 +1,6 @@
-import { LoginPage } from "@multica/views/auth";
-import { DragStrip } from "@multica/views/platform";
-import { MulticaIcon } from "@multica/ui/components/common/multica-icon";
+import { LoginPage } from "@algoplan/views/auth";
+import { DragStrip } from "@algoplan/views/platform";
+import { MulticaIcon } from "@algoplan/ui/components/common/multica-icon";
 
 const WEB_URL = import.meta.env.VITE_APP_URL || "http://localhost:3000";
 

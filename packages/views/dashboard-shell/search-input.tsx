@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { Input } from "@multica/ui/components/ui/input";
+import { Input } from "@algoplan/ui/components/ui/input";
 
 /**
  * Inline topbar search input. Presentational only — typing is a no-op for v1

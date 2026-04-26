@@ -7,7 +7,7 @@ vi.mock("../layout/dashboard-guard", () => ({
   ),
 }));
 
-vi.mock("@multica/ui/components/ui/sidebar", () => ({
+vi.mock("@algoplan/ui/components/ui/sidebar", () => ({
   SidebarProvider: ({
     children,
     className,
