@@ -968,7 +968,7 @@ export function IssueDetail({ issueId, onDelete, onClose, defaultSidebarOpen = t
                   <AlertDialogAction
                     onClick={handleDelete}
                     disabled={deleting}
-                    className="bg-destructive text-white hover:bg-destructive/90"
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                   >
                     {deleting ? "Wird gelöscht…" : "Löschen"}
                   </AlertDialogAction>
