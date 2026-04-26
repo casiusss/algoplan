@@ -433,6 +433,20 @@ func (h *Handler) ImportStarterContent(w http.ResponseWriter, r *http.Request) {
 		subSpecs = req.AgentGuidedSubIssues
 	}
 
+	// --- Resolve Inbox project (seeded by CreateWorkspace) for repo_url default + welcome/sub-issue routing ---
+	inboxID, err := qtx.GetInboxProjectID(r.Context(), parseUUID(req.WorkspaceID))
+	if err != nil {
+		slog.Warn("import starter content: get inbox project failed", append(logger.RequestAttrs(r), "error", err)...)
+		writeError(w, http.StatusInternalServerError, "failed to resolve default project")
+		return
+	}
+	inbox, err := qtx.GetProject(r.Context(), inboxID)
+	if err != nil {
+		slog.Warn("import starter content: load inbox project failed", append(logger.RequestAttrs(r), "error", err)...)
+		writeError(w, http.StatusInternalServerError, "failed to load default project")
+		return
+	}
+
 	// --- Create project ---
 	project, err := qtx.CreateProject(r.Context(), db.CreateProjectParams{
 		WorkspaceID: parseUUID(req.WorkspaceID),
@@ -441,18 +455,11 @@ func (h *Handler) ImportStarterContent(w http.ResponseWriter, r *http.Request) {
 		Icon:        strOrNullText(req.Project.Icon),
 		Status:      "planned",
 		Priority:    "none",
+		RepoUrl:     inbox.RepoUrl,
 	})
 	if err != nil {
 		slog.Warn("import starter content: create project failed", append(logger.RequestAttrs(r), "error", err)...)
 		writeError(w, http.StatusInternalServerError, "failed to create project")
-		return
-	}
-
-	// --- Resolve Inbox project for welcome and sub-issues ---
-	inboxID, err := qtx.GetInboxProjectID(r.Context(), parseUUID(req.WorkspaceID))
-	if err != nil {
-		slog.Warn("import starter content: get inbox project failed", append(logger.RequestAttrs(r), "error", err)...)
-		writeError(w, http.StatusInternalServerError, "failed to resolve default project")
 		return
 	}
 

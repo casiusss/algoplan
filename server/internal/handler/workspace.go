@@ -197,6 +197,23 @@ func (h *Handler) CreateWorkspace(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Seed an Inbox project so orphan issues + starter-content imports always
+	// have a home post-migration 058. The placeholder repo_url can be edited
+	// by an admin later (project.repo_url is admin-gated).
+	_, err = qtx.CreateProject(r.Context(), db.CreateProjectParams{
+		WorkspaceID: ws.ID,
+		Title:       "Inbox",
+		Description: pgtype.Text{String: "Default project for issues without an explicit project", Valid: true},
+		Icon:        pgtype.Text{String: "📥", Valid: true},
+		Status:      "in_progress",
+		Priority:    "none",
+		RepoUrl:     "https://github.com/your-org/your-repo.git",
+	})
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "failed to seed inbox project: "+err.Error())
+		return
+	}
+
 	if err := tx.Commit(r.Context()); err != nil {
 		writeError(w, http.StatusInternalServerError, "failed to create workspace")
 		return
