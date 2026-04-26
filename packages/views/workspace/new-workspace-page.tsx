@@ -3,7 +3,7 @@
 import { ArrowLeft, LogOut } from "lucide-react";
 import { Button } from "@multica/ui/components/ui/button";
 import type { Workspace } from "@multica/core/types";
-import { useLogout } from "../auth";
+import { AlgoPlanWordmark, useLogout } from "../auth";
 import { DragStrip } from "../platform";
 import { CreateWorkspaceForm } from "./create-workspace-form";
 
@@ -19,6 +19,13 @@ import { CreateWorkspaceForm } from "./create-workspace-form";
  * back to (user has other workspaces, or the flow was entered from an
  * existing session). On the zero-workspace entry path it's omitted, which
  * hides Back — Log out is then the only escape.
+ *
+ * Layout contract (Phase 6 AUTH, UI-SPEC §AUTH §Pre-workspace pages):
+ *  - DragStrip stays the FIRST flex child of the page-root flex container
+ *    — wordmark goes INSIDE the centered card region, never above DragStrip.
+ *    The dragstrip-coverage gate enforces this structurally.
+ *  - Title is `text-3xl italic font-semibold` reading "Willkommen bei AlgoPlan".
+ *  - Shell strings (body, invite hint, Back, Log out) are German.
  */
 export function NewWorkspacePage({
   onSuccess,
@@ -40,7 +47,7 @@ export function NewWorkspacePage({
           onClick={onBack}
         >
           <ArrowLeft />
-          Back
+          Zurück
         </Button>
       )}
       <Button
@@ -50,23 +57,25 @@ export function NewWorkspacePage({
         onClick={logout}
       >
         <LogOut />
-        Log out
+        Abmelden
       </Button>
 
       <div className="flex flex-1 flex-col items-center justify-center px-6 pb-12">
         <div className="flex w-full max-w-md flex-col items-center gap-6">
-          <div className="text-center">
-            <h1 className="text-3xl font-semibold tracking-tight">
-              Welcome to Multica
+          <div className="flex flex-col items-center text-center">
+            <AlgoPlanWordmark size="lg" className="mb-4" />
+            <h1 className="text-3xl italic font-semibold tracking-tight">
+              Willkommen bei AlgoPlan
             </h1>
             <p className="mt-3 text-muted-foreground">
-              One workspace where you and your AI teammates work side by side —
-              taking issues, leaving comments, sharing the same context.
+              Ein Workspace, in dem du und deine AI-Teamkollegen Seite an Seite
+              arbeitet — Issues übernehmen, Kommentare hinterlassen, denselben
+              Kontext teilen.
             </p>
           </div>
           <CreateWorkspaceForm onSuccess={onSuccess} />
           <p className="text-center text-xs text-muted-foreground">
-            You can invite teammates once your workspace is ready.
+            Du kannst Teammitglieder einladen, sobald dein Workspace bereit ist.
           </p>
         </div>
       </div>

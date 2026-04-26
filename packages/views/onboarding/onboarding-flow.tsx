@@ -16,6 +16,7 @@ import {
 import { workspaceListOptions } from "@multica/core/workspace/queries";
 import type { Agent, AgentRuntime, Workspace } from "@multica/core/types";
 import { DragStrip } from "@multica/views/platform";
+import { AlgoPlanWordmark } from "../auth/algoplan-wordmark";
 import { StepHeader } from "./components/step-header";
 import { StepWelcome } from "./steps/step-welcome";
 import { StepQuestionnaire } from "./steps/step-questionnaire";
@@ -257,6 +258,12 @@ export function OnboardingFlow({
       <DragStrip />
       <div className="flex flex-1 flex-col items-center px-6 pb-12">
         <div className="flex w-full max-w-xl flex-col gap-8">
+          {/* Phase 6 AUTH (UI-SPEC §AUTH §Pre-workspace pages): brand wordmark
+              in the hero header. Stays INSIDE the centered region — DragStrip
+              remains the first flex child of the page-root above. */}
+          <div className="flex justify-center">
+            <AlgoPlanWordmark size="lg" />
+          </div>
           <StepHeader currentStep={step} />
           {step === "first_issue" && (
             <StepFirstIssue

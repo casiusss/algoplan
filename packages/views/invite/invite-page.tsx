@@ -13,7 +13,7 @@ import {
   useHasOnboarded,
 } from "@multica/core/paths";
 import { useNavigation } from "../navigation";
-import { useLogout } from "../auth";
+import { AlgoPlanWordmark, useLogout } from "../auth";
 import { DragStrip } from "../platform";
 import { Button } from "@multica/ui/components/ui/button";
 import { Card, CardContent } from "@multica/ui/components/ui/card";
@@ -77,7 +77,11 @@ export function InvitePage({ invitationId, onBack }: InvitePageProps) {
         : fallbackDest;
       setTimeout(() => push(dest), 1000);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to accept invitation");
+      setError(
+        e instanceof Error
+          ? e.message
+          : "Einladung konnte nicht angenommen werden.",
+      );
     } finally {
       setAccepting(false);
     }
@@ -91,7 +95,11 @@ export function InvitePage({ invitationId, onBack }: InvitePageProps) {
       setDone("declined");
       qc.invalidateQueries({ queryKey: workspaceKeys.myInvitations() });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to decline invitation");
+      setError(
+        e instanceof Error
+          ? e.message
+          : "Einladung konnte nicht abgelehnt werden.",
+      );
     } finally {
       setDeclining(false);
     }
@@ -120,12 +128,15 @@ export function InvitePage({ invitationId, onBack }: InvitePageProps) {
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
               <X className="h-6 w-6 text-muted-foreground" />
             </div>
-            <h2 className="text-lg font-semibold">Invitation not found</h2>
+            <h2 className="text-lg italic font-semibold">
+              Einladung nicht gefunden
+            </h2>
             <p className="text-sm text-muted-foreground text-center">
-              This invitation may have expired, been revoked, or doesn&apos;t belong to your account.
+              Diese Einladung ist möglicherweise abgelaufen, wurde widerrufen
+              oder gehört nicht zu deinem Konto.
             </p>
             <Button variant="outline" onClick={() => push(fallbackDest)}>
-              Go to dashboard
+              Zum Dashboard
             </Button>
           </CardContent>
         </Card>
@@ -141,8 +152,12 @@ export function InvitePage({ invitationId, onBack }: InvitePageProps) {
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
               <Check className="h-6 w-6 text-primary" />
             </div>
-            <h2 className="text-lg font-semibold">You joined {invitation.workspace_name}!</h2>
-            <p className="text-sm text-muted-foreground">Redirecting to workspace...</p>
+            <h2 className="text-lg italic font-semibold">
+              Du bist {invitation.workspace_name} beigetreten!
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Weiterleitung zum Workspace …
+            </p>
           </CardContent>
         </Card>
       </InviteShell>
@@ -154,10 +169,12 @@ export function InvitePage({ invitationId, onBack }: InvitePageProps) {
       <InviteShell onBack={onBack}>
         <Card className="w-full max-w-md">
           <CardContent className="flex flex-col items-center gap-4 py-12">
-            <h2 className="text-lg font-semibold">Invitation declined</h2>
-            <p className="text-sm text-muted-foreground">You won&apos;t be added to this workspace.</p>
+            <h2 className="text-lg italic font-semibold">Einladung abgelehnt</h2>
+            <p className="text-sm text-muted-foreground">
+              Du wirst diesem Workspace nicht hinzugefügt.
+            </p>
             <Button variant="outline" onClick={() => push(fallbackDest)}>
-              Go to dashboard
+              Zum Dashboard
             </Button>
           </CardContent>
         </Card>
@@ -177,22 +194,27 @@ export function InvitePage({ invitationId, onBack }: InvitePageProps) {
           </div>
 
           <div className="text-center space-y-2">
-            <h2 className="text-xl font-semibold">
-              Join {invitation.workspace_name ?? "workspace"}
+            <h2 className="text-xl italic font-semibold">
+              {invitation.workspace_name ?? "Workspace"} beitreten
             </h2>
             <p className="text-sm text-muted-foreground">
-              <strong>{invitation.inviter_name || invitation.inviter_email}</strong>{" "}
-              invited you to join as {invitation.role === "admin" ? "an admin" : "a member"}.
+              <strong>
+                {invitation.inviter_name || invitation.inviter_email}
+              </strong>{" "}
+              hat dich eingeladen, als{" "}
+              {invitation.role === "admin" ? "Admin" : "Mitglied"} beizutreten.
             </p>
           </div>
 
           {isAlreadyHandled ? (
             <div className="text-sm text-muted-foreground">
-              This invitation has already been {invitation.status}.
+              {invitation.status === "accepted"
+                ? "Diese Einladung wurde bereits angenommen."
+                : "Diese Einladung wurde bereits abgelehnt."}
             </div>
           ) : isExpired ? (
             <div className="text-sm text-muted-foreground">
-              This invitation has expired.
+              Diese Einladung ist abgelaufen.
             </div>
           ) : (
             <div className="flex gap-3 w-full">
@@ -202,14 +224,14 @@ export function InvitePage({ invitationId, onBack }: InvitePageProps) {
                 onClick={handleDecline}
                 disabled={accepting || declining}
               >
-                {declining ? "Declining..." : "Decline"}
+                {declining ? "Wird abgelehnt …" : "Ablehnen"}
               </Button>
               <Button
                 className="flex-1"
                 onClick={handleAccept}
                 disabled={accepting || declining}
               >
-                {accepting ? "Joining..." : "Accept & Join"}
+                {accepting ? "Beitreten …" : "Beitreten"}
               </Button>
             </div>
           )}
@@ -227,6 +249,12 @@ export function InvitePage({ invitationId, onBack }: InvitePageProps) {
  * Shared chrome for every InvitePage render state (loading, error,
  * default, accepted, declined). Keeps Back + Log out buttons in a
  * consistent position across all branches and across platforms.
+ *
+ * Phase 6 AUTH (UI-SPEC §AUTH §Pre-workspace pages): the
+ * AlgoPlanWordmark sits ABOVE the card inside the centered region —
+ * NOT above DragStrip. DragStrip remains the FIRST flex child of the
+ * page-root flex container so macOS dragging keeps working; the
+ * dragstrip-coverage gate enforces this structurally.
  */
 function InviteShell({
   onBack,
@@ -247,7 +275,7 @@ function InviteShell({
           onClick={onBack}
         >
           <ArrowLeft />
-          Back
+          Zurück
         </Button>
       )}
       <Button
@@ -257,9 +285,10 @@ function InviteShell({
         onClick={logout}
       >
         <LogOut />
-        Log out
+        Abmelden
       </Button>
-      <div className="flex flex-1 flex-col items-center justify-center px-6 pb-12">
+      <div className="flex flex-1 flex-col items-center justify-center gap-6 px-6 pb-12">
+        <AlgoPlanWordmark size="lg" />
         {children}
       </div>
     </div>
