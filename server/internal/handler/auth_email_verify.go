@@ -10,6 +10,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 
 	"github.com/multica-ai/multica/server/internal/auth"
+	"github.com/multica-ai/multica/server/internal/logger"
 	db "github.com/multica-ai/multica/server/pkg/db/generated"
 )
 
@@ -68,7 +69,8 @@ func (h *Handler) EmailVerify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	slog.Info("email verified", "user_id", uuidToString(user.ID), "email", user.Email)
+	slog.Info("email verified",
+		append(logger.RequestAttrs(r), "user_id", uuidToString(user.ID), "email", user.Email)...)
 	writeJSON(w, http.StatusOK, map[string]any{
 		"message": "Email verified.",
 		"user":    userToResponse(updated),
