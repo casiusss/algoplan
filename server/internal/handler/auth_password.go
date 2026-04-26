@@ -364,11 +364,99 @@ func (h *Handler) PasswordResetRequest(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]string{"message": passwordResetRequestOKMessage})
 }
 
+// PasswordResetConfirmRequest is the body schema for
+// POST /auth/password-reset/confirm.
+type PasswordResetConfirmRequest struct {
+	Token       string `json:"token"`
+	NewPassword string `json:"newPassword"`
+}
+
 // PasswordResetConfirm handles POST /auth/password-reset/confirm.
-// Plan 03 implements: hash incoming token, lookup user via
-// GetUserByPasswordResetTokenHash, validate password strength,
-// bcrypt-hash new password, atomically clear reset token. Does NOT
-// auto-login (no token in body, no Set-Cookie).
+// Validates the new password length (12-72 bytes), hashes the incoming
+// reset token, looks the user up via Queries.GetUserByPasswordResetToken
+// Hash (whose SQL filters expires_at > now() — so expired tokens look
+// indistinguishable from invalid ones to the caller), bcrypt-hashes the
+// new password at cost 12, and atomically updates the password_hash AND
+// clears the reset-token columns through Queries.ConfirmPasswordReset.
+//
+// INTENTIONAL: this endpoint does NOT auto-login. Response body has no
+// Token field and no Set-Cookie header. An adversary with brief inbox
+// access (e.g., shared device, unattended terminal) must not walk away
+// with a long-lived session — the user is forced through /auth/login
+// after the reset (Pitfall §6).
+//
+// JWT invalidation on password reset (rotating server-side state so old
+// JWTs stop verifying) is OUT OF SCOPE per Open Q §2 RESOLVED. Stateless
+// 30-day JWTs remain valid; the future password_changed_at column +
+// middleware check is a known follow-up.
+//
+// Failure modes:
+//   - 400: missing fields, password < 12 chars, password > 72 bytes
+//   - 401: token unknown, expired, or already consumed (single 401
+//     wording for all three — token-error enumeration is not useful to
+//     a legitimate user but is useful to an attacker)
+//   - 500: DB outage during lookup, bcrypt hash failure, or DB outage
+//     during the atomic ConfirmPasswordReset
 func (h *Handler) PasswordResetConfirm(w http.ResponseWriter, r *http.Request) {
-	writeError(w, http.StatusNotImplemented, "not implemented")
+	var req PasswordResetConfirmRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+	if strings.TrimSpace(req.Token) == "" || req.NewPassword == "" {
+		writeError(w, http.StatusBadRequest, "token and newPassword are required")
+		return
+	}
+	// Length checks BEFORE bcrypt — bcrypt silently truncates >72 bytes
+	// (Plan PITFALL §2). Reject explicitly so the stored hash actually
+	// covers the user's full password. Mirrors Signup.
+	if len(req.NewPassword) < minPasswordLength {
+		writeError(w, http.StatusBadRequest, "password must be at least 12 characters")
+		return
+	}
+	if len(req.NewPassword) > maxPasswordBytes {
+		writeError(w, http.StatusBadRequest, "password must be at most 72 bytes")
+		return
+	}
+
+	tokenHash := auth.HashToken(req.Token)
+	user, err := h.Queries.GetUserByPasswordResetTokenHash(r.Context(),
+		pgtype.Text{String: tokenHash, Valid: true})
+	if err != nil {
+		if isNotFound(err) {
+			// Single 401 for invalid / expired / already-consumed —
+			// SQL-level expires_at > now() filter folds expiry into
+			// the same not-found path. Reuse path: ConfirmPassword
+			// Reset's atomic UPDATE has cleared the hash, so the
+			// next lookup returns ErrNoRows.
+			writeError(w, http.StatusUnauthorized, "invalid or expired token")
+			return
+		}
+		writeError(w, http.StatusInternalServerError, "failed to validate token")
+		return
+	}
+
+	newHash, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcryptCost)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "failed to hash password")
+		return
+	}
+
+	// Atomic: single UPDATE writes password_hash AND clears
+	// password_reset_token_hash + password_reset_expires_at. A second
+	// confirm with the same plaintext token then fails the lookup
+	// above — single-use is enforced at the SQL layer, not by an
+	// app-level "did we already use it?" flag.
+	if _, err := h.Queries.ConfirmPasswordReset(r.Context(), db.ConfirmPasswordResetParams{
+		ID:           user.ID,
+		PasswordHash: pgtype.Text{String: string(newHash), Valid: true},
+	}); err != nil {
+		writeError(w, http.StatusInternalServerError, "failed to update password")
+		return
+	}
+
+	slog.Info("user password reset",
+		append(logger.RequestAttrs(r), "user_id", uuidToString(user.ID), "email", user.Email)...)
+
+	writeJSON(w, http.StatusOK, map[string]string{"message": "Password updated. Please log in."})
 }
