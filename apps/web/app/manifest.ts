@@ -9,12 +9,9 @@ import type { MetadataRoute } from "next";
 // background_color is the splash background shown before first paint —
 // kept white to match the light-theme initial state on cold launch.
 //
-// Phase 7 D-2 invariant: this file does NOT touch localStorage. The
-// preserved chat keys (multica:chat:selectedAgentId etc.) and auth key
-// (multica_token) live in their respective stores; renaming them would
-// log every existing user out + lose UI state. See
-// packages/core/chat/store.test.ts and packages/core/auth/store.test.ts
-// for the regression locks that block any future rename PR.
+// Phase 8 D-2: localStorage keys have been migrated to algoplan_* / algoplan:*
+// via migrateLocalStorage (boot) + useWorkspaceStorageMigration (workspace mount).
+// This file does NOT touch localStorage. Storage is owned by each respective store.
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "AlgoPlan",

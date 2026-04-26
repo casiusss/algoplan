@@ -1,12 +1,13 @@
 "use client";
 
-import { use, useEffect } from "react";
+import { use, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { WorkspaceSlugProvider, paths } from "@algoplan/core/paths";
-import { workspaceBySlugOptions } from "@algoplan/core/workspace";
+import { workspaceBySlugOptions, workspaceListOptions } from "@algoplan/core/workspace";
 import { setCurrentWorkspace } from "@algoplan/core/platform";
 import { useAuthStore } from "@algoplan/core/auth";
+import { useWorkspaceStorageMigration } from "@algoplan/core/migrations";
 import { NoAccessPage } from "@algoplan/views/workspace/no-access-page";
 import { AlgoPlanWordmark } from "@algoplan/views/auth";
 import { useWorkspaceSeen } from "@algoplan/views/workspace/use-workspace-seen";
@@ -37,6 +38,21 @@ export default function WorkspaceLayout({
     ...workspaceBySlugOptions(workspaceSlug),
     enabled: !!user,
   });
+
+  // Fetch the full workspace list (same cache key as workspaceBySlugOptions — cache hit).
+  // Needed to migrate workspace-scoped legacy localStorage keys for ALL workspaces at once.
+  const { data: wsList } = useQuery({
+    ...workspaceListOptions(),
+    enabled: !!user,
+  });
+
+  // PHASE-8 D-2: migrate workspace-scoped legacy localStorage keys (multica_*:<slug> →
+  // algoplan_*:<slug>) once per process when the workspace list is available.
+  const wsListSlugs = useMemo(
+    () => (wsList ?? []).map((w) => w.slug),
+    [wsList],
+  );
+  useWorkspaceStorageMigration(wsListSlugs);
 
   // Render-phase sync: feed the URL slug into the platform singleton so
   // the first child query's X-Workspace-Slug header is already correct.

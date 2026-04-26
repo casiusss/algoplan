@@ -5,17 +5,17 @@ import { createLogger } from "../logger";
 
 const logger = createLogger("chat.store");
 
-const AGENT_STORAGE_KEY = "multica:chat:selectedAgentId";
-const SESSION_STORAGE_KEY = "multica:chat:activeSessionId";
+const AGENT_STORAGE_KEY = "algoplan:chat:selectedAgentId";
+const SESSION_STORAGE_KEY = "algoplan:chat:activeSessionId";
 /** Drafts are stored as one JSON blob per workspace: { [sessionId]: text }. */
-const DRAFTS_KEY = "multica:chat:drafts";
+const DRAFTS_KEY = "algoplan:chat:drafts";
 /** Placeholder sessionId for a chat that hasn't been created yet. */
 export const DRAFT_NEW_SESSION = "__new__";
-const CHAT_WIDTH_KEY = "multica:chat:width";
-const CHAT_HEIGHT_KEY = "multica:chat:height";
-const CHAT_EXPANDED_KEY = "multica:chat:expanded";
+const CHAT_WIDTH_KEY = "algoplan:chat:width";
+const CHAT_HEIGHT_KEY = "algoplan:chat:height";
+const CHAT_EXPANDED_KEY = "algoplan:chat:expanded";
 /** Focus mode is a personal preference — global across workspaces/sessions. */
-const FOCUS_MODE_KEY = "multica:chat:focusMode";
+const FOCUS_MODE_KEY = "algoplan:chat:focusMode";
 
 function readDrafts(storage: StorageAdapter, key: string): Record<string, string> {
   const raw = storage.getItem(key);

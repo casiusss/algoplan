@@ -23,7 +23,7 @@ import { toast } from "sonner";
  * we want for one-shot toasts.
  */
 
-const FLASH_PREFIX = "multica_flash:";
+const FLASH_PREFIX = "algoplan_flash:";
 
 function isBrowser(): boolean {
   return typeof window !== "undefined" && typeof sessionStorage !== "undefined";

@@ -472,7 +472,7 @@ export function IssueDetail({ issueId, onDelete, onClose, defaultSidebarOpen = t
         updates.assignee_type === "agent" &&
         updates.assignee_id &&
         issue.status === "backlog" &&
-        localStorage.getItem("multica:backlog-agent-hint-dismissed") !== "true"
+        localStorage.getItem("algoplan:backlog-agent-hint-dismissed") !== "true"
       ) {
         setBacklogHintOpen(true);
       }
@@ -980,7 +980,7 @@ export function IssueDetail({ issueId, onDelete, onClose, defaultSidebarOpen = t
               open={backlogHintOpen}
               onOpenChange={setBacklogHintOpen}
               onDismissPermanently={() => {
-                localStorage.setItem("multica:backlog-agent-hint-dismissed", "true");
+                localStorage.setItem("algoplan:backlog-agent-hint-dismissed", "true");
               }}
               onMoveToTodo={() => {
                 updateIssueMutation.mutate(

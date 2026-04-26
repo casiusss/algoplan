@@ -97,7 +97,7 @@ export function CreateIssueModal({ onClose, data }: { onClose: () => void; data?
       clearDraft();
       const shouldShowBacklogHint =
         status === "backlog" && assigneeType === "agent" && assigneeId &&
-        localStorage.getItem("multica:backlog-agent-hint-dismissed") !== "true";
+        localStorage.getItem("algoplan:backlog-agent-hint-dismissed") !== "true";
 
       if (shouldShowBacklogHint) {
         setBacklogHintIssueId(issue.id);
@@ -171,7 +171,7 @@ export function CreateIssueModal({ onClose, data }: { onClose: () => void; data?
               onClose();
             }}
             onDismissPermanently={() => {
-              localStorage.setItem("multica:backlog-agent-hint-dismissed", "true");
+              localStorage.setItem("algoplan:backlog-agent-hint-dismissed", "true");
             }}
             onMoveToTodo={() => {
               updateIssueMutation.mutate(

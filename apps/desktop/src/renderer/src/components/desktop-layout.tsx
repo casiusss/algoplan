@@ -95,8 +95,8 @@ function useInternalLinkHandler() {
       const tabId = store.openTab(path, path, icon);
       store.setActiveTab(tabId);
     };
-    window.addEventListener("multica:navigate", handler);
-    return () => window.removeEventListener("multica:navigate", handler);
+    window.addEventListener("algoplan:navigate", handler);
+    return () => window.removeEventListener("algoplan:navigate", handler);
   }, []);
 }
 
