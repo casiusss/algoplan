@@ -558,11 +558,11 @@ export function IssueDetail({ issueId, onDelete, onClose, defaultSidebarOpen = t
   if (!issue) {
     return (
       <div className="flex flex-1 min-h-0 flex-col items-center justify-center gap-3 text-sm text-muted-foreground">
-        <p>This issue does not exist or has been deleted in this workspace.</p>
+        <p>Dieses Issue existiert nicht oder du hast keinen Zugriff.</p>
         {!onDelete && (
           <Button variant="outline" size="sm" onClick={() => router.push(paths.issues())}>
             <ChevronLeft className="mr-1 h-3.5 w-3.5" />
-            Back to Issues
+            Zurück zu den Issues
           </Button>
         )}
       </div>

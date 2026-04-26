@@ -450,25 +450,25 @@ describe("IssueDetail (shared)", () => {
     expect(screen.getByText("Aktualisiert")).toBeInTheDocument();
   });
 
-  it("shows 'not found' message when issue does not exist", async () => {
+  it("shows 'not found' message in German when issue does not exist", async () => {
     mockApiObj.getIssue.mockRejectedValue(new Error("Not found"));
 
     renderIssueDetail("nonexistent-id");
 
     await waitFor(() => {
       expect(
-        screen.getByText("This issue does not exist or has been deleted in this workspace."),
+        screen.getByText("Dieses Issue existiert nicht oder du hast keinen Zugriff."),
       ).toBeInTheDocument();
     });
   });
 
-  it("shows 'Back to Issues' button when issue is not found and no onDelete prop", async () => {
+  it("shows 'Zurück zu den Issues' button when issue is not found and no onDelete prop", async () => {
     mockApiObj.getIssue.mockRejectedValue(new Error("Not found"));
 
     renderIssueDetail("nonexistent-id");
 
     await waitFor(() => {
-      expect(screen.getByText("Back to Issues")).toBeInTheDocument();
+      expect(screen.getByText("Zurück zu den Issues")).toBeInTheDocument();
     });
   });
 
