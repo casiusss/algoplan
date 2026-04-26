@@ -88,13 +88,16 @@ Requirements für initialen Release. Jedes mappt zu genau einer Roadmap-Phase.
 
 ### Workspace / Agents / Error States
 
-- [ ] **WS-01**: Workspace-Switcher im neuen Look (Dropdown aus Sidebar-Wordmark oder User-Menü)
-- [ ] **WS-02**: Agents-View redesigned (Liste mit `AvatarInitial`, Agent-Profile-Detail)
+- [x] **WS-01
+**: Workspace-Switcher im neuen Look (Dropdown aus Sidebar-Wordmark oder User-Menü)
+- [x] **WS-02
+**: Agents-View redesigned (Liste mit `AvatarInitial`, Agent-Profile-Detail)
 - [x] **WS-03
 **: Empty-States (leeres Board, leere Inbox, keine Ergebnisse) im neuen Look mit Illustration-Slot
 - [x] **WS-04
 **: Error-States (NoAccessPage auf Web, 404) redesigned
-- [ ] **WS-05**: Desktop-Destructive-Ops (Leave / Delete) folgen weiterhin der safe order: read destination → `setCurrentWorkspace(null, null)` → `navigation.push` → mutate
+- [x] **WS-05
+**: Desktop-Destructive-Ops (Leave / Delete) folgen weiterhin der safe order: read destination → `setCurrentWorkspace(null, null)` → `navigation.push` → mutate
 
 ### Rebrand Pass
 

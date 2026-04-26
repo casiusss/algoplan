@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v0.4.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 06-02-PLAN.md (INB inbox restyle — bucketing + Alle gelesen + E shortcut + filter chips)
-last_updated: "2026-04-26T10:16:09.634Z"
+stopped_at: "Completed 06-04-PLAN.md (WS sub-phase: Agents + NoAccessPage + sidebar German + web 404). 5 reqs marked, 2 commits."
+last_updated: "2026-04-26T10:18:16.523Z"
 last_activity: 2026-04-26
 progress:
   total_phases: 8
   completed_phases: 6
   total_plans: 41
-  completed_plans: 35
-  percent: 85
+  completed_plans: 36
+  percent: 88
 ---
 
 # Project State
@@ -30,7 +30,7 @@ Plan: 00 (complete — Wave-0 atoms + dragstrip-coverage gate + zxcvbn catalog);
 Status: Phase 6 Wave-0 complete; Wave-1 unblocked
 Last activity: 2026-04-26
 
-Progress: [█████████░] 85%
+Progress: [█████████░] 88%
 
 ## Performance Metrics
 
@@ -62,6 +62,7 @@ Progress: [█████████░] 85%
 | Phase 05.1 P03 | 5min | 3 tasks | 3 files |
 | Phase 06 P00 | 13 | 3 tasks | 13 files |
 | Phase 06 P02 | 9m | 3 tasks | 11 files |
+| Phase 06 P04 | 14m | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,7 @@ Recent decisions affecting current work:
 - Phase 6 Wave-0: Shipped 5 atoms + useNavigationFlash + automated dragstrip-coverage gate + @zxcvbn-ts/* catalog. Resolved UI-CHECK FLAG-5.1 (lazy import gate) and FLAG-5.3 (DragStrip audit promoted to test). language-en pinned at ^3.0.2 (registry latest in v3.x).
 - useInboxFilterStore lives in packages/core/inbox/ per CLAUDE.md state-management — no persist (ephemeral filter)
 - InboxTypeFilter collapses 14 InboxItemType enum values into 4 user-facing chip categories (Erwähnungen/Zuweisungen/Kommentare/System)
+- Phase 6 Plan 04: Workspace switcher dropdown lives inline in app-sidebar.tsx — no separate workspace-switcher.tsx file exists. WS-05 verification is a no-op on main checkout (workspace-tab.test.tsx is Plan-03-owned).
 
 ### Pending Todos
 
@@ -109,8 +111,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-26T10:16:09.626Z
-Stopped at: Completed 06-02-PLAN.md (INB inbox restyle — bucketing + Alle gelesen + E shortcut + filter chips)
+Last session: 2026-04-26T10:18:06.574Z
+Stopped at: Completed 06-04-PLAN.md (WS sub-phase: Agents + NoAccessPage + sidebar German + web 404). 5 reqs marked, 2 commits.
 Resume file: None
 
 **Planned Phase:** 01 (token-foundation-typography) — 6 plans — 2026-04-24T23:07:23.601Z
