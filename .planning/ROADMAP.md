@@ -126,10 +126,10 @@ Plans:
 **UI hint**: no (backend-only)
 
 Plans:
-- [ ] 05.1-00-PLAN.md — Wave 0: migration 059 + sqlc regen + bcrypt dep + auth.GenerateAuthToken + EmailService stubs + 6 router stubs + RED test scaffolds (Nyquist gate)
-- [ ] 05.1-01-PLAN.md — Wave 1: Signup (AUTH-BE-01) + Login (AUTH-BE-06 NEW) + SendSignupVerification — auth_password.go (Signup half) + email.go
-- [ ] 05.1-02-PLAN.md — Wave 1 (parallel-safe with 01): EmailVerify (AUTH-BE-04) + ResendEmailVerify (AUTH-BE-05) + SendEmailVerification — auth_email_verify.go (own file) + email.go (different methods)
-- [ ] 05.1-03-PLAN.md — Wave 2 (after 01): PasswordResetRequest (AUTH-BE-02) + PasswordResetConfirm (AUTH-BE-03) + SendPasswordResetEmail — auth_password.go (sequential with 01) + email.go
+- [x] 05.1-00-PLAN.md — Wave 0: migration 059 + sqlc regen + bcrypt dep + auth.GenerateAuthToken + EmailService stubs + 6 router stubs + RED test scaffolds (Nyquist gate)
+- [x] 05.1-01-PLAN.md — Wave 1: Signup (AUTH-BE-01) + Login (AUTH-BE-06 NEW) + SendSignupVerification — auth_password.go (Signup half) + email.go
+- [x] 05.1-02-PLAN.md — Wave 1 (parallel-safe with 01): EmailVerify (AUTH-BE-04) + ResendEmailVerify (AUTH-BE-05) + SendEmailVerification — auth_email_verify.go (own file) + email.go (different methods)
+- [x] 05.1-03-PLAN.md — Wave 2 (after 01): PasswordResetRequest (AUTH-BE-02) + PasswordResetConfirm (AUTH-BE-03) + SendPasswordResetEmail — auth_password.go (sequential with 01) + email.go
 
 ### Phase 6: Issue Detail + Remaining Views
 **Goal**: Every user-facing view outside the shell and issues list — issue detail modal, auth flows, inbox, settings, agents, workspace management, and error states — is fully restyled in the AlgoPlan design system with DragStrip on all desktop full-window views
@@ -170,6 +170,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. Storybook Showroom | 0/TBD | Not started | - |
 | 4. Dashboard Shell Redesign | 2/7 | In progress | - |
 | 5. Issues Views + Kanban + dnd-kit Migration | 6/6 | Complete (code-side); awaiting user live-E2E sign-off | 2026-04-25 |
-| 5.1. Auth Backend Endpoints (INSERTED) | 0/4 | Not started | - |
+| 5.1. Auth Backend Endpoints (INSERTED) | 4/4 | Complete (27/27 integration tests GREEN) | 2026-04-26 |
 | 6. Issue Detail + Remaining Views | 0/TBD | Not started | - |
 | 7. Rebrand Pass | 0/TBD | Not started | - |
