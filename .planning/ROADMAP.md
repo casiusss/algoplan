@@ -12,13 +12,13 @@ The existing Multica platform is reskinned and rebranded as AlgoPlan in seven se
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Token Foundation + Typography** - New OKLCH palette, Inter italic, dark-mode FOUC fix, hardcoded-color CI rule
-- [ ] **Phase 2: Atomic UI Primitives** - TagChip, AccentBar, AvatarInitial, SegmentedControl with tests
-- [ ] **Phase 3: Storybook Showroom** - `apps/showroom` Storybook 9.1.5 with mock providers, a11y, theme toggle
+- [x] **Phase 1: Token Foundation + Typography** - New OKLCH palette, Inter italic, dark-mode FOUC fix, hardcoded-color CI rule
+- [x] **Phase 2: Atomic UI Primitives** - TagChip, AccentBar, AvatarInitial, SegmentedControl with tests
+- [x] **Phase 3: Storybook Showroom** - `apps/showroom` Storybook 9.1.5 with mock providers, a11y, theme toggle
 - [x] **Phase 4: Dashboard Shell Redesign** - New sidebar, topbar, layout slot system, Zustand selector guard
 - [x] **Phase 5: Issues Views + Kanban + dnd-kit Migration** - `@dnd-kit/react` v0.4.0 migration, board restyle, list restyle, view toggle, inline task-add, WS race fix
-- [ ] **Phase 5.1: Auth Backend Endpoints** (INSERTED) - Signup, password-reset request/confirm, email-verify, resend verification — backend Go endpoints + DB schema for AUTH-02..05 unblock
-- [ ] **Phase 6: Issue Detail + Remaining Views** - Issue detail, auth flows, inbox, settings, agents, workspace, error states
+- [x] **Phase 5.1: Auth Backend Endpoints** (INSERTED) - Signup, password-reset request/confirm, email-verify, resend verification — backend Go endpoints + DB schema for AUTH-02..05 unblock
+- [x] **Phase 6: Issue Detail + Remaining Views** - Issue detail, auth flows, inbox, settings, agents, workspace, error states
 - [x] **Phase 7: Rebrand Pass** - Strings, assets, metadata, deep-link scheme, Electron chrome, test updates
 - [ ] **Phase 8: Internal Rebrand Completion** - `@multica/*` packages, `multica_*` localStorage, `MULTICA_*` env vars, `multica` CLI binary, `~/.multica/` config dir, Docker images, GoReleaser, Homebrew tap, default email FROM — with backwards-compat migration shims
 
