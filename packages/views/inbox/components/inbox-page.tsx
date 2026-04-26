@@ -431,8 +431,8 @@ export function InboxPage() {
             <Inbox className="mb-3 h-10 w-10 text-muted-foreground/30" />
             <p className="text-sm">
               {items.length === 0
-                ? "Posteingang ist leer"
-                : "Benachrichtigung auswählen für Details"}
+                ? "Dein Posteingang ist leer"
+                : "Wähle eine Benachrichtigung."}
             </p>
           </div>
         )}
