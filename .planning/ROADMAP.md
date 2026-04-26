@@ -17,6 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 3: Storybook Showroom** - `apps/showroom` Storybook 9.1.5 with mock providers, a11y, theme toggle
 - [x] **Phase 4: Dashboard Shell Redesign** - New sidebar, topbar, layout slot system, Zustand selector guard
 - [x] **Phase 5: Issues Views + Kanban + dnd-kit Migration** - `@dnd-kit/react` v0.4.0 migration, board restyle, list restyle, view toggle, inline task-add, WS race fix
+- [ ] **Phase 5.1: Auth Backend Endpoints** (INSERTED) - Signup, password-reset request/confirm, email-verify, resend verification — backend Go endpoints + DB schema for AUTH-02..05 unblock
 - [ ] **Phase 6: Issue Detail + Remaining Views** - Issue detail, auth flows, inbox, settings, agents, workspace, error states
 - [ ] **Phase 7: Rebrand Pass** - Strings, assets, metadata, deep-link scheme, Electron chrome, test updates
 
@@ -107,6 +108,21 @@ Plans:
 - [x] 05-03-PLAN.md — Wave 2 list visual restyle (sticky h-12 italic headers + vertical AccentBar leading edges; KBN-07)
 - [x] 05-04-PLAN.md — Wave 3 ViewToggle + InlineTaskAdd + header/page wiring (KBN-03 + KBN-04)
 - [x] 05-05-PLAN.md — Wave 4 E2E specs (KBN-01 WS race, KBN-02 scroll, KBN-03 inline, KBN-04 toggle persistence)
+
+### Phase 5.1: Auth Backend Endpoints (INSERTED)
+**Goal**: Add password-based auth backend endpoints (signup, password-reset request/confirm, email-verify, resend verification) so Phase 6 can build the AUTH-02..05 frontend pages — current `server/internal/handler/auth.go` is OTP-only with no password column or reset-token machinery
+**Depends on**: Phase 5 (no shared frontend; pure backend insertion)
+**Requirements**: AUTH-BE-01 (signup), AUTH-BE-02 (password-reset request), AUTH-BE-03 (password-reset confirm), AUTH-BE-04 (email-verify), AUTH-BE-05 (resend verification)
+**Success Criteria** (what must be TRUE):
+  1. `POST /api/auth/signup` accepts `{email, password, name}`, hashes password (bcrypt), inserts user + sends verify email, returns session token
+  2. `POST /api/auth/password-reset/request` accepts `{email}`, generates time-bound reset token, sends reset email (idempotent — same response for unknown emails)
+  3. `POST /api/auth/password-reset/confirm` accepts `{token, newPassword}`, validates token, updates password hash, invalidates token
+  4. `POST /api/auth/email-verify` accepts `{token}`, marks user `email_verified_at`, invalidates token
+  5. `POST /api/auth/email-verify/resend` accepts `{email}`, generates new verify token, sends email (rate-limited)
+  6. DB migration adds `password_hash`, `email_verified_at`, `password_reset_token`, `password_reset_expires_at`, `email_verify_token`, `email_verify_expires_at` columns to `users` table
+  7. All endpoints have integration tests (`server/internal/handler/auth_*_test.go`); existing OTP login flow remains functional
+**Plans**: TBD
+**UI hint**: no (backend-only)
 
 ### Phase 6: Issue Detail + Remaining Views
 **Goal**: Every user-facing view outside the shell and issues list — issue detail modal, auth flows, inbox, settings, agents, workspace management, and error states — is fully restyled in the AlgoPlan design system with DragStrip on all desktop full-window views
