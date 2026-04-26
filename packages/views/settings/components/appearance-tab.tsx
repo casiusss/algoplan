@@ -1,5 +1,6 @@
 "use client";
 
+import { Check } from "lucide-react";
 import { useTheme } from "@multica/ui/components/common/theme-provider";
 import { cn } from "@multica/ui/lib/utils";
 
@@ -79,19 +80,26 @@ function WindowMockup({
 }
 
 const themeOptions = [
-  { value: "light" as const, label: "Light" },
-  { value: "dark" as const, label: "Dark" },
+  { value: "light" as const, label: "Hell" },
+  { value: "dark" as const, label: "Dunkel" },
   { value: "system" as const, label: "System" },
 ];
 
 export function AppearanceTab() {
+  // useTheme is the Phase 1 wrapper that pins storageKey="multica_theme".
+  // The Phase 4 sidebar DarkModeToggle reads the same hook, so toggling
+  // either surface flips both — verified by the sync-with-sidebar test.
   const { theme, setTheme } = useTheme();
 
   return (
     <div className="space-y-8">
       <section className="space-y-4">
         <h2 className="text-sm font-semibold">Theme</h2>
-        <div className="flex gap-6" role="radiogroup" aria-label="Theme">
+        <div
+          className="flex gap-6"
+          role="radiogroup"
+          aria-label="Theme auswählen"
+        >
           {themeOptions.map((opt) => {
             const active = theme === opt.value;
             return (
@@ -99,16 +107,17 @@ export function AppearanceTab() {
                 key={opt.value}
                 role="radio"
                 aria-checked={active}
-                aria-label={`Select ${opt.label} theme`}
+                aria-label={`${opt.label} auswählen`}
                 onClick={() => setTheme(opt.value)}
                 className="group flex flex-col items-center gap-2"
               >
                 <div
+                  data-testid="theme-mockup"
                   className={cn(
-                    "aspect-[4/3] w-36 overflow-hidden rounded-lg ring-1 transition-all",
+                    "relative aspect-[4/3] w-36 overflow-hidden rounded-lg ring-1 transition-all",
                     active
                       ? "ring-2 ring-brand"
-                      : "ring-border hover:ring-2 hover:ring-border"
+                      : "ring-border hover:ring-2 hover:ring-border",
                   )}
                 >
                   {opt.value === "system" ? (
@@ -124,6 +133,14 @@ export function AppearanceTab() {
                     </div>
                   ) : (
                     <WindowMockup variant={opt.value} />
+                  )}
+                  {active && (
+                    <span
+                      data-testid="theme-active-check"
+                      className="absolute top-1 right-1 text-brand"
+                    >
+                      <Check className="size-4" aria-hidden />
+                    </span>
                   )}
                 </div>
                 <span

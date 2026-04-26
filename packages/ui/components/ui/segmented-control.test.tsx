@@ -142,6 +142,74 @@ describe("SegmentedControl — disabled item", () => {
   });
 });
 
+describe("SegmentedControl — colorByValue (Phase 6 extension)", () => {
+  function ColorHarness({
+    initial = "p0",
+    colorByValue,
+  }: {
+    initial?: string;
+    colorByValue?: Record<string, string>;
+  }) {
+    const [v, setV] = useState(initial);
+    return (
+      <SegmentedControl
+        value={v}
+        onValueChange={setV}
+        aria-label="Priorität"
+        colorByValue={colorByValue}
+      >
+        <SegmentedControlItem value="p0">P0</SegmentedControlItem>
+        <SegmentedControlItem value="p1">P1</SegmentedControlItem>
+        <SegmentedControlItem value="p2">P2</SegmentedControlItem>
+        <SegmentedControlItem value="p3">P3</SegmentedControlItem>
+      </SegmentedControl>
+    );
+  }
+
+  it("without colorByValue, items render with no per-value color class", () => {
+    render(<ColorHarness initial="p0" />);
+    const p0 = screen.getByRole("button", { name: "P0" });
+    // No data-[pressed]:text-tag-* class is appended without colorByValue
+    expect(p0.className).not.toMatch(/data-\[pressed\]:text-tag-/);
+  });
+
+  it("with colorByValue, the matching item carries its data-[pressed]:<class>", () => {
+    render(
+      <ColorHarness
+        initial="p0"
+        colorByValue={{
+          p0: "text-tag-p0",
+          p1: "text-tag-p1",
+          p2: "text-tag-p2",
+          p3: "text-tag-p3",
+        }}
+      />,
+    );
+    const p0 = screen.getByRole("button", { name: "P0" });
+    const p1 = screen.getByRole("button", { name: "P1" });
+    const p2 = screen.getByRole("button", { name: "P2" });
+    const p3 = screen.getByRole("button", { name: "P3" });
+    expect(p0.className).toMatch(/data-\[pressed\]:text-tag-p0/);
+    expect(p1.className).toMatch(/data-\[pressed\]:text-tag-p1/);
+    expect(p2.className).toMatch(/data-\[pressed\]:text-tag-p2/);
+    expect(p3.className).toMatch(/data-\[pressed\]:text-tag-p3/);
+  });
+
+  it("items whose value is not in colorByValue render without a color class (harmless)", () => {
+    render(
+      <ColorHarness
+        initial="p0"
+        // Intentionally only provides p0 + p2 — p1 and p3 should render plain.
+        colorByValue={{ p0: "text-tag-p0", p2: "text-tag-p2" }}
+      />,
+    );
+    const p1 = screen.getByRole("button", { name: "P1" });
+    const p3 = screen.getByRole("button", { name: "P3" });
+    expect(p1.className).not.toMatch(/data-\[pressed\]:text-tag-/);
+    expect(p3.className).not.toMatch(/data-\[pressed\]:text-tag-/);
+  });
+});
+
 describe("SegmentedControl — source-level invariants", () => {
   // Resolve the source file via __dirname so the assertion is independent of
   // the cwd Vitest is invoked from (root vs package). Vite transforms
