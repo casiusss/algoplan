@@ -179,3 +179,24 @@ func TestBuildInvitationParams_ToAndFromPassedThrough(t *testing.T) {
 		t.Errorf("body missing invite URL: %s", p.Html)
 	}
 }
+
+// TestBuildSignupVerificationParams is a Phase 5.1 Plan 00 placeholder.
+// Plan 01 will introduce buildSignupVerificationParams and replace this
+// skip with real assertions on Subject / body URL / expiry text.
+func TestBuildSignupVerificationParams(t *testing.T) {
+	t.Skip("implemented in Plan 01")
+}
+
+// TestBuildPasswordResetParams is a Phase 5.1 Plan 00 placeholder.
+// Plan 03 will introduce buildPasswordResetParams and replace this
+// skip with real assertions including the 1-hour expiry text.
+func TestBuildPasswordResetParams(t *testing.T) {
+	t.Skip("implemented in Plan 03")
+}
+
+// TestBuildEmailVerifyParams is a Phase 5.1 Plan 00 placeholder.
+// Plan 02 will introduce buildEmailVerifyParams and replace this
+// skip with real assertions including the 24-hour expiry text.
+func TestBuildEmailVerifyParams(t *testing.T) {
+	t.Skip("implemented in Plan 02")
+}
