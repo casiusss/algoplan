@@ -20,6 +20,7 @@ require (
 	github.com/resend/resend-go/v2 v2.28.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/spf13/cobra v1.10.2
+	golang.org/x/crypto v0.50.0
 )
 
 require (
@@ -46,7 +47,6 @@ require (
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
-	golang.org/x/crypto v0.50.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/text v0.36.0 // indirect
 )
