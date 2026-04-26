@@ -38,7 +38,7 @@ const BACK_TO_LOGIN = "Zurück zur Anmeldung";
 // idempotently (Phase 5.1) — the UI mirrors that contract exactly.
 //
 // DragStrip note: this page does NOT mount DragStrip. The desktop wrapper
-// (WindowOverlay branch) and the web wrapper (apps/web/app/(auth)/...)
+// (WindowOverlay branch) and the web wrapper (apps/web/app/auth/...)
 // own the page chrome including DragStrip. The Wave-0 dragstrip-coverage
 // gate's enumeration is for full-window pages in `packages/views/`; this
 // page is rendered INSIDE a wrapper that already supplies one.

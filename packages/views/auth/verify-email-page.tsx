@@ -62,7 +62,7 @@ type State =
 
 interface VerifyEmailPageProps {
   /** Token extracted from `?token=` by the platform wrapper.
-   *  - Web: Next.js searchParams in apps/web/app/(auth)/verify-email/page.tsx
+   *  - Web: Next.js searchParams in apps/web/app/auth/verify-email/page.tsx
    *  - Desktop: WindowOverlay payload carries the token */
   token?: string | null;
 }

@@ -70,7 +70,7 @@ type State =
 
 interface ResetPasswordPageProps {
   /** Token extracted from `?token=` by the platform wrapper.
-   *  - Web: Next.js searchParams in apps/web/app/(auth)/reset-password/page.tsx
+   *  - Web: Next.js searchParams in apps/web/app/auth/reset-password/page.tsx
    *  - Desktop: WindowOverlay payload carries the token */
   token?: string | null;
 }
