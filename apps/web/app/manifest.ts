@@ -10,10 +10,11 @@ import type { MetadataRoute } from "next";
 // kept white to match the light-theme initial state on cold launch.
 //
 // Phase 7 D-2 invariant: this file does NOT touch localStorage. The
-// `multica:*` keys (chat) and `multica_*` keys (auth, view state) are
-// preserved in their respective stores; renaming them would log every
-// existing user out + lose their UI state. See packages/core/chat/store.test.ts
-// and packages/core/auth/store.test.ts for the regression locks.
+// preserved chat keys (multica:chat:selectedAgentId etc.) and auth key
+// (multica_token) live in their respective stores; renaming them would
+// log every existing user out + lose UI state. See
+// packages/core/chat/store.test.ts and packages/core/auth/store.test.ts
+// for the regression locks that block any future rename PR.
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "AlgoPlan",
