@@ -1,6 +1,7 @@
 import { forwardRef, useRef, useState, useImperativeHandle } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { Issue, TimelineEntry } from "@multica/core/types";
 // useWorkspaceId() derives from useCurrentWorkspace (relative import inside
@@ -348,11 +349,14 @@ function createTestQueryClient() {
   });
 }
 
-function renderIssueDetail(issueId = "issue-1") {
+function renderIssueDetail(
+  issueId = "issue-1",
+  props: { onClose?: () => void; onDelete?: () => void } = {},
+) {
   const queryClient = createTestQueryClient();
   return render(
     <QueryClientProvider client={queryClient}>
-      <IssueDetail issueId={issueId} />
+      <IssueDetail issueId={issueId} {...props} />
     </QueryClientProvider>,
   );
 }
@@ -420,29 +424,30 @@ describe("IssueDetail (shared)", () => {
     expect(wsLink.closest("a")).toHaveAttribute("href", "/test/issues");
   });
 
-  it("renders properties sidebar with status, priority, assignee, due date", async () => {
+  it("renders properties sidebar with German labels (Eigenschaften, Status, Priorität, Verantwortlich, Fällig, Projekt)", async () => {
     renderIssueDetail();
 
     await waitFor(() => {
-      expect(screen.getByText("Properties")).toBeInTheDocument();
+      expect(screen.getByText("Eigenschaften")).toBeInTheDocument();
     });
 
     expect(screen.getByText("Status")).toBeInTheDocument();
-    expect(screen.getByText("Priority")).toBeInTheDocument();
-    expect(screen.getByText("Assignee")).toBeInTheDocument();
-    expect(screen.getByText("Due date")).toBeInTheDocument();
+    expect(screen.getByText("Priorität")).toBeInTheDocument();
+    expect(screen.getByText("Verantwortlich")).toBeInTheDocument();
+    expect(screen.getByText("Fällig")).toBeInTheDocument();
+    expect(screen.getByText("Projekt")).toBeInTheDocument();
   });
 
-  it("renders Details section with Created by and dates", async () => {
+  it("renders Details section with German labels (Details, Erstellt von, Erstellt, Aktualisiert)", async () => {
     renderIssueDetail();
 
     await waitFor(() => {
       expect(screen.getByText("Details")).toBeInTheDocument();
     });
 
-    expect(screen.getByText("Created by")).toBeInTheDocument();
-    expect(screen.getByText("Created")).toBeInTheDocument();
-    expect(screen.getByText("Updated")).toBeInTheDocument();
+    expect(screen.getByText("Erstellt von")).toBeInTheDocument();
+    expect(screen.getByText("Erstellt")).toBeInTheDocument();
+    expect(screen.getByText("Aktualisiert")).toBeInTheDocument();
   });
 
   it("shows 'not found' message when issue does not exist", async () => {
@@ -467,11 +472,11 @@ describe("IssueDetail (shared)", () => {
     });
   });
 
-  it("renders Activity section header", async () => {
+  it("renders Activity section header in German (Aktivität)", async () => {
     renderIssueDetail();
 
     await waitFor(() => {
-      expect(screen.getAllByText("Activity").length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText("Aktivität").length).toBeGreaterThanOrEqual(1);
     });
   });
 
@@ -501,5 +506,124 @@ describe("IssueDetail (shared)", () => {
         expect.objectContaining({ description: "" }),
       );
     });
+  });
+
+  // -------------------------------------------------------------------------
+  // Phase 6 — DTL-02 Priority SegmentedControl
+  // -------------------------------------------------------------------------
+
+  it("renders Priority slot as a SegmentedControl with 4 P-labeled items (NOT the legacy PriorityPicker dropdown)", async () => {
+    renderIssueDetail();
+
+    await waitFor(() => {
+      expect(screen.getByRole("group", { name: "Priorität" })).toBeInTheDocument();
+    });
+
+    expect(screen.getByRole("button", { name: "P0" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "P1" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "P2" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "P3" })).toBeInTheDocument();
+  });
+
+  it("Priority SegmentedControl reflects the issue's current priority (high → P1 active)", async () => {
+    renderIssueDetail();
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "P1" })).toHaveAttribute(
+        "data-pressed",
+      );
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Phase 6 — DTL-04 Modal footer + Delete flow
+  // -------------------------------------------------------------------------
+
+  it("modal-footer renders the Löschen button at the bottom of the LEFT pane", async () => {
+    renderIssueDetail();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: /Löschen/ }),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("More-actions dropdown does NOT contain a Delete/Löschen item (moved to modal-footer)", async () => {
+    renderIssueDetail();
+
+    await waitFor(() => {
+      // After Phase 6, modal-footer Löschen exists. Ensure no DropdownMenuItem
+      // with the old 'Delete issue' English string is present anywhere.
+      expect(screen.queryByText("Delete issue")).not.toBeInTheDocument();
+    });
+  });
+
+  it("clicking modal-footer Löschen opens the AlertDialog with German title and body", async () => {
+    renderIssueDetail();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: /Löschen/ }),
+      ).toBeInTheDocument();
+    });
+
+    await userEvent.click(screen.getByRole("button", { name: /Löschen/ }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Issue löschen?")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByText(/dauerhaft gelöscht/),
+    ).toBeInTheDocument();
+    // Confirm + cancel buttons in German
+    expect(
+      screen.getByRole("button", { name: "Abbrechen" }),
+    ).toBeInTheDocument();
+    // Confirm button: "Löschen" inside the dialog (footer rendered the same word
+    // outside; both are present after dialog opens).
+    expect(
+      screen.getAllByRole("button", { name: /^Löschen$/ }).length,
+    ).toBeGreaterThanOrEqual(1);
+  });
+
+  it("Fertig button is HIDDEN in routed-page mode (no onClose prop)", async () => {
+    renderIssueDetail();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: /Löschen/ }),
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByRole("button", { name: "Fertig" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("Fertig button is VISIBLE in modal mode (onClose prop defined)", async () => {
+    const onClose = vi.fn();
+    renderIssueDetail("issue-1", { onClose });
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "Fertig" }),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("clicking Fertig fires onClose (modal mode)", async () => {
+    const onClose = vi.fn();
+    renderIssueDetail("issue-1", { onClose });
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "Fertig" }),
+      ).toBeInTheDocument();
+    });
+
+    await userEvent.click(screen.getByRole("button", { name: "Fertig" }));
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });
