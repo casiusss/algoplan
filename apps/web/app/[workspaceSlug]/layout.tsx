@@ -8,7 +8,7 @@ import { workspaceBySlugOptions } from "@multica/core/workspace";
 import { setCurrentWorkspace } from "@multica/core/platform";
 import { useAuthStore } from "@multica/core/auth";
 import { NoAccessPage } from "@multica/views/workspace/no-access-page";
-import { AlgoPlanWordmark } from "@multica/views/auth/algoplan-wordmark";
+import { AlgoPlanWordmark } from "@multica/views/auth";
 import { useWorkspaceSeen } from "@multica/views/workspace/use-workspace-seen";
 
 export default function WorkspaceLayout({
