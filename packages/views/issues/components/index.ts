@@ -9,3 +9,4 @@ export { ReplyInput } from "./reply-input";
 export { IssueMentionCard } from "./issue-mention-card";
 export { IssueChip } from "./issue-chip";
 export { IssuePrioritySegmentedControl } from "./issue-priority-segmented-control";
+export { IssueDetailFooter } from "./issue-detail-footer";
