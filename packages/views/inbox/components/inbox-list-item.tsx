@@ -10,12 +10,12 @@ import { InboxDetailLabel } from "./inbox-detail-label";
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return "just now";
-  if (minutes < 60) return `${minutes}m`;
+  if (minutes < 1) return "gerade eben";
+  if (minutes < 60) return `${minutes} Min`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h`;
+  if (hours < 24) return `${hours} Std`;
   const days = Math.floor(hours / 24);
-  return `${days}d`;
+  return `${days} T`;
 }
 
 export { timeAgo };
@@ -78,7 +78,7 @@ export function InboxListItem({
             <span
               role="button"
               tabIndex={-1}
-              title="Archive"
+              title="Archivieren"
               onClick={(e) => {
                 e.stopPropagation();
                 onArchive();
