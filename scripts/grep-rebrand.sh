@@ -28,7 +28,7 @@ set -euo pipefail
 TARGETS="apps/web apps/desktop packages/views packages/ui packages/core"
 
 # Single OR-regex of preserved patterns. Lines matching ANY of these are dropped.
-EXCLUDE='(@multica/|multica_[a-zA-Z]|multica:chat|multica:backlog|multica:navigate|MULTICA_|ai\.multica|multica-ai|multica\.git|multica-desktop-|server/cmd/multica|multica setup|multica daemon|multica agent|multica config|multica update|MulticaIcon|multica-icon\.tsx|multica-static|reserved-slugs|Multica → AlgoPlan)'
+EXCLUDE='(@multica/|multica_[a-zA-Z]|multica:chat|multica:backlog|multica:navigate|MULTICA_|ai\.multica|multica-ai|multica\.git|multica-desktop-|server/cmd/multica|multica setup|multica daemon|multica agent|multica config|multica update|MulticaIcon|multica-icon\.tsx|multica-static|reserved-slugs|/multica workspaces|multica.*brand slugs are reserved|legacy brand name|`multica`|RESERVED_SLUGS.has..multica..|Multica → AlgoPlan)'
 
 HITS=$(grep -rnE "[Mm]ultica" $TARGETS \
   --include="*.tsx" --include="*.ts" --include="*.json" --include="*.yml" \
