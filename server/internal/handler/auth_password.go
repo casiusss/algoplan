@@ -225,8 +225,12 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	// Length cap BEFORE bcrypt — same reasoning as Signup. We collapse
 	// "too long" into the constant 401 instead of 400 here so that a
 	// password-length probe can't distinguish "user exists" from "user
-	// does not exist with too-long password".
+	// does not exist with too-long password". Pay the dummy bcrypt
+	// cost first so timing matches the unknown-email path (a probe
+	// using a 73-byte password vs a 12-byte one would otherwise show
+	// microseconds vs ~250ms — trivially distinguishable).
 	if len(req.Password) > maxPasswordBytes {
+		_ = bcrypt.CompareHashAndPassword(dummyBcryptHashForTiming, []byte(req.Password[:maxPasswordBytes]))
 		writeError(w, http.StatusUnauthorized, invalidLoginMessage)
 		return
 	}
@@ -239,6 +243,13 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 			writeError(w, http.StatusUnauthorized, invalidLoginMessage)
 			return
 		}
+		// Real DB error → still pay the bcrypt cost before responding so
+		// a partial-outage attacker can't distinguish "DB hiccup on this
+		// email" (fast) from "valid email" (slow). Perfect timing
+		// equalization on a network endpoint is impossible, but closing
+		// the order-of-magnitude gap (microseconds vs ~250ms) is worth
+		// the cycles.
+		_ = bcrypt.CompareHashAndPassword(dummyBcryptHashForTiming, []byte(req.Password))
 		writeError(w, http.StatusInternalServerError, "failed to lookup user")
 		return
 	}
