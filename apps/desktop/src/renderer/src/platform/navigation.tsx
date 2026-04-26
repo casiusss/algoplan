@@ -73,9 +73,83 @@ function tryRouteToOverlay(path: string, router?: DataRouter): boolean {
       return true;
     }
   }
+  // Phase 6 AUTH (Plan 07) — pre-workspace auth flows on desktop are
+  // overlays, not tab routes (per UI-SPEC §Hard Constraints #2). The 5
+  // shared @multica/views/auth pages dispatch overlays here when shared
+  // code calls `useNavigation().push("/auth/...")`.
+  //
+  // Order matters for two pairs:
+  //   - `/auth/verify-email-resend` MUST be checked BEFORE
+  //     `/auth/verify-email` because the former is a longer prefix of the
+  //     latter — checking verify-email first would swallow the resend path
+  //     and dispatch the wrong overlay (UI-SPEC §T-06-W4-AUTH-04).
+  //   - `/auth/login` is left UN-INTERCEPTED — the existing `path === "/login"`
+  //     handler in DesktopNavigationProvider.adapter.push catches the
+  //     canonical login path; the shared LoginPage uses `paths.login()`
+  //     which still returns "/login" (no migration to "/auth/login" yet).
+  //
+  // The token query string on verify-email + reset-password is parsed
+  // here and forwarded as overlay payload, preserving the FROZEN Phase
+  // 5.1 email-link contract end-to-end (UI-SPEC §Hard Constraints #18).
+  if (path === "/auth/signup") {
+    overlay.open({ type: "signup" });
+    if (router && router.state.location.pathname !== "/") {
+      router.navigate("/", { replace: true });
+    }
+    return true;
+  }
+  if (path.startsWith("/auth/verify-email-resend")) {
+    overlay.open({ type: "verify-email-resend" });
+    if (router && router.state.location.pathname !== "/") {
+      router.navigate("/", { replace: true });
+    }
+    return true;
+  }
+  if (path.startsWith("/auth/verify-email")) {
+    const token = parseTokenFromPath(path);
+    overlay.open({ type: "verify-email", token });
+    if (router && router.state.location.pathname !== "/") {
+      router.navigate("/", { replace: true });
+    }
+    return true;
+  }
+  if (path === "/auth/forgot-password") {
+    overlay.open({ type: "forgot-password" });
+    if (router && router.state.location.pathname !== "/") {
+      router.navigate("/", { replace: true });
+    }
+    return true;
+  }
+  if (path.startsWith("/auth/reset-password")) {
+    const token = parseTokenFromPath(path);
+    overlay.open({ type: "reset-password", token });
+    if (router && router.state.location.pathname !== "/") {
+      router.navigate("/", { replace: true });
+    }
+    return true;
+  }
   // Any other navigation cancels a live overlay.
   if (overlay.overlay) overlay.close();
   return false;
+}
+
+/**
+ * Extract the `token` query parameter from a path string. Returns `undefined`
+ * when no `?token=` is present or decoding fails. Used for verify-email +
+ * reset-password overlay dispatches — the token must be passed through
+ * verbatim to the shared page so it can redeem against the backend.
+ *
+ * Decoding error returns `undefined` instead of throwing — the shared page
+ * already handles a missing token (renders the "no-token" state).
+ */
+function parseTokenFromPath(path: string): string | undefined {
+  const tokenMatch = path.match(/[?&]token=([^&]+)/);
+  if (!tokenMatch) return undefined;
+  try {
+    return decodeURIComponent(tokenMatch[1]!);
+  } catch {
+    return undefined;
+  }
 }
 
 /**

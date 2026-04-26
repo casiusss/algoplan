@@ -2,7 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 import { NewWorkspacePage } from "@multica/views/workspace/new-workspace-page";
 import { InvitePage } from "@multica/views/invite";
 import { OnboardingFlow } from "@multica/views/onboarding";
+import {
+  ForgotPasswordPage,
+  ResendVerifyEmailPage,
+  ResetPasswordPage,
+  SignupPage,
+  VerifyEmailPage,
+} from "@multica/views/auth";
 import { useNavigation } from "@multica/views/navigation";
+import { DragStrip } from "@multica/views/platform";
 import { paths } from "@multica/core/paths";
 import { workspaceListOptions } from "@multica/core/workspace/queries";
 import { useWindowOverlayStore } from "@/stores/window-overlay-store";
@@ -74,6 +82,63 @@ function WindowOverlayInner() {
           }}
         />
       )}
+
+      {/* Phase 6 AUTH (Plan 07): pre-workspace auth flows. Each shared
+          page is a centered card without its own page-root chrome —
+          DesktopAuthShell wraps them with the DragStrip-bearing flex
+          column the existing branches mount inline. The shell mounts
+          <DragStrip /> as the FIRST flex child of its outer container
+          per UI-SPEC §Hard Constraints #1; the dragstrip-coverage gate
+          enforces the same invariant for the shared `packages/views/`
+          full-window pages, so adding it ONCE here keeps both apps
+          aligned without per-shared-page changes. */}
+      {overlay.type === "signup" && (
+        <DesktopAuthShell>
+          <SignupPage />
+        </DesktopAuthShell>
+      )}
+      {overlay.type === "verify-email" && (
+        <DesktopAuthShell>
+          <VerifyEmailPage token={overlay.token} />
+        </DesktopAuthShell>
+      )}
+      {overlay.type === "verify-email-resend" && (
+        <DesktopAuthShell>
+          <ResendVerifyEmailPage />
+        </DesktopAuthShell>
+      )}
+      {overlay.type === "forgot-password" && (
+        <DesktopAuthShell>
+          <ForgotPasswordPage />
+        </DesktopAuthShell>
+      )}
+      {overlay.type === "reset-password" && (
+        <DesktopAuthShell>
+          <ResetPasswordPage token={overlay.token} />
+        </DesktopAuthShell>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Desktop chrome wrapper for the shared @multica/views/auth pages.
+ *
+ * The shared pages (SignupPage, VerifyEmailPage, etc.) render a centered
+ * card via `<div className="flex flex-1 flex-col items-center justify-center …">`
+ * but deliberately do NOT mount DragStrip themselves — the wrapping shell
+ * is expected to supply it. On web that wrapper is the Next.js route file;
+ * on desktop it's this component.
+ *
+ * Layout contract (UI-SPEC §Hard Constraints #1): DragStrip is the FIRST
+ * flex child of the page-root flex container so the top 48px stays a
+ * draggable region on macOS. The auth pages take the remaining flex-1.
+ */
+function DesktopAuthShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex min-h-svh flex-col">
+      <DragStrip />
+      {children}
     </div>
   );
 }

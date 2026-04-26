@@ -15,7 +15,17 @@ import { create } from "zustand";
 export type WindowOverlay =
   | { type: "new-workspace" }
   | { type: "invite"; invitationId: string }
-  | { type: "onboarding" };
+  | { type: "onboarding" }
+  // Phase 6 AUTH (Plan 07): pre-workspace auth flows live as overlays on
+  // desktop, mirroring the existing new-workspace / invite / onboarding
+  // pattern. The optional `token?: string` payload on verify-email and
+  // reset-password carries the token parsed from `/auth/{verb}?token=...`
+  // by the navigation adapter — see `platform/navigation.tsx`.
+  | { type: "signup" }
+  | { type: "verify-email"; token?: string }
+  | { type: "verify-email-resend" }
+  | { type: "forgot-password" }
+  | { type: "reset-password"; token?: string };
 
 interface WindowOverlayStore {
   overlay: WindowOverlay | null;
