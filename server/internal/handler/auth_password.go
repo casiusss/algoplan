@@ -37,7 +37,39 @@ const (
 	// spot — strong enough that brute force is impractical, fast enough
 	// that a real user signup/login feels instant.
 	bcryptCost = 12
+	// invalidLoginMessage is the constant 401 body returned on every login
+	// failure mode (unknown email, wrong password, NULL password_hash).
+	// Identical wording across paths blocks email-enumeration attacks.
+	invalidLoginMessage = "invalid email or password"
 )
+
+// dummyBcryptHashForTiming is a precomputed bcrypt hash used to equalize
+// timing on the unknown-email and NULL-password-hash paths of Login. We
+// pre-compute it ONCE in init() — bcrypt cost 12 is ~250ms, so doing it
+// per-request would add quarter-second latency to every "no such user"
+// attempt. Paying it once at startup is the documented trade-off:
+// ~250ms boot delay vs constant-time-ish safety on every failed login.
+//
+// Named "...ForTiming" to avoid collision with the test-fixture const
+// `dummyBcryptHash` (auth_password_test.go) which is a different concept
+// — that one is a static bcrypt blob used to seed pre-existing rows in
+// helper inserts; this one is a real bcrypt blob used during request
+// handling.
+var dummyBcryptHashForTiming []byte
+
+func init() {
+	h, err := bcrypt.GenerateFromPassword([]byte("dummy-password-for-timing-equalization"), bcryptCost)
+	if err != nil {
+		panic("failed to precompute dummy bcrypt hash: " + err.Error())
+	}
+	dummyBcryptHashForTiming = h
+}
+
+// LoginRequest is the body schema for POST /auth/login.
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
 
 // SignupRequest is the body schema for POST /auth/signup.
 type SignupRequest struct {
@@ -156,12 +188,78 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// Login handles POST /auth/login.
-// Plan 01 Task 03 implements: lookup by email, bcrypt.CompareHashAndPassword,
-// issue JWT + cookies. Returns 401 for unknown email AND wrong password
-// (no enumeration).
+// Login handles POST /auth/login. Looks up the user by email, bcrypt-
+// compares the provided password, then issues JWT + cookies.
+//
+// All failure modes (unknown email, wrong password, OTP-only user with
+// NULL password_hash) return 401 with the SAME body to prevent email
+// enumeration. On the unknown-email and NULL-password paths we still
+// invoke bcrypt.CompareHashAndPassword against a precomputed dummy hash
+// so the timing channel is roughly equalized.
+//
+// Note: this endpoint does NOT require email_verified_at to be non-NULL.
+// Verification gating is a frontend / middleware concern (out of scope
+// for Phase 5.1) — users with unverified email must still be able to log
+// in to access the resend-verification flow.
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
-	writeError(w, http.StatusNotImplemented, "not implemented")
+	var req LoginRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+	email := strings.ToLower(strings.TrimSpace(req.Email))
+	if email == "" || req.Password == "" {
+		writeError(w, http.StatusBadRequest, "email and password are required")
+		return
+	}
+	// Length cap BEFORE bcrypt — same reasoning as Signup. We collapse
+	// "too long" into the constant 401 instead of 400 here so that a
+	// password-length probe can't distinguish "user exists" from "user
+	// does not exist with too-long password".
+	if len(req.Password) > maxPasswordBytes {
+		writeError(w, http.StatusUnauthorized, invalidLoginMessage)
+		return
+	}
+
+	user, err := h.Queries.GetUserByEmail(r.Context(), email)
+	if err != nil {
+		if isNotFound(err) {
+			// Equalize timing: do the bcrypt work even on unknown email.
+			_ = bcrypt.CompareHashAndPassword(dummyBcryptHashForTiming, []byte(req.Password))
+			writeError(w, http.StatusUnauthorized, invalidLoginMessage)
+			return
+		}
+		writeError(w, http.StatusInternalServerError, "failed to lookup user")
+		return
+	}
+
+	// OTP-only users have NULL password_hash — they can never log in via
+	// password. Same constant 401 as the unknown-email branch.
+	if !user.PasswordHash.Valid {
+		_ = bcrypt.CompareHashAndPassword(dummyBcryptHashForTiming, []byte(req.Password))
+		writeError(w, http.StatusUnauthorized, invalidLoginMessage)
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash.String), []byte(req.Password)); err != nil {
+		writeError(w, http.StatusUnauthorized, invalidLoginMessage)
+		return
+	}
+
+	tokenString, err := h.issueJWT(user)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "failed to generate session")
+		return
+	}
+	if err := auth.SetAuthCookies(w, tokenString); err != nil {
+		slog.Warn("failed to set auth cookies", "error", err)
+	}
+	slog.Info("user logged in", append(logger.RequestAttrs(r), "user_id", uuidToString(user.ID), "email", email, "auth_method", "password")...)
+
+	writeJSON(w, http.StatusOK, LoginResponse{
+		Token: tokenString,
+		User:  userToResponse(user),
+	})
 }
 
 // PasswordResetRequest handles POST /auth/password-reset/request.

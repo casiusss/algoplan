@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgtype"
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/multica-ai/multica/server/internal/auth"
 )
 
@@ -39,20 +41,26 @@ const dummyBcryptHash = "$2a$12$abcdefghijklmnopqrstuvCRRMcg2vIEt5q47jufwxsmZmI3
 
 // signupTestUser inserts a password-auth user directly via SQL and
 // registers cleanup. Returns the userID. Used by tests that need a
-// pre-existing user without going through the (today: 501-stub)
-// signup endpoint. Plan 01 will swap dummyBcryptHash for a real
-// bcrypt hash of `password` so TestLogin_Success can authenticate
-// against it.
+// pre-existing user without going through the signup endpoint.
+//
+// The password is bcrypt-hashed at cost 4 (test-only — fast enough not
+// to dominate test runtime, while still exercising the real
+// bcrypt.CompareHashAndPassword code path that the Login handler uses).
+// Cost 4 is the bcrypt minimum and is acceptable here because no
+// production data ever lives in this test row.
 func signupTestUser(t *testing.T, email, password string) string {
 	t.Helper()
-	_ = password // referenced once Plan 01 wires bcrypt-aware variant
 	ctx := context.Background()
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+	if err != nil {
+		t.Fatalf("signupTestUser: bcrypt %q: %v", password, err)
+	}
 	var userID string
 	if err := testPool.QueryRow(ctx, `
 		INSERT INTO "user" (name, email, password_hash)
 		VALUES ($1, $2, $3)
 		RETURNING id
-	`, "Scaffold User", email, dummyBcryptHash).Scan(&userID); err != nil {
+	`, "Scaffold User", email, string(hash)).Scan(&userID); err != nil {
 		t.Fatalf("signupTestUser: insert %q: %v", email, err)
 	}
 	t.Cleanup(func() {
