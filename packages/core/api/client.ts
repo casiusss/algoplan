@@ -399,7 +399,7 @@ export class ApiClient {
    * 409 (already decided) and creates nothing new.
    *
    * The content templates live in TypeScript (see
-   * @multica/views/onboarding/utils/starter-content-templates) and are
+   * @algoplan/views/onboarding/utils/starter-content-templates) and are
    * rendered from the user's questionnaire answers before being sent.
    */
   async importStarterContent(

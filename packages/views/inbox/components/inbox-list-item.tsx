@@ -3,8 +3,8 @@
 import { StatusIcon } from "../../issues/components";
 import { ActorAvatar } from "../../common/actor-avatar";
 import { Archive } from "lucide-react";
-import { AccentBar } from "@multica/ui/components/ui/accent-bar";
-import type { InboxItem } from "@multica/core/types";
+import { AccentBar } from "@algoplan/ui/components/ui/accent-bar";
+import type { InboxItem } from "@algoplan/core/types";
 import { InboxDetailLabel } from "./inbox-detail-label";
 
 function timeAgo(dateStr: string): string {

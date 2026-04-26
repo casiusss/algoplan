@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { ActorFilterValue } from "@multica/core/issues/stores/view-store";
-import type { IssueStatus, IssuePriority } from "@multica/core/types";
+import type { ActorFilterValue } from "@algoplan/core/issues/stores/view-store";
+import type { IssueStatus, IssuePriority } from "@algoplan/core/types";
 
 const {
   mockState,
@@ -26,7 +26,7 @@ const {
   mockPathname: { current: "/ws-1/issues" },
 }));
 
-vi.mock("@multica/core/issues/stores/view-store", () => {
+vi.mock("@algoplan/core/issues/stores/view-store", () => {
   const actions = {
     togglePriorityFilter: mockTogglePriority,
     toggleStatusFilter: mockToggleStatus,

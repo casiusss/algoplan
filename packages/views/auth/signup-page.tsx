@@ -8,11 +8,11 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from "@multica/ui/components/ui/card";
-import { Input } from "@multica/ui/components/ui/input";
-import { Label } from "@multica/ui/components/ui/label";
-import { Button } from "@multica/ui/components/ui/button";
-import { api, ApiError } from "@multica/core/api";
+} from "@algoplan/ui/components/ui/card";
+import { Input } from "@algoplan/ui/components/ui/input";
+import { Label } from "@algoplan/ui/components/ui/label";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { api, ApiError } from "@algoplan/core/api";
 import { AlgoPlanWordmark } from "./algoplan-wordmark";
 import { PasswordStrengthMeter } from "./password-strength-meter";
 import { AppLink, useNavigation } from "../navigation";

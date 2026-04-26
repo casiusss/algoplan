@@ -3,9 +3,9 @@
 import { useCallback, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@multica/ui/components/ui/button";
-import { useCreateIssue } from "@multica/core/issues/mutations";
-import type { IssueStatus } from "@multica/core/types";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { useCreateIssue } from "@algoplan/core/issues/mutations";
+import type { IssueStatus } from "@algoplan/core/types";
 
 export interface InlineTaskAddProps {
   status: IssueStatus;

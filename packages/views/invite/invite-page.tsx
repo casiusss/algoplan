@@ -2,22 +2,22 @@
 
 import { useState, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { api } from "@multica/core/api";
+import { api } from "@algoplan/core/api";
 import {
   workspaceKeys,
   workspaceListOptions,
-} from "@multica/core/workspace/queries";
+} from "@algoplan/core/workspace/queries";
 import {
   paths,
   resolvePostAuthDestination,
   useHasOnboarded,
-} from "@multica/core/paths";
+} from "@algoplan/core/paths";
 import { useNavigation } from "../navigation";
 import { AlgoPlanWordmark, useLogout } from "../auth";
 import { DragStrip } from "../platform";
-import { Button } from "@multica/ui/components/ui/button";
-import { Card, CardContent } from "@multica/ui/components/ui/card";
-import { Skeleton } from "@multica/ui/components/ui/skeleton";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { Card, CardContent } from "@algoplan/ui/components/ui/card";
+import { Skeleton } from "@algoplan/ui/components/ui/skeleton";
 import { ArrowLeft, LogOut, Users, Check, X } from "lucide-react";
 
 export interface InvitePageProps {

@@ -16,14 +16,14 @@ import {
   Zap,
 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@multica/ui/components/ui/button";
-import { Input } from "@multica/ui/components/ui/input";
-import { Label } from "@multica/ui/components/ui/label";
-import { useScrollFade } from "@multica/ui/hooks/use-scroll-fade";
-import { cn } from "@multica/ui/lib/utils";
-import { useCreateWorkspace } from "@multica/core/workspace/mutations";
-import type { Workspace } from "@multica/core/types";
-import { DragStrip } from "@multica/views/platform";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { Input } from "@algoplan/ui/components/ui/input";
+import { Label } from "@algoplan/ui/components/ui/label";
+import { useScrollFade } from "@algoplan/ui/hooks/use-scroll-fade";
+import { cn } from "@algoplan/ui/lib/utils";
+import { useCreateWorkspace } from "@algoplan/core/workspace/mutations";
+import type { Workspace } from "@algoplan/core/types";
+import { DragStrip } from "@algoplan/views/platform";
 import { StepHeader } from "../components/step-header";
 import { RadioMark } from "../components/option-card";
 import { WorkspaceAvatar } from "../../workspace/workspace-avatar";

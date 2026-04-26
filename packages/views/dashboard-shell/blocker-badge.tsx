@@ -1,14 +1,14 @@
 "use client";
 
 import { AlertOctagon } from "lucide-react";
-import { Button } from "@multica/ui/components/ui/button";
+import { Button } from "@algoplan/ui/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@multica/ui/components/ui/popover";
-import { cn } from "@multica/ui/lib/utils";
-import { useBlockerCount } from "@multica/core/issues/derived";
+} from "@algoplan/ui/components/ui/popover";
+import { cn } from "@algoplan/ui/lib/utils";
+import { useBlockerCount } from "@algoplan/core/issues/derived";
 
 export interface BlockerBadgeProps {
   /** Workspace id, passed as a prop so the atom never calls the useWorkspaceId hook. */

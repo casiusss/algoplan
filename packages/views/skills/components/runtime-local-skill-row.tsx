@@ -2,8 +2,8 @@
 
 import type { ReactNode } from "react";
 import { FileText } from "lucide-react";
-import type { RuntimeLocalSkillSummary } from "@multica/core/types";
-import { Badge } from "@multica/ui/components/ui/badge";
+import type { RuntimeLocalSkillSummary } from "@algoplan/core/types";
+import { Badge } from "@algoplan/ui/components/ui/badge";
 
 export function RuntimeLocalSkillRow({
   skill,

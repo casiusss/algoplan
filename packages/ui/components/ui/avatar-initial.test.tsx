@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 
-import { AVATAR_PALETTE } from "@multica/ui/lib/avatar-color";
+import { AVATAR_PALETTE } from "@algoplan/ui/lib/avatar-color";
 import { AvatarInitial } from "./avatar-initial";
 
 const PALETTE_BG_CLASSES = AVATAR_PALETTE.map((entry) => entry.split(" ")[0]);

@@ -1,18 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import { NewWorkspacePage } from "@multica/views/workspace/new-workspace-page";
-import { InvitePage } from "@multica/views/invite";
-import { OnboardingFlow } from "@multica/views/onboarding";
+import { NewWorkspacePage } from "@algoplan/views/workspace/new-workspace-page";
+import { InvitePage } from "@algoplan/views/invite";
+import { OnboardingFlow } from "@algoplan/views/onboarding";
 import {
   ForgotPasswordPage,
   ResendVerifyEmailPage,
   ResetPasswordPage,
   SignupPage,
   VerifyEmailPage,
-} from "@multica/views/auth";
-import { useNavigation } from "@multica/views/navigation";
-import { DragStrip } from "@multica/views/platform";
-import { paths } from "@multica/core/paths";
-import { workspaceListOptions } from "@multica/core/workspace/queries";
+} from "@algoplan/views/auth";
+import { useNavigation } from "@algoplan/views/navigation";
+import { DragStrip } from "@algoplan/views/platform";
+import { paths } from "@algoplan/core/paths";
+import { workspaceListOptions } from "@algoplan/core/workspace/queries";
 import { useWindowOverlayStore } from "@/stores/window-overlay-store";
 
 /**
@@ -122,7 +122,7 @@ function WindowOverlayInner() {
 }
 
 /**
- * Desktop chrome wrapper for the shared @multica/views/auth pages.
+ * Desktop chrome wrapper for the shared @algoplan/views/auth pages.
  *
  * The shared pages (SignupPage, VerifyEmailPage, etc.) render a centered
  * card via `<div className="flex flex-1 flex-col items-center justify-center …">`

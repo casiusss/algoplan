@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Button } from "@multica/ui/components/ui/button";
+import { Button } from "@algoplan/ui/components/ui/button";
 
 interface EmptyStateProps {
   /** Optional SVG / icon block above the heading. */

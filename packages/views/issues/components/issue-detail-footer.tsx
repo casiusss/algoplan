@@ -2,7 +2,7 @@
 
 import { Trash2 } from "lucide-react";
 
-import { Button } from "@multica/ui/components/ui/button";
+import { Button } from "@algoplan/ui/components/ui/button";
 
 /**
  * IssueDetailFooter — Phase 6 DTL-04 modal-footer band.

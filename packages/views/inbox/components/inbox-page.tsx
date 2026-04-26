@@ -3,12 +3,12 @@
 import { Fragment, useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useDefaultLayout } from "react-resizable-panels";
 import { useQuery } from "@tanstack/react-query";
-import { useWorkspaceId } from "@multica/core/hooks";
-import { useWorkspacePaths } from "@multica/core/paths";
+import { useWorkspaceId } from "@algoplan/core/hooks";
+import { useWorkspacePaths } from "@algoplan/core/paths";
 import {
   inboxListOptions,
   deduplicateInboxItems,
-} from "@multica/core/inbox/queries";
+} from "@algoplan/core/inbox/queries";
 import {
   useMarkInboxRead,
   useArchiveInbox,
@@ -16,11 +16,11 @@ import {
   useArchiveAllInbox,
   useArchiveAllReadInbox,
   useArchiveCompletedInbox,
-} from "@multica/core/inbox/mutations";
+} from "@algoplan/core/inbox/mutations";
 import {
   useInboxFilterStore,
   applyInboxFilter,
-} from "@multica/core/inbox";
+} from "@algoplan/core/inbox";
 import { IssueDetail } from "../../issues/components";
 import { useNavigation } from "../../navigation";
 import { toast } from "sonner";
@@ -33,26 +33,26 @@ import {
   ListChecks,
   ArrowLeft,
 } from "lucide-react";
-import type { InboxItem } from "@multica/core/types";
-import { Button } from "@multica/ui/components/ui/button";
+import type { InboxItem } from "@algoplan/core/types";
+import { Button } from "@algoplan/ui/components/ui/button";
 import {
   ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle,
-} from "@multica/ui/components/ui/resizable";
-import { Skeleton } from "@multica/ui/components/ui/skeleton";
+} from "@algoplan/ui/components/ui/resizable";
+import { Skeleton } from "@algoplan/ui/components/ui/skeleton";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@multica/ui/components/ui/dropdown-menu";
+} from "@algoplan/ui/components/ui/dropdown-menu";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from "@multica/ui/components/ui/tooltip";
-import { useIsMobile } from "@multica/ui/hooks/use-mobile";
+} from "@algoplan/ui/components/ui/tooltip";
+import { useIsMobile } from "@algoplan/ui/hooks/use-mobile";
 import { PageHeader } from "../../layout/page-header";
 import { EmptyState } from "../../workspace/empty-state";
 import { InboxListItem, timeAgo } from "./inbox-list-item";

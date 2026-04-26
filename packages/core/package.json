@@ -1,5 +1,5 @@
 {
-  "name": "@multica/core",
+  "name": "@algoplan/core",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -81,7 +81,7 @@
     "react": "catalog:"
   },
   "devDependencies": {
-    "@multica/tsconfig": "workspace:*",
+    "@algoplan/tsconfig": "workspace:*",
     "@testing-library/react": "catalog:",
     "@types/react": "catalog:",
     "jsdom": "catalog:",

@@ -2,7 +2,7 @@
  * DragStrip coverage gate (UI-CHECK FLAG-5.3)
  *
  * Every full-window desktop view must mount `<DragStrip />` from
- * `@multica/views/platform` as the FIRST JSX child of a flex container.
+ * `@algoplan/views/platform` as the FIRST JSX child of a flex container.
  * Otherwise users on macOS cannot drag the window from the top edge —
  * `-webkit-app-region: drag` won't be applied to the chrome region.
  *

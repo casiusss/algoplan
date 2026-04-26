@@ -1,6 +1,6 @@
 "use client";
 
-import { Tooltip, TooltipTrigger, TooltipContent } from "@multica/ui/components/ui/tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@algoplan/ui/components/ui/tooltip";
 import { QuickEmojiPicker } from "./quick-emoji-picker";
 
 interface ReactionItem {

@@ -1,6 +1,6 @@
 "use client";
 
-import { ResendVerifyEmailPage } from "@multica/views/auth";
+import { ResendVerifyEmailPage } from "@algoplan/views/auth";
 
 /**
  * Web wrapper for the shared ResendVerifyEmailPage.

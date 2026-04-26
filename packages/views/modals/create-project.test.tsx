@@ -13,15 +13,15 @@ vi.mock("../navigation", () => ({
   useNavigation: () => ({ push: mockPush }),
 }));
 
-vi.mock("@multica/core/projects/mutations", () => ({
+vi.mock("@algoplan/core/projects/mutations", () => ({
   useCreateProject: () => ({ mutateAsync: mockCreateProjectMutate }),
 }));
 
-vi.mock("@multica/core/hooks", () => ({
+vi.mock("@algoplan/core/hooks", () => ({
   useWorkspaceId: () => "00000000-0000-0000-0000-000000000000",
 }));
 
-vi.mock("@multica/core/paths", () => ({
+vi.mock("@algoplan/core/paths", () => ({
   useCurrentWorkspace: () => ({
     id: "00000000-0000-0000-0000-000000000000",
     name: "Test Workspace",
@@ -36,7 +36,7 @@ vi.mock("@multica/core/paths", () => ({
   }),
 }));
 
-vi.mock("@multica/core/workspace/queries", () => ({
+vi.mock("@algoplan/core/workspace/queries", () => ({
   memberListOptions: () => ({
     queryKey: ["members"],
     queryFn: async () => [],
@@ -47,7 +47,7 @@ vi.mock("@multica/core/workspace/queries", () => ({
   }),
 }));
 
-vi.mock("@multica/core/workspace/hooks", () => ({
+vi.mock("@algoplan/core/workspace/hooks", () => ({
   useActorName: () => ({ getActorName: () => "" }),
 }));
 
@@ -109,7 +109,7 @@ vi.mock("../common/actor-avatar", () => ({
   ActorAvatar: () => <span data-testid="actor-avatar" />,
 }));
 
-vi.mock("@multica/ui/components/ui/dialog", () => ({
+vi.mock("@algoplan/ui/components/ui/dialog", () => ({
   Dialog: ({ children }: { children: ReactNode }) => <div>{children}</div>,
   DialogContent: ({ children, className }: { children: ReactNode; className?: string }) => (
     <div className={className}>{children}</div>
@@ -119,7 +119,7 @@ vi.mock("@multica/ui/components/ui/dialog", () => ({
   ),
 }));
 
-vi.mock("@multica/ui/components/ui/dropdown-menu", () => ({
+vi.mock("@algoplan/ui/components/ui/dropdown-menu", () => ({
   DropdownMenu: ({ children }: { children: ReactNode }) => <div>{children}</div>,
   DropdownMenuTrigger: ({ render }: { render: ReactNode }) => <>{render}</>,
   DropdownMenuContent: ({ children }: { children: ReactNode }) => <div>{children}</div>,
@@ -130,19 +130,19 @@ vi.mock("@multica/ui/components/ui/dropdown-menu", () => ({
   ),
 }));
 
-vi.mock("@multica/ui/components/ui/popover", () => ({
+vi.mock("@algoplan/ui/components/ui/popover", () => ({
   Popover: ({ children }: { children: ReactNode }) => <div>{children}</div>,
   PopoverTrigger: ({ render }: { render: ReactNode }) => <>{render}</>,
   PopoverContent: ({ children }: { children: ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock("@multica/ui/components/ui/tooltip", () => ({
+vi.mock("@algoplan/ui/components/ui/tooltip", () => ({
   Tooltip: ({ children }: { children: ReactNode }) => <>{children}</>,
   TooltipTrigger: ({ render }: { render: ReactNode }) => <>{render}</>,
   TooltipContent: ({ children }: { children: ReactNode }) => <>{children}</>,
 }));
 
-vi.mock("@multica/ui/components/ui/button", () => ({
+vi.mock("@algoplan/ui/components/ui/button", () => ({
   Button: ({
     children,
     disabled,
@@ -160,11 +160,11 @@ vi.mock("@multica/ui/components/ui/button", () => ({
   ),
 }));
 
-vi.mock("@multica/ui/components/common/emoji-picker", () => ({
+vi.mock("@algoplan/ui/components/common/emoji-picker", () => ({
   EmojiPicker: () => <div data-testid="emoji-picker" />,
 }));
 
-vi.mock("@multica/ui/lib/utils", () => ({
+vi.mock("@algoplan/ui/lib/utils", () => ({
   cn: (...values: Array<string | false | null | undefined>) => values.filter(Boolean).join(" "),
 }));
 

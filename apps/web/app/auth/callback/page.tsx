@@ -3,18 +3,18 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { sanitizeNextUrl, useAuthStore } from "@multica/core/auth";
-import { workspaceKeys } from "@multica/core/workspace/queries";
-import { paths, resolvePostAuthDestination } from "@multica/core/paths";
-import { api } from "@multica/core/api";
+import { sanitizeNextUrl, useAuthStore } from "@algoplan/core/auth";
+import { workspaceKeys } from "@algoplan/core/workspace/queries";
+import { paths, resolvePostAuthDestination } from "@algoplan/core/paths";
+import { api } from "@algoplan/core/api";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from "@multica/ui/components/ui/card";
-import { Button } from "@multica/ui/components/ui/button";
+} from "@algoplan/ui/components/ui/card";
+import { Button } from "@algoplan/ui/components/ui/button";
 import { Loader2 } from "lucide-react";
 
 function CallbackContent() {

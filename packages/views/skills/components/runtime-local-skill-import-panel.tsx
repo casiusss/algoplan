@@ -3,28 +3,28 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { HardDrive, Download, AlertCircle } from "lucide-react";
-import type { AgentRuntime, Skill } from "@multica/core/types";
-import { useAuthStore } from "@multica/core/auth";
-import { useWorkspaceId } from "@multica/core/hooks";
+import type { AgentRuntime, Skill } from "@algoplan/core/types";
+import { useAuthStore } from "@algoplan/core/auth";
+import { useWorkspaceId } from "@algoplan/core/hooks";
 import {
   runtimeListOptions,
   runtimeLocalSkillsKeys,
   runtimeLocalSkillsOptions,
   resolveRuntimeLocalSkillImport,
-} from "@multica/core/runtimes";
-import { workspaceKeys } from "@multica/core/workspace/queries";
-import { Button } from "@multica/ui/components/ui/button";
-import { Input } from "@multica/ui/components/ui/input";
-import { Label } from "@multica/ui/components/ui/label";
-import { Badge } from "@multica/ui/components/ui/badge";
+} from "@algoplan/core/runtimes";
+import { workspaceKeys } from "@algoplan/core/workspace/queries";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { Input } from "@algoplan/ui/components/ui/input";
+import { Label } from "@algoplan/ui/components/ui/label";
+import { Badge } from "@algoplan/ui/components/ui/badge";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@multica/ui/components/ui/select";
-import { Skeleton } from "@multica/ui/components/ui/skeleton";
+} from "@algoplan/ui/components/ui/select";
+import { Skeleton } from "@algoplan/ui/components/ui/skeleton";
 import { toast } from "sonner";
 import { RuntimeLocalSkillRow } from "./runtime-local-skill-row";
 

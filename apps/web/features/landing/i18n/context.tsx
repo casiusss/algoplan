@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useCallback, useMemo } from "react";
-import { useConfigStore } from "@multica/core/config";
+import { useConfigStore } from "@algoplan/core/config";
 import { createEnDict } from "./en";
 import { createZhDict } from "./zh";
 import type { LandingDict, Locale } from "./types";

@@ -4,7 +4,7 @@ import * as React from "react"
 import { Toggle as TogglePrimitive } from "@base-ui/react/toggle"
 import { ToggleGroup as ToggleGroupPrimitive } from "@base-ui/react/toggle-group"
 
-import { cn } from "@multica/ui/lib/utils"
+import { cn } from "@algoplan/ui/lib/utils"
 
 /**
  * SegmentedControl — single-select value picker styled like a TabsList track

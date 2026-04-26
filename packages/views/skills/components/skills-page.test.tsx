@@ -9,14 +9,14 @@ const mockResolveRuntimeLocalSkillImport = vi.hoisted(() => vi.fn());
 const mockRuntimeListOptions = vi.hoisted(() => vi.fn());
 const mockRuntimeLocalSkillsOptions = vi.hoisted(() => vi.fn());
 
-vi.mock("@multica/core/hooks", () => ({
+vi.mock("@algoplan/core/hooks", () => ({
   useWorkspaceId: () => "ws-1",
 }));
 
 // The runtime selector now filters to runtimes owned by the current user
 // to mirror the Runtimes page's "Mine" default. Stub useAuthStore so the
 // panel sees user-1 — the owner of the seeded runtime in beforeEach.
-vi.mock("@multica/core/auth", () => {
+vi.mock("@algoplan/core/auth", () => {
   const stateUser = { id: "user-1", email: "u@example.com", name: "User" };
   const useAuthStore = (selector?: any) => {
     const state = { user: stateUser };
@@ -25,7 +25,7 @@ vi.mock("@multica/core/auth", () => {
   return { useAuthStore };
 });
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     listSkills: (...args: unknown[]) => mockListSkills(...args),
     createSkill: vi.fn(),
@@ -36,7 +36,7 @@ vi.mock("@multica/core/api", () => ({
   },
 }));
 
-vi.mock("@multica/core/runtimes", () => ({
+vi.mock("@algoplan/core/runtimes", () => ({
   runtimeListOptions: (...args: unknown[]) => mockRuntimeListOptions(...args),
   runtimeLocalSkillsOptions: (...args: unknown[]) =>
     mockRuntimeLocalSkillsOptions(...args),
@@ -54,7 +54,7 @@ vi.mock("react-resizable-panels", () => ({
   }),
 }));
 
-vi.mock("@multica/ui/components/ui/resizable", () => ({
+vi.mock("@algoplan/ui/components/ui/resizable", () => ({
   ResizablePanelGroup: ({ children }: any) => <div>{children}</div>,
   ResizablePanel: ({ children }: any) => <div>{children}</div>,
   ResizableHandle: () => <div data-testid="resize-handle" />,

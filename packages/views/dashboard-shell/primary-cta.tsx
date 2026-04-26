@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@multica/ui/components/ui/button";
-import { useModalStore } from "@multica/core/modals";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { useModalStore } from "@algoplan/core/modals";
 
 /**
  * Topbar primary CTA — opens the existing "Create issue" modal via the same

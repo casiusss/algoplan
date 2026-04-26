@@ -1,6 +1,6 @@
 "use client";
 
-import { SignupPage } from "@multica/views/auth";
+import { SignupPage } from "@algoplan/views/auth";
 
 /**
  * Web wrapper for the shared SignupPage.

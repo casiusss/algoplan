@@ -39,17 +39,17 @@ vi.mock("@tanstack/react-query", async () => {
   return { ...actual, useQueryClient: () => ({ setQueryData: mockSetQueryData }) };
 });
 
-// Mock `@multica/core/navigation` so the cross-plan flash hook
+// Mock `@algoplan/core/navigation` so the cross-plan flash hook
 // (`useNavigationFlash("password-updated")`) is asserted directly without
 // pulling sonner into the test path. Cross-plan touch from Plan 06-06:
 // LoginPage now consumes the flash set by ResetPasswordPage on its success
 // branch (per UI-SPEC §Hard Constraints #14).
 const mockUseNavigationFlash = vi.hoisted(() => vi.fn());
-vi.mock("@multica/core/navigation", () => ({
+vi.mock("@algoplan/core/navigation", () => ({
   useNavigationFlash: mockUseNavigationFlash,
 }));
 
-vi.mock("@multica/core/auth", () => ({
+vi.mock("@algoplan/core/auth", () => ({
   useAuthStore: Object.assign(
     // Zustand hook form — component may call useAuthStore(selector)
     (selector?: (s: unknown) => unknown) => {
@@ -66,7 +66,7 @@ vi.mock("@multica/core/auth", () => ({
   ),
 }));
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     listWorkspaces: mockApiListWorkspaces,
     verifyCode: mockApiVerifyCode,
@@ -78,7 +78,7 @@ vi.mock("@multica/core/api", () => ({
   ApiError: ApiErrorMock,
 }));
 
-vi.mock("@multica/core/types", () => ({}));
+vi.mock("@algoplan/core/types", () => ({}));
 
 // AppLink in tests renders as a plain anchor (no NavigationProvider).
 vi.mock("../navigation", () => ({

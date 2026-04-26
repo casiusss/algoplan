@@ -6,9 +6,9 @@ import {
   ArrowUpCircle,
   Check,
 } from "lucide-react";
-import { Button } from "@multica/ui/components/ui/button";
-import { api } from "@multica/core/api";
-import type { RuntimeUpdateStatus } from "@multica/core/types";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { api } from "@algoplan/core/api";
+import type { RuntimeUpdateStatus } from "@algoplan/core/types";
 
 const GITHUB_RELEASES_URL =
   "https://api.github.com/repos/multica-ai/multica/releases/latest";

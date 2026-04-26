@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
-import type { IssuePriority } from "@multica/core/types";
+import type { IssuePriority } from "@algoplan/core/types";
 
 import { IssuePrioritySegmentedControl } from "./issue-priority-segmented-control";
 

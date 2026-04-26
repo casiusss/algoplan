@@ -1,24 +1,24 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@multica/ui/lib/utils";
+import { cn } from "@algoplan/ui/lib/utils";
 import { useTabHistory } from "@/hooks/use-tab-history";
 import { useActiveTitleSync } from "@/hooks/use-tab-sync";
 import { useTabStore, resolveRouteIcon } from "@/stores/tab-store";
 import {
   SidebarTrigger,
   useSidebar,
-} from "@multica/ui/components/ui/sidebar";
-import { DashboardShell } from "@multica/views/dashboard-shell";
-import { DragStrip } from "@multica/views/platform";
-import { SearchTrigger } from "@multica/views/search";
-import { ChatFab, ChatWindow } from "@multica/views/chat";
-import { StarterContentPrompt } from "@multica/views/onboarding";
-import { WorkspaceSlugProvider } from "@multica/core/paths";
+} from "@algoplan/ui/components/ui/sidebar";
+import { DashboardShell } from "@algoplan/views/dashboard-shell";
+import { DragStrip } from "@algoplan/views/platform";
+import { SearchTrigger } from "@algoplan/views/search";
+import { ChatFab, ChatWindow } from "@algoplan/views/chat";
+import { StarterContentPrompt } from "@algoplan/views/onboarding";
+import { WorkspaceSlugProvider } from "@algoplan/core/paths";
 import {
   getCurrentSlug,
   getCurrentWsId,
   subscribeToCurrentSlug,
-} from "@multica/core/platform";
+} from "@algoplan/core/platform";
 import { DesktopNavigationProvider } from "@/platform/navigation";
 import { TabBar } from "./tab-bar";
 import { TabContent } from "./tab-content";

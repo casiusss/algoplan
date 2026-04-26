@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { PageHeader } from "../../layout/page-header";
 import { toast } from "sonner";
-import { Skeleton } from "@multica/ui/components/ui/skeleton";
+import { Skeleton } from "@algoplan/ui/components/ui/skeleton";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,8 +33,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@multica/ui/components/ui/alert-dialog";
-import { Button } from "@multica/ui/components/ui/button";
+} from "@algoplan/ui/components/ui/alert-dialog";
+import { Button } from "@algoplan/ui/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -44,24 +44,24 @@ import {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
-} from "@multica/ui/components/ui/dropdown-menu";
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@multica/ui/components/ui/resizable";
-import { Sheet, SheetContent } from "@multica/ui/components/ui/sheet";
-import { useIsMobile } from "@multica/ui/hooks/use-mobile";
+} from "@algoplan/ui/components/ui/dropdown-menu";
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@algoplan/ui/components/ui/resizable";
+import { Sheet, SheetContent } from "@algoplan/ui/components/ui/sheet";
+import { useIsMobile } from "@algoplan/ui/hooks/use-mobile";
 import { ContentEditor, type ContentEditorRef, TitleEditor, useFileDropZone, FileDropOverlay } from "../../editor";
-import { FileUploadButton } from "@multica/ui/components/common/file-upload-button";
+import { FileUploadButton } from "@algoplan/ui/components/common/file-upload-button";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from "@multica/ui/components/ui/tooltip";
-import { Popover, PopoverTrigger, PopoverContent } from "@multica/ui/components/ui/popover";
-import { Checkbox } from "@multica/ui/components/ui/checkbox";
-import { Command, CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@multica/ui/components/ui/command";
-import { AvatarGroup, AvatarGroupCount } from "@multica/ui/components/ui/avatar";
+} from "@algoplan/ui/components/ui/tooltip";
+import { Popover, PopoverTrigger, PopoverContent } from "@algoplan/ui/components/ui/popover";
+import { Checkbox } from "@algoplan/ui/components/ui/checkbox";
+import { Command, CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@algoplan/ui/components/ui/command";
+import { AvatarGroup, AvatarGroupCount } from "@algoplan/ui/components/ui/avatar";
 import { ActorAvatar } from "../../common/actor-avatar";
-import type { UpdateIssueRequest, IssueStatus, IssuePriority, TimelineEntry, Issue } from "@multica/core/types";
-import { ALL_STATUSES, STATUS_CONFIG, PRIORITY_ORDER, PRIORITY_CONFIG } from "@multica/core/issues/config";
+import type { UpdateIssueRequest, IssueStatus, IssuePriority, TimelineEntry, Issue } from "@algoplan/core/types";
+import { ALL_STATUSES, STATUS_CONFIG, PRIORITY_ORDER, PRIORITY_CONFIG } from "@algoplan/core/issues/config";
 import { StatusIcon, PriorityIcon, StatusPicker, DueDatePicker, AssigneePicker, canAssignAgent } from ".";
 import { IssuePrioritySegmentedControl } from "./issue-priority-segmented-control";
 import { IssueDetailFooter } from "./issue-detail-footer";
@@ -71,25 +71,25 @@ import { CommentInput } from "./comment-input";
 import { AgentLiveCard, TaskRunHistory } from "./agent-live-card";
 import { BacklogAgentHintDialog } from "./backlog-agent-hint-dialog";
 import { useQuery } from "@tanstack/react-query";
-import { useAuthStore } from "@multica/core/auth";
-import { useCurrentWorkspace, useWorkspacePaths } from "@multica/core/paths";
-import { useActorName } from "@multica/core/workspace/hooks";
-import { useWorkspaceId } from "@multica/core/hooks";
-import { issueListOptions, issueDetailOptions, childIssuesOptions, issueUsageOptions } from "@multica/core/issues/queries";
-import { memberListOptions, agentListOptions } from "@multica/core/workspace/queries";
-import { useUpdateIssue, useDeleteIssue } from "@multica/core/issues/mutations";
-import { useRecentIssuesStore } from "@multica/core/issues/stores";
+import { useAuthStore } from "@algoplan/core/auth";
+import { useCurrentWorkspace, useWorkspacePaths } from "@algoplan/core/paths";
+import { useActorName } from "@algoplan/core/workspace/hooks";
+import { useWorkspaceId } from "@algoplan/core/hooks";
+import { issueListOptions, issueDetailOptions, childIssuesOptions, issueUsageOptions } from "@algoplan/core/issues/queries";
+import { memberListOptions, agentListOptions } from "@algoplan/core/workspace/queries";
+import { useUpdateIssue, useDeleteIssue } from "@algoplan/core/issues/mutations";
+import { useRecentIssuesStore } from "@algoplan/core/issues/stores";
 import { useIssueTimeline } from "../hooks/use-issue-timeline";
 import { useIssueReactions } from "../hooks/use-issue-reactions";
 import { useIssueSubscribers } from "../hooks/use-issue-subscribers";
-import { ReactionBar } from "@multica/ui/components/common/reaction-bar";
-import { useFileUpload } from "@multica/core/hooks/use-file-upload";
-import { api } from "@multica/core/api";
-import { useModalStore } from "@multica/core/modals";
-import { timeAgo } from "@multica/core/utils";
-import { cn } from "@multica/ui/lib/utils";
-import { pinListOptions } from "@multica/core/pins";
-import { useCreatePin, useDeletePin } from "@multica/core/pins";
+import { ReactionBar } from "@algoplan/ui/components/common/reaction-bar";
+import { useFileUpload } from "@algoplan/core/hooks/use-file-upload";
+import { api } from "@algoplan/core/api";
+import { useModalStore } from "@algoplan/core/modals";
+import { timeAgo } from "@algoplan/core/utils";
+import { cn } from "@algoplan/ui/lib/utils";
+import { pinListOptions } from "@algoplan/core/pins";
+import { useCreatePin, useDeletePin } from "@algoplan/core/pins";
 
 import { ProgressRing } from "./progress-ring";
 

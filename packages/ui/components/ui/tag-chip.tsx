@@ -3,7 +3,7 @@ import { useRender } from "@base-ui/react/use-render"
 import { cva, type VariantProps } from "class-variance-authority"
 import { X } from "lucide-react"
 
-import { cn } from "@multica/ui/lib/utils"
+import { cn } from "@algoplan/ui/lib/utils"
 
 /**
  * TagChip — a small color-locked pill, optionally interactive with an

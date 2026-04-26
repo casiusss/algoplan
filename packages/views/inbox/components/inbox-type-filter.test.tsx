@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { InboxTypeFilter } from "./inbox-type-filter";
-import { useInboxFilterStore } from "@multica/core/inbox";
-import type { InboxItemType } from "@multica/core/types";
+import { useInboxFilterStore } from "@algoplan/core/inbox";
+import type { InboxItemType } from "@algoplan/core/types";
 
 beforeEach(() => {
   useInboxFilterStore.setState({ selectedTypes: new Set<InboxItemType>() });

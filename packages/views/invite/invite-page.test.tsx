@@ -10,7 +10,7 @@ const mocks = vi.hoisted(() => ({
   push: vi.fn(),
 }));
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     getInvitation: mocks.getInvitation,
     acceptInvitation: mocks.acceptInvitation,
@@ -35,7 +35,7 @@ vi.mock("../platform", () => ({
   DragStrip: () => <div data-testid="drag-strip-stub" />,
 }));
 
-vi.mock("@multica/core/workspace/queries", () => ({
+vi.mock("@algoplan/core/workspace/queries", () => ({
   workspaceListOptions: () => ({
     queryKey: ["workspaces"],
     queryFn: () => Promise.resolve([]),
@@ -43,10 +43,10 @@ vi.mock("@multica/core/workspace/queries", () => ({
   workspaceKeys: { myInvitations: () => ["invitations"] },
 }));
 
-vi.mock("@multica/core/paths", async () => {
+vi.mock("@algoplan/core/paths", async () => {
   const actual = await vi.importActual<
-    typeof import("@multica/core/paths")
-  >("@multica/core/paths");
+    typeof import("@algoplan/core/paths")
+  >("@algoplan/core/paths");
   return {
     ...actual,
     useHasOnboarded: () => true,

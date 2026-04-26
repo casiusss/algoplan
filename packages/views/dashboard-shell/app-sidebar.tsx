@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { cn } from "@multica/ui/lib/utils";
+import { cn } from "@algoplan/ui/lib/utils";
 import { AppLink, useNavigation } from "../navigation";
 import { HelpLauncher } from "../layout/help-launcher";
 import {
@@ -32,12 +32,12 @@ import {
   Zap,
 } from "lucide-react";
 import { WorkspaceAvatar } from "../workspace/workspace-avatar";
-import { ActorAvatar } from "@multica/ui/components/common/actor-avatar";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@multica/ui/components/ui/tooltip";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@multica/ui/components/ui/collapsible";
-import { AccentBar } from "@multica/ui/components/ui/accent-bar";
+import { ActorAvatar } from "@algoplan/ui/components/common/actor-avatar";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@algoplan/ui/components/ui/tooltip";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@algoplan/ui/components/ui/collapsible";
+import { AccentBar } from "@algoplan/ui/components/ui/accent-bar";
 import { StatusIcon } from "../issues/components/status-icon";
-import { useIssueDraftStore } from "@multica/core/issues/stores/draft-store";
+import { useIssueDraftStore } from "@algoplan/core/issues/stores/draft-store";
 import {
   Sidebar,
   SidebarContent,
@@ -50,7 +50,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@multica/ui/components/ui/sidebar";
+} from "@algoplan/ui/components/ui/sidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -59,19 +59,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@multica/ui/components/ui/dropdown-menu";
-import { useAuthStore } from "@multica/core/auth";
-import { useCurrentWorkspace, useWorkspacePaths, paths } from "@multica/core/paths";
-import { workspaceListOptions, myInvitationListOptions, workspaceKeys } from "@multica/core/workspace/queries";
+} from "@algoplan/ui/components/ui/dropdown-menu";
+import { useAuthStore } from "@algoplan/core/auth";
+import { useCurrentWorkspace, useWorkspacePaths, paths } from "@algoplan/core/paths";
+import { workspaceListOptions, myInvitationListOptions, workspaceKeys } from "@algoplan/core/workspace/queries";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "@multica/core/api";
-import { useModalStore } from "@multica/core/modals";
-import { useMyRuntimesNeedUpdate } from "@multica/core/runtimes/hooks";
-import { pinListOptions } from "@multica/core/pins/queries";
-import { useDeletePin, useReorderPins } from "@multica/core/pins/mutations";
-import { issueDetailOptions } from "@multica/core/issues/queries";
-import { projectDetailOptions } from "@multica/core/projects/queries";
-import type { PinnedItem } from "@multica/core/types";
+import { api } from "@algoplan/core/api";
+import { useModalStore } from "@algoplan/core/modals";
+import { useMyRuntimesNeedUpdate } from "@algoplan/core/runtimes/hooks";
+import { pinListOptions } from "@algoplan/core/pins/queries";
+import { useDeletePin, useReorderPins } from "@algoplan/core/pins/mutations";
+import { issueDetailOptions } from "@algoplan/core/issues/queries";
+import { projectDetailOptions } from "@algoplan/core/projects/queries";
+import type { PinnedItem } from "@algoplan/core/types";
 import { useLogout } from "../auth";
 import { Wordmark, WordmarkText } from "./wordmark";
 import { PriorityGrid } from "./priority-grid";

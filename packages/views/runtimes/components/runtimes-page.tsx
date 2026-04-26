@@ -8,13 +8,13 @@ import {
   ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle,
-} from "@multica/ui/components/ui/resizable";
-import { Skeleton } from "@multica/ui/components/ui/skeleton";
-import { useAuthStore } from "@multica/core/auth";
-import { useWorkspaceId } from "@multica/core/hooks";
-import { runtimeListOptions, runtimeKeys } from "@multica/core/runtimes/queries";
-import { useUpdatableRuntimeIds } from "@multica/core/runtimes/hooks";
-import { useWSEvent } from "@multica/core/realtime";
+} from "@algoplan/ui/components/ui/resizable";
+import { Skeleton } from "@algoplan/ui/components/ui/skeleton";
+import { useAuthStore } from "@algoplan/core/auth";
+import { useWorkspaceId } from "@algoplan/core/hooks";
+import { runtimeListOptions, runtimeKeys } from "@algoplan/core/runtimes/queries";
+import { useUpdatableRuntimeIds } from "@algoplan/core/runtimes/hooks";
+import { useWSEvent } from "@algoplan/core/realtime";
 import { RuntimeList } from "./runtime-list";
 import { RuntimeDetail } from "./runtime-detail";
 

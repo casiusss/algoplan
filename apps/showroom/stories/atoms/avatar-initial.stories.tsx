@@ -1,15 +1,15 @@
 // UI-SPEC §3 — AvatarInitial stories (Default, AllSizes, Determinism, PaletteSpread, Empty).
-// Atom source: @multica/ui/components/ui/avatar-initial (real source).
+// Atom source: @algoplan/ui/components/ui/avatar-initial (real source).
 //
 // PaletteSpread names: 16 empirically verified names, 2 per AVATAR_PALETTE index
 // (RESEARCH §Pattern 4). Each name was passed to hashToPaletteIndex from
-// @multica/ui/lib/avatar-color and the resulting index recorded. Two names per
+// @algoplan/ui/lib/avatar-color and the resulting index recorded. Two names per
 // index gives independent visual confirmation per color and catches single-name
 // typos. To re-derive (e.g., if AVATAR_PALETTE.length changes), see the script
 // in RESEARCH §Pattern 4.
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { AvatarInitial } from "@multica/ui/components/ui/avatar-initial"
+import { AvatarInitial } from "@algoplan/ui/components/ui/avatar-initial"
 
 const meta = {
   title: "Atoms / AvatarInitial",
@@ -20,7 +20,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 // 16 names → 8 distinct AVATAR_PALETTE indexes, 2 names per index.
-// Verified 2026-04-25 via hashToPaletteIndex from @multica/ui/lib/avatar-color.
+// Verified 2026-04-25 via hashToPaletteIndex from @algoplan/ui/lib/avatar-color.
 // Order: palette index ascending (0,0,1,1,...,7,7) — reviewer scans top-to-bottom
 // expecting paired colors to match.
 const PALETTE_NAMES: ReadonlyArray<{ name: string; index: number }> = [

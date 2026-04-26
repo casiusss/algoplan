@@ -1,11 +1,11 @@
 // UI-SPEC §2 — AccentBar stories (Default, AllColors, Segments, Orientation).
-// Atom source: @multica/ui/components/ui/accent-bar (real source).
+// Atom source: @algoplan/ui/components/ui/accent-bar (real source).
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import {
   AccentBar,
   type AccentBarColor,
-} from "@multica/ui/components/ui/accent-bar"
+} from "@algoplan/ui/components/ui/accent-bar"
 
 const meta = {
   title: "Atoms / AccentBar",

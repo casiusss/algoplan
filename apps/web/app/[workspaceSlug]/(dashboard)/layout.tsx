@@ -1,11 +1,11 @@
 "use client";
 
-import { DashboardShell } from "@multica/views/dashboard-shell";
-import { useCurrentWorkspace } from "@multica/core/paths";
-import { MulticaIcon } from "@multica/ui/components/common/multica-icon";
-import { SearchCommand, SearchTrigger } from "@multica/views/search";
-import { ChatFab, ChatWindow } from "@multica/views/chat";
-import { StarterContentPrompt } from "@multica/views/onboarding";
+import { DashboardShell } from "@algoplan/views/dashboard-shell";
+import { useCurrentWorkspace } from "@algoplan/core/paths";
+import { MulticaIcon } from "@algoplan/ui/components/common/multica-icon";
+import { SearchCommand, SearchTrigger } from "@algoplan/views/search";
+import { ChatFab, ChatWindow } from "@algoplan/views/chat";
+import { StarterContentPrompt } from "@algoplan/views/onboarding";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   // Pass wsId explicitly to DashboardShell (PLAN-CHECK W-4 fix). The parent

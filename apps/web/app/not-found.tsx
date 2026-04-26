@@ -1,4 +1,4 @@
-import { NotFoundPage } from "@multica/views/common/not-found-page";
+import { NotFoundPage } from "@algoplan/views/common/not-found-page";
 
 /**
  * Next.js convention: `app/not-found.tsx` is the default 404 handler. It's

@@ -3,13 +3,13 @@
 import { use, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { WorkspaceSlugProvider, paths } from "@multica/core/paths";
-import { workspaceBySlugOptions } from "@multica/core/workspace";
-import { setCurrentWorkspace } from "@multica/core/platform";
-import { useAuthStore } from "@multica/core/auth";
-import { NoAccessPage } from "@multica/views/workspace/no-access-page";
-import { AlgoPlanWordmark } from "@multica/views/auth";
-import { useWorkspaceSeen } from "@multica/views/workspace/use-workspace-seen";
+import { WorkspaceSlugProvider, paths } from "@algoplan/core/paths";
+import { workspaceBySlugOptions } from "@algoplan/core/workspace";
+import { setCurrentWorkspace } from "@algoplan/core/platform";
+import { useAuthStore } from "@algoplan/core/auth";
+import { NoAccessPage } from "@algoplan/views/workspace/no-access-page";
+import { AlgoPlanWordmark } from "@algoplan/views/auth";
+import { useWorkspaceSeen } from "@algoplan/views/workspace/use-workspace-seen";
 
 export default function WorkspaceLayout({
   children,

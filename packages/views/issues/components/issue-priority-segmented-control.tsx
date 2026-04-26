@@ -5,8 +5,8 @@ import { X } from "lucide-react";
 import {
   SegmentedControl,
   SegmentedControlItem,
-} from "@multica/ui/components/ui/segmented-control";
-import type { IssuePriority } from "@multica/core/types";
+} from "@algoplan/ui/components/ui/segmented-control";
+import type { IssuePriority } from "@algoplan/core/types";
 
 /**
  * IssuePrioritySegmentedControl — Phase 6 DTL-02 affordance.

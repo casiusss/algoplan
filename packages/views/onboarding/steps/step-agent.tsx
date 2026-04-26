@@ -3,21 +3,21 @@
 import { useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@multica/ui/components/ui/button";
-import { useScrollFade } from "@multica/ui/hooks/use-scroll-fade";
-import { cn } from "@multica/ui/lib/utils";
-import { api } from "@multica/core/api";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { useScrollFade } from "@algoplan/ui/hooks/use-scroll-fade";
+import { cn } from "@algoplan/ui/lib/utils";
+import { api } from "@algoplan/core/api";
 import {
   recommendTemplate,
   type AgentTemplateId,
   type QuestionnaireAnswers,
-} from "@multica/core/onboarding";
+} from "@algoplan/core/onboarding";
 import type {
   Agent,
   AgentRuntime,
   CreateAgentRequest,
-} from "@multica/core/types";
-import { DragStrip } from "@multica/views/platform";
+} from "@algoplan/core/types";
+import { DragStrip } from "@algoplan/views/platform";
 import { StepHeader } from "../components/step-header";
 
 /**

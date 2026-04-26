@@ -11,15 +11,15 @@ import {
 import { ReactRenderer } from "@tiptap/react";
 import { computePosition, offset, flip, shift } from "@floating-ui/dom";
 import type { QueryClient } from "@tanstack/react-query";
-import { getCurrentWsId } from "@multica/core/platform";
-import { flattenIssueBuckets, issueKeys } from "@multica/core/issues/queries";
-import { workspaceKeys } from "@multica/core/workspace/queries";
-import { api } from "@multica/core/api";
-import type { Issue, ListIssuesCache, MemberWithUser, Agent } from "@multica/core/types";
+import { getCurrentWsId } from "@algoplan/core/platform";
+import { flattenIssueBuckets, issueKeys } from "@algoplan/core/issues/queries";
+import { workspaceKeys } from "@algoplan/core/workspace/queries";
+import { api } from "@algoplan/core/api";
+import type { Issue, ListIssuesCache, MemberWithUser, Agent } from "@algoplan/core/types";
 import { ActorAvatar } from "../../common/actor-avatar";
 import { StatusIcon } from "../../issues/components/status-icon";
-import { Badge } from "@multica/ui/components/ui/badge";
-import type { IssueStatus } from "@multica/core/types";
+import { Badge } from "@algoplan/ui/components/ui/badge";
+import type { IssueStatus } from "@algoplan/core/types";
 import type { SuggestionOptions, SuggestionProps } from "@tiptap/suggestion";
 
 // ---------------------------------------------------------------------------

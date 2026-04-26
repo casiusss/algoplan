@@ -2,19 +2,19 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { Issue, IssueStatus } from "@multica/core/types";
+import type { Issue, IssueStatus } from "@algoplan/core/types";
 
 // ---------------------------------------------------------------------------
 // Mocks
 // ---------------------------------------------------------------------------
 
-vi.mock("@multica/core/hooks", () => ({
+vi.mock("@algoplan/core/hooks", () => ({
   useWorkspaceId: () => "ws-1",
 }));
 
-vi.mock("@multica/core/paths", async () => {
-  const actual = await vi.importActual<typeof import("@multica/core/paths")>(
-    "@multica/core/paths",
+vi.mock("@algoplan/core/paths", async () => {
+  const actual = await vi.importActual<typeof import("@algoplan/core/paths")>(
+    "@algoplan/core/paths",
   );
   return {
     ...actual,
@@ -41,7 +41,7 @@ const mockSelectionState = {
   deselect: vi.fn(),
 };
 
-vi.mock("@multica/core/issues/stores/selection-store", () => ({
+vi.mock("@algoplan/core/issues/stores/selection-store", () => ({
   useIssueSelectionStore: Object.assign(
     (selector?: any) => (selector ? selector(mockSelectionState) : mockSelectionState),
     { getState: () => mockSelectionState },
@@ -64,20 +64,20 @@ const mockViewState = {
   toggleListCollapsed: vi.fn(),
 };
 
-vi.mock("@multica/core/issues/stores/view-store-context", () => ({
+vi.mock("@algoplan/core/issues/stores/view-store-context", () => ({
   ViewStoreProvider: ({ children }: { children: React.ReactNode }) => children,
   useViewStore: (selector?: any) => (selector ? selector(mockViewState) : mockViewState),
   useViewStoreApi: () => ({ getState: () => mockViewState, setState: vi.fn(), subscribe: vi.fn() }),
 }));
 
-vi.mock("@multica/core/projects/queries", () => ({
+vi.mock("@algoplan/core/projects/queries", () => ({
   projectListOptions: (_wsId: string) => ({
     queryKey: ["projects", _wsId],
     queryFn: async () => [],
   }),
 }));
 
-vi.mock("@multica/core/issues/config", () => ({
+vi.mock("@algoplan/core/issues/config", () => ({
   ALL_STATUSES: ["backlog", "todo", "in_progress", "in_review", "done", "blocked", "cancelled"],
   BOARD_STATUSES: ["backlog", "todo", "in_progress", "in_review", "done", "blocked"],
   STATUS_ORDER: ["backlog", "todo", "in_progress", "in_review", "done", "blocked", "cancelled"],
@@ -121,7 +121,7 @@ vi.mock("@multica/core/issues/config", () => ({
 }));
 
 const mockOpenModal = vi.fn();
-vi.mock("@multica/core/modals", () => ({
+vi.mock("@algoplan/core/modals", () => ({
   useModalStore: Object.assign(
     () => ({ open: mockOpenModal }),
     { getState: () => ({ open: mockOpenModal }) },
@@ -129,7 +129,7 @@ vi.mock("@multica/core/modals", () => ({
 }));
 
 const mockLoadMore = vi.fn();
-vi.mock("@multica/core/issues/mutations", () => ({
+vi.mock("@algoplan/core/issues/mutations", () => ({
   useLoadMoreByStatus: (_status: IssueStatus) => ({
     loadMore: mockLoadMore,
     hasMore: false,

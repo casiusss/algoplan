@@ -1,6 +1,6 @@
 "use client";
 
-import { ForgotPasswordPage } from "@multica/views/auth";
+import { ForgotPasswordPage } from "@algoplan/views/auth";
 
 /**
  * Web wrapper for the shared ForgotPasswordPage.

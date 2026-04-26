@@ -7,12 +7,12 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-} from "@multica/ui/components/ui/card";
-import { Input } from "@multica/ui/components/ui/input";
-import { Label } from "@multica/ui/components/ui/label";
-import { Button } from "@multica/ui/components/ui/button";
+} from "@algoplan/ui/components/ui/card";
+import { Input } from "@algoplan/ui/components/ui/input";
+import { Label } from "@algoplan/ui/components/ui/label";
+import { Button } from "@algoplan/ui/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
-import { api } from "@multica/core/api";
+import { api } from "@algoplan/core/api";
 import { AlgoPlanWordmark } from "./algoplan-wordmark";
 import { useNavigation } from "../navigation";
 

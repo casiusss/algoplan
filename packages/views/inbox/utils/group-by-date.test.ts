@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { groupInboxByDate, type InboxBucket } from "./group-by-date";
-import type { InboxItem } from "@multica/core/types";
+import type { InboxItem } from "@algoplan/core/types";
 
 function makeItem(id: string, createdAt: string): InboxItem {
   return {

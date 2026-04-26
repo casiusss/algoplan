@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, waitFor } from "@testing-library/react";
-import { paths } from "@multica/core/paths";
+import { paths } from "@algoplan/core/paths";
 
 const { mockPush, mockSearchParams, mockLoginWithGoogle, mockListWorkspaces } =
   vi.hoisted(() => ({
@@ -33,10 +33,10 @@ vi.mock("@tanstack/react-query", () => ({
 
 // Preserve the real sanitizeNextUrl so the "drop unsafe ?next=" behavior is
 // exercised rather than silently diverging from the source of truth.
-vi.mock("@multica/core/auth", async () => {
+vi.mock("@algoplan/core/auth", async () => {
   const actual =
-    await vi.importActual<typeof import("@multica/core/auth")>(
-      "@multica/core/auth",
+    await vi.importActual<typeof import("@algoplan/core/auth")>(
+      "@algoplan/core/auth",
     );
   return {
     ...actual,
@@ -45,11 +45,11 @@ vi.mock("@multica/core/auth", async () => {
   };
 });
 
-vi.mock("@multica/core/workspace/queries", () => ({
+vi.mock("@algoplan/core/workspace/queries", () => ({
   workspaceKeys: { list: () => ["workspaces"] },
 }));
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     listWorkspaces: mockListWorkspaces,
     googleLogin: vi.fn(),

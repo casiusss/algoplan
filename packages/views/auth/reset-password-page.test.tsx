@@ -23,14 +23,14 @@ const ApiErrorMock = vi.hoisted(() => {
   };
 });
 
-vi.mock("@multica/core/api", () => ({
+vi.mock("@algoplan/core/api", () => ({
   api: {
     resetPassword: mockApiResetPassword,
   },
   ApiError: ApiErrorMock,
 }));
 
-vi.mock("@multica/core/navigation", () => ({
+vi.mock("@algoplan/core/navigation", () => ({
   setFlash: mockSetFlash,
 }));
 

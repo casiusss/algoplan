@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
-import { Button } from "@multica/ui/components/ui/button";
-import { useTheme } from "@multica/ui/components/common/theme-provider";
+import { Button } from "@algoplan/ui/components/ui/button";
+import { useTheme } from "@algoplan/ui/components/common/theme-provider";
 
 /**
  * Hydration-safe Sun/Moon theme toggle. Pre-mount the icon defaults to Moon

@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { ResetPasswordPage } from "@multica/views/auth";
+import { ResetPasswordPage } from "@algoplan/views/auth";
 
 /**
  * Web wrapper for the shared ResetPasswordPage.

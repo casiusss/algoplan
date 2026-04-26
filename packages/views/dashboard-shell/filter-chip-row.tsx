@@ -2,13 +2,13 @@
 
 import { useMemo } from "react";
 import type { ReactNode } from "react";
-import { TagChip, type TagChipColor } from "@multica/ui/components/ui/tag-chip";
-import { Button } from "@multica/ui/components/ui/button";
+import { TagChip, type TagChipColor } from "@algoplan/ui/components/ui/tag-chip";
+import { Button } from "@algoplan/ui/components/ui/button";
 import {
   useIssueViewStore,
   type ActorFilterValue,
-} from "@multica/core/issues/stores/view-store";
-import type { IssuePriority, IssueStatus } from "@multica/core/types";
+} from "@algoplan/core/issues/stores/view-store";
+import type { IssuePriority, IssueStatus } from "@algoplan/core/types";
 import { useNavigation } from "../navigation";
 
 /**

@@ -64,11 +64,11 @@ vi.mock("@dnd-kit/abstract", () => ({
 // Domain mocks
 // ---------------------------------------------------------------------------
 
-vi.mock("@multica/core/hooks", () => ({
+vi.mock("@algoplan/core/hooks", () => ({
   useWorkspaceId: () => "ws-1",
 }));
 
-vi.mock("@multica/core/issues/mutations", () => ({
+vi.mock("@algoplan/core/issues/mutations", () => ({
   useLoadMoreByStatus: () => ({
     loadMore: vi.fn(),
     hasMore: false,
@@ -78,7 +78,7 @@ vi.mock("@multica/core/issues/mutations", () => ({
   useUpdateIssue: () => ({ mutate: vi.fn() }),
 }));
 
-vi.mock("@multica/core/issues/config", () => ({
+vi.mock("@algoplan/core/issues/config", () => ({
   ALL_STATUSES: ["backlog", "todo", "in_progress", "in_review", "done", "blocked", "cancelled"],
   BOARD_STATUSES: ["backlog", "todo", "in_progress", "in_review", "done", "blocked"],
   STATUS_ORDER: ["backlog", "todo", "in_progress", "in_review", "done", "blocked", "cancelled"],
@@ -109,25 +109,25 @@ const mockViewState = {
   showStatus: vi.fn(),
 };
 
-vi.mock("@multica/core/issues/stores/view-store-context", () => ({
+vi.mock("@algoplan/core/issues/stores/view-store-context", () => ({
   useViewStore: (selector?: any) => (selector ? selector(mockViewState) : mockViewState),
   useViewStoreApi: () => ({ getState: () => mockViewState, setState: vi.fn(), subscribe: vi.fn() }),
 }));
 
-vi.mock("@multica/core/modals", () => ({
+vi.mock("@algoplan/core/modals", () => ({
   useModalStore: Object.assign(
     () => ({ open: vi.fn() }),
     { getState: () => ({ open: vi.fn() }) },
   ),
 }));
 
-vi.mock("@multica/core/paths", () => ({
+vi.mock("@algoplan/core/paths", () => ({
   useWorkspacePaths: () => ({
     issueDetail: (id: string) => `/issues/${id}`,
   }),
 }));
 
-vi.mock("@multica/core/projects/queries", () => ({
+vi.mock("@algoplan/core/projects/queries", () => ({
   projectListOptions: () => ({ queryKey: ["projects"], queryFn: () => Promise.resolve([]) }),
 }));
 
@@ -163,7 +163,7 @@ vi.mock("sonner", () => ({
 
 import { render } from "@testing-library/react";
 import { BoardView } from "./board-view";
-import type { Issue, IssueStatus } from "@multica/core/types";
+import type { Issue, IssueStatus } from "@algoplan/core/types";
 
 const issueDefaults = {
   workspace_id: "ws-1",

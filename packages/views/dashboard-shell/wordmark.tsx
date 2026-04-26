@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { cn } from "@multica/ui/lib/utils";
+import { cn } from "@algoplan/ui/lib/utils";
 
 /**
  * Source-of-truth string for the AlgoPlan wordmark. Reused by the workspace

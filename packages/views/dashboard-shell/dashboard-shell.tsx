@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { SidebarProvider, SidebarInset } from "@multica/ui/components/ui/sidebar";
+import { SidebarProvider, SidebarInset } from "@algoplan/ui/components/ui/sidebar";
 import { ModalRegistry } from "../modals/registry";
 import { DashboardGuard } from "../layout/dashboard-guard";
 import { AppSidebar } from "./app-sidebar";
