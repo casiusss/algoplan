@@ -39,6 +39,7 @@ type EmailVerifyRequest struct {
 // Returns 200 + updated UserResponse on success, 401 on
 // invalid / expired / reused tokens.
 func (h *Handler) EmailVerify(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, maxAuthRequestBody)
 	var req EmailVerifyRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid request body")
@@ -113,6 +114,7 @@ const resendEmailVerifyOKMessage = "If an account exists, a new verification lin
 // EmailService.SendEmailVerification (best-effort; email-send failures
 // are logged but do not change the 200 response).
 func (h *Handler) ResendEmailVerify(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, maxAuthRequestBody)
 	var req ResendEmailVerifyRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid request body")

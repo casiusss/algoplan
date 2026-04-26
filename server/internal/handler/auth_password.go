@@ -41,6 +41,14 @@ const (
 	// failure mode (unknown email, wrong password, NULL password_hash).
 	// Identical wording across paths blocks email-enumeration attacks.
 	invalidLoginMessage = "invalid email or password"
+	// maxAuthRequestBody caps the size of any request body accepted by
+	// the password / email-verify auth handlers. 16 KiB comfortably fits
+	// {email, password, name} (RFC 5321 email ≤254 bytes, password ≤72,
+	// reasonable name) while preventing an unauthenticated client from
+	// forcing the server to allocate megabytes of JSON before the
+	// per-field length checks reject it. Asymmetric DoS defense: cheap
+	// cap, expensive bcrypt cost on the success path.
+	maxAuthRequestBody = 16 * 1024
 )
 
 // dummyBcryptHashForTiming is a precomputed bcrypt hash used to equalize
@@ -89,6 +97,7 @@ type SignupRequest struct {
 // also prevents an adversary from inferring email-service health from the
 // response.
 func (h *Handler) Signup(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, maxAuthRequestBody)
 	var req SignupRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid request body")
@@ -202,6 +211,7 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request) {
 // for Phase 5.1) — users with unverified email must still be able to log
 // in to access the resend-verification flow.
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, maxAuthRequestBody)
 	var req LoginRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid request body")
@@ -303,6 +313,7 @@ const passwordResetRequestOKMessage = "If an account exists for this email, a re
 // then call EmailService.SendPasswordResetEmail (best-effort; email-
 // send failures are logged but do not change the 200 response).
 func (h *Handler) PasswordResetRequest(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, maxAuthRequestBody)
 	var req PasswordResetRequestRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid request body")
@@ -398,6 +409,7 @@ type PasswordResetConfirmRequest struct {
 //   - 500: DB outage during lookup, bcrypt hash failure, or DB outage
 //     during the atomic ConfirmPasswordReset
 func (h *Handler) PasswordResetConfirm(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, maxAuthRequestBody)
 	var req PasswordResetConfirmRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid request body")
