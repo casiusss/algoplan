@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev:web": "turbo dev --filter=@multica/web",
-    "dev:desktop": "turbo dev --filter=@multica/desktop",
-    "dev:desktop:staging": "turbo dev:staging --filter=@multica/desktop",
+    "dev:web": "turbo dev --filter=@algoplan/web",
+    "dev:desktop": "turbo dev --filter=@algoplan/desktop",
+    "dev:desktop:staging": "turbo dev:staging --filter=@algoplan/desktop",
     "build": "turbo build",
     "typecheck": "turbo typecheck",
     "test": "turbo test",

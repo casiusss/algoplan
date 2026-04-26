@@ -1,5 +1,5 @@
 {
-  "name": "@multica/showroom",
+  "name": "@algoplan/showroom",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -9,13 +9,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@multica/ui": "workspace:*",
+    "@algoplan/ui": "workspace:*",
     "@fontsource-variable/inter": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@multica/tsconfig": "workspace:*",
+    "@algoplan/tsconfig": "workspace:*",
     "@storybook/addon-a11y": "catalog:",
     "@storybook/addon-docs": "catalog:",
     "@storybook/react-vite": "catalog:",

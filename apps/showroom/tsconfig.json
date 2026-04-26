@@ -1,5 +1,5 @@
 {
-  "extends": "@multica/tsconfig/base.json",
+  "extends": "@algoplan/tsconfig/base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
