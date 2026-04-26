@@ -90,4 +90,14 @@ describe("global path / reserved slug consistency", () => {
       ).toBe(true);
     }
   });
+
+  // C6 — anti-impersonation guard: both the current brand name (`algoplan`)
+  // and the legacy brand name (`multica`) must be blocked as workspace slugs.
+  // The legacy entry stays reserved forever post-rebrand to prevent users
+  // from creating /multica workspaces that could be confused with the
+  // pre-rebrand product or be used for phishing. See Phase 7 Plan 01.
+  it("both algoplan and multica brand slugs are reserved (anti-impersonation)", () => {
+    expect(RESERVED_SLUGS.has("algoplan")).toBe(true);
+    expect(RESERVED_SLUGS.has("multica")).toBe(true);
+  });
 });
