@@ -240,15 +240,15 @@ export function InboxPage() {
           <DropdownMenuContent align="end" className="w-auto">
             <DropdownMenuItem onClick={handleArchiveAll}>
               <Archive className="h-4 w-4" />
-              Archive all
+              Alle archivieren
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleArchiveAllRead}>
               <BookCheck className="h-4 w-4" />
-              Archive all read
+              Alle gelesenen archivieren
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleArchiveCompleted}>
               <ListChecks className="h-4 w-4" />
-              Archive completed
+              Erledigte archivieren
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
