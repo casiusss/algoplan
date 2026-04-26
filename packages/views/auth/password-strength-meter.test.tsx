@@ -59,7 +59,10 @@ vi.mock("@zxcvbn-ts/language-en", () => ({
   translations: {},
 }));
 
-type MeterComponent = (props: { password: string }) => React.ReactElement;
+type MeterComponent = (props: {
+  password: string;
+  onScoreChange?: (score: number | null) => void;
+}) => React.ReactElement;
 
 async function loadMeter(): Promise<MeterComponent> {
   const mod = await import("./password-strength-meter");
