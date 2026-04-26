@@ -63,7 +63,7 @@ function LoginPageContent() {
         .issueCliToken()
         .then(({ token }) => {
           setDesktopToken(token);
-          window.location.href = `multica://auth/callback?token=${encodeURIComponent(token)}`;
+          window.location.href = `algoplan://auth/callback?token=${encodeURIComponent(token)}`;
         })
         .catch((err) => {
           setDesktopError(
@@ -130,10 +130,10 @@ function LoginPageContent() {
       <div className="flex min-h-screen items-center justify-center">
         <Card className="w-full max-w-sm">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Opening Multica</CardTitle>
+            <CardTitle className="text-2xl">Opening AlgoPlan</CardTitle>
             <CardDescription>
               {desktopToken
-                ? "You should see a prompt to open the Multica desktop app. If nothing happens, click the button below."
+                ? "You should see a prompt to open the AlgoPlan desktop app. If nothing happens, click the button below."
                 : "Preparing Desktop sign-in..."}
             </CardDescription>
           </CardHeader>
@@ -142,10 +142,10 @@ function LoginPageContent() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  window.location.href = `multica://auth/callback?token=${encodeURIComponent(desktopToken)}`;
+                  window.location.href = `algoplan://auth/callback?token=${encodeURIComponent(desktopToken)}`;
                 }}
               >
-                Open Multica Desktop
+                Open AlgoPlan Desktop
               </Button>
             ) : (
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />

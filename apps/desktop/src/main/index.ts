@@ -6,6 +6,10 @@ import fixPath from "fix-path";
 import { setupAutoUpdater } from "./updater";
 import { setupDaemonManager } from "./daemon-manager";
 import { openExternalSafely } from "./external-url";
+import {
+  handleDeepLink as handleDeepLinkPure,
+  PROTOCOL_NAME as PROTOCOL,
+} from "./deep-link";
 
 // Bundled icon used for dev-mode dock/taskbar branding. In production the
 // app bundle icon (from electron-builder) wins; this path is only consumed
@@ -32,40 +36,18 @@ if (process.platform !== "win32") {
   process.env.PATH = `${fallbackPaths.join(":")}:${process.env.PATH ?? ""}`;
 }
 
-const PROTOCOL = "algoplan";
-
 let mainWindow: BrowserWindow | null = null;
 
 // --- Deep link helpers ---------------------------------------------------
 
+// Thin wrapper around the pure handleDeepLinkPure (extracted to ./deep-link
+// for unit testing) — supplies the live mainWindow.webContents.send callback
+// at call time, or null if the window isn't ready yet (cold-start case).
 function handleDeepLink(url: string): void {
-  try {
-    const parsed = new URL(url);
-    if (parsed.protocol !== `${PROTOCOL}:`) return;
-
-    // algoplan://auth/callback?token=<jwt>
-    if (parsed.hostname === "auth" && parsed.pathname === "/callback") {
-      const token = parsed.searchParams.get("token");
-      if (token && mainWindow) {
-        mainWindow.webContents.send("auth:token", token);
-      }
-      return;
-    }
-
-    // algoplan://invite/<invitationId>
-    // Dispatched from the web invite page when the user chooses "Open in
-    // desktop app". The renderer opens the invite overlay — no tab, no
-    // route persistence, so deep-linking the same invite twice stays safe.
-    if (parsed.hostname === "invite") {
-      const id = parsed.pathname.replace(/^\//, "");
-      if (id && mainWindow) {
-        mainWindow.webContents.send("invite:open", decodeURIComponent(id));
-      }
-      return;
-    }
-  } catch {
-    // Ignore malformed URLs
-  }
+  const send = mainWindow
+    ? mainWindow.webContents.send.bind(mainWindow.webContents)
+    : null;
+  handleDeepLinkPure(url, send);
 }
 
 // --- Window creation -----------------------------------------------------

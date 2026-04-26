@@ -25,6 +25,8 @@ set -euo pipefail
 #     - reserved-slugs.ts             "multica" anti-impersonation slug — kept (alongside new "algoplan")
 #     - "Multica → AlgoPlan"          regression-lock test descriptions referencing both names
 #     - "(not multica)"               regression-lock assertion strings asserting the negative state
+#     - deep-link.test.ts             entire file is a regression-lock contract — every "multica" hit is an
+#                                     intentional negative-case fixture asserting the legacy scheme is REJECTED (Plan 07-04)
 #     - "repo: multica" / repo: "multica"  electron-builder publish.repo — kept (D-4)
 #     - multica-static.copilothub.ai  JSDoc example CDN hostname — documentation, not production
 #     - multica-locale                cookie name for landing-page locale persistence (D-2 ext.) — silent loss of language pref
@@ -42,6 +44,7 @@ HITS=$(grep -rnE "[Mm]ultica" $TARGETS \
   --include="*.yaml" --include="*.css" --include="*.html" --include="*.md" \
   --include="*.go" 2>/dev/null \
   | grep -v node_modules | grep -v "\.next" | grep -v "\.turbo" \
+  | grep -v "deep-link\.test\.ts" \
   | grep -vE "$EXCLUDE" || true)
 
 if [ -n "$HITS" ]; then

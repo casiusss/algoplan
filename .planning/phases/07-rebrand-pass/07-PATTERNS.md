@@ -113,6 +113,7 @@ These mirror `scripts/grep-rebrand.sh` `EXCLUDE` regex. **When a new exclusion i
 | `multica-cli-` archive prefix                | CLI release archive filename (Goreleaser output: `multica-cli-<v>-<os>-<arch>.<ext>`); same rationale as `multica-desktop-`. | (internal) |
 | `multica_<os>_<arch>` legacy archive name    | Legacy CLI archive name pattern preserved for older releases (`cli-release-asset.ts` legacyName fallback) — Q1 + internal release identity. | Q1         |
 | `"multica"` / `"multica.exe"` binary basenames | CLI binary filename strings inside `cli-bootstrap.ts` / `daemon-manager.ts`; preserved per Q1. | Q1         |
+| `apps/desktop/src/main/deep-link.test.ts` (entire file) | Regression-lock contract for Plan 07-04 atomic flip. Every `multica` hit in this file is an INTENTIONAL negative-case fixture (test asserts legacy scheme REJECTED). Excluded as a whole-file rule because the negative-case URL `multica://auth/callback?token=jwt` is the contract under test. | 07-04      |
 | `~/.multica` config dir paths (`.multica/`, `.multica"`, `` `multica.exe` ``) | Daemon manager + cli-bootstrap reference user config dir on disk; preserved per Q1. | Q1         |
 | `bin/multica` packaged-binary path           | `apps/desktop/resources/bin/multica` — bundled CLI path comment in `daemon-manager.ts`; preserved per Q1. | Q1         |
 | `server/cmd/multica` CLI binary path         | Developer-facing CLI; rename out of scope.                              | Q1         |
