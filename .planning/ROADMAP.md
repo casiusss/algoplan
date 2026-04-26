@@ -165,8 +165,16 @@ Plans:
   4. After an app update, existing users retain their stored theme preference, view state, and drafts — `multica_*` localStorage keys are confirmed unchanged in a browser session
   5. All tests that previously asserted brand copy now assert "AlgoPlan" — `pnpm test` passes with at least as many tests as before the rebrand phase began
 
-**Phase annotation**: `multica://` deep-link scheme change affects production users who have the Electron app installed — the old scheme will stop working until reinstall. Flag as a release communication item if production users exist. localStorage keys (`multica_*`) must NOT be renamed; renaming causes silent data loss (user loses dark-mode preference, drafts, view state).
-**Plans**: TBD
+**Phase annotation**: `multica://` deep-link scheme change affects production users who have the Electron app installed — the old scheme will stop working until reinstall. Flag as a release communication item if production users exist. localStorage keys (`multica_*` AND `multica:*` chat-prefix keys) must NOT be renamed; renaming causes silent data loss (user loses dark-mode preference, drafts, view state, chat history).
+**Plans**: 6 plans
+
+Plans:
+- [ ] 07-00-PLAN.md — Wave 0: grep audit script + SVG seed + brand asset generator + 07-PATTERNS.md replacement table
+- [ ] 07-01-PLAN.md — Wave 1: sweep packages/{views,ui,core} user-visible Multica strings (parallel-safe with 07-02)
+- [ ] 07-02-PLAN.md — Wave 1: sweep apps/web (root layout metadata + landing EN/ZH + auth/dashboard pages) (parallel-safe with 07-01)
+- [ ] 07-03-PLAN.md — Wave 2: sweep apps/desktop strings + electron-builder.yml metadata + main-process PROTOCOL flip + regression-lock test
+- [ ] 07-04-PLAN.md — Wave 3: atomic multica:// → algoplan:// deep-link flip (web callback + login + extracted desktop deep-link.ts + 8-test contract lock)
+- [ ] 07-05-PLAN.md — Wave 4: PWA manifest + asset wiring in layout + localStorage preservation regression-lock + final 6-check verification gate
 
 ## Progress
 
@@ -182,4 +190,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 5. Issues Views + Kanban + dnd-kit Migration | 6/6 | Complete (code-side); awaiting user live-E2E sign-off | 2026-04-25 |
 | 5.1. Auth Backend Endpoints (INSERTED) | 4/4 | Complete (27/27 integration tests GREEN) | 2026-04-26 |
 | 6. Issue Detail + Remaining Views | 0/TBD | Not started | - |
-| 7. Rebrand Pass | 0/TBD | Not started | - |
+| 7. Rebrand Pass | 1/6 | In progress (Wave 0 — audit script + asset pipeline + 07-PATTERNS.md) | 2026-04-26 |

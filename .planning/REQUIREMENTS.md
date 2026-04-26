@@ -111,7 +111,8 @@ Requirements für initialen Release. Jedes mappt zu genau einer Roadmap-Phase.
 - [ ] **RBR-03**: `apps/web/app/layout.tsx` Title/Meta/OG/siteName auf "AlgoPlan"; Electron `productName`, Window-Title, macOS Dock-Icon, macOS-Menu auf "AlgoPlan"
 - [ ] **RBR-04**: Deep-Link-Scheme `multica://` → `algoplan://` atomar in `electron-builder.yml` + `apps/web/app/auth/callback/page.tsx`; Web-to-Desktop Callback getestet
 - [ ] **RBR-05**: localStorage-Keys bleiben `multica_*` (explizite Nicht-Änderung — sonst silent logout aller User); Entscheidung in Commit-Body dokumentiert
-- [ ] **RBR-06**: Alle Tests die Brand-Copy asserten (`getByText(/Multica/)` etc.) auf "AlgoPlan" aktualisiert
+- [x] **RBR-06
+**: Alle Tests die Brand-Copy asserten (`getByText(/Multica/)` etc.) auf "AlgoPlan" aktualisiert
 
 ## v2 Requirements
 

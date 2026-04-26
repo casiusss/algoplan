@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v0.4.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 06-07-PLAN.md
-last_updated: "2026-04-26T12:03:06.315Z"
+stopped_at: Completed 07-00-PLAN.md
+last_updated: "2026-04-26T13:15:57.406Z"
 last_activity: 2026-04-26
 progress:
   total_phases: 8
   completed_phases: 7
-  total_plans: 41
-  completed_plans: 41
-  percent: 100
+  total_plans: 47
+  completed_plans: 42
+  percent: 89
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 
 ## Current Position
 
-Phase: 6 (COMPLETE — all 8 plans 00..07 shipped)
-Plan: 07 (complete — AUTH wiring: 5 NEW web routes at /auth/{verb}, 5 NEW desktop WindowOverlay types, navigation adapter translation, pre-workspace trio restyle)
-Status: Phase 6 complete; ready for Phase 7 (rebrand)
+Phase: 7 (IN PROGRESS — Wave 0 complete; Plans 01..05 pending)
+Plan: 00 (complete — audit script `grep-rebrand.sh`, deterministic SVG→10-asset generator, 07-PATTERNS.md replacement table + exclusions + asset matrix)
+Status: Phase 7 Wave 0 complete; ready for Wave 1 (Plan 07-01 string sweep)
 Last activity: 2026-04-26
 
-Progress: [██████████] 100%
+Progress: [█████████░] 89%
 
 ## Performance Metrics
 
@@ -68,6 +68,7 @@ Progress: [██████████] 100%
 | Phase 06 P03 | 16m | 3 tasks | 17 files |
 | Phase 06 P05 | 15m | 3 tasks | 10 files |
 | Phase 06 P07 | 70min | 3 tasks | 11 files |
+| Phase 07 P00 | 8min | 3 tasks | 16 files |
 
 ## Accumulated Context
 
@@ -103,6 +104,9 @@ Recent decisions affecting current work:
 - Phase 6 Plan 07: Web auth routes live at apps/web/app/auth/ (NOT route group) so URLs match FROZEN /auth/{verb}?token= email-link contract; Rule 1 deviation fix relocated 5 NEW routes from /(auth)/ group
 - Phase 6 Plan 07: DesktopAuthShell wrapper centralizes DragStrip mounting for ALL 5 auth WindowOverlay branches (one shell, five render branches) so DragStrip-first invariant lives in a single source
 - Phase 6 Plan 07: Navigation adapter checks /auth/verify-email-resend BEFORE /auth/verify-email (longer prefix wins, mitigates UI-SPEC §T-06-W4-AUTH-04 swallowing)
+- Phase 7 Plan 00: USER-DEC-1 brand asset pipeline = SVG seed (#008757) + sharp + png-to-ico + png2icons; deterministic SHA256-stable 10-target generation
+- Phase 7 Plan 00: USER-DEC-2 production URL = plan.algoview.com (NOT algoplan.ai); Plans 07-02/07-03 use this for metadataBase, robots, sitemap, package.json homepage, help-launcher
+- Phase 7 Plan 00: 07-PATTERNS.md is single-source-of-truth contract for Plans 01-05 — exclusion regex EXCLUDE in grep-rebrand.sh + §2 must be co-edited; asset matrix in generate-brand-assets.mjs TARGETS + §3 must be co-edited with regenerated binaries
 
 ### Pending Todos
 
@@ -126,8 +130,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-26T12:02:57.887Z
-Stopped at: Completed 06-07-PLAN.md
+Last session: 2026-04-26T13:15:57.402Z
+Stopped at: Completed 07-00-PLAN.md
 Resume file: None
 
 **Planned Phase:** 01 (token-foundation-typography) — 6 plans — 2026-04-24T23:07:23.601Z
