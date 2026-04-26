@@ -413,6 +413,12 @@ type User struct {
 	CloudWaitlistEmail      pgtype.Text        `json:"cloud_waitlist_email"`
 	CloudWaitlistReason     pgtype.Text        `json:"cloud_waitlist_reason"`
 	StarterContentState     pgtype.Text        `json:"starter_content_state"`
+	PasswordHash            pgtype.Text        `json:"password_hash"`
+	EmailVerifiedAt         pgtype.Timestamptz `json:"email_verified_at"`
+	PasswordResetTokenHash  pgtype.Text        `json:"password_reset_token_hash"`
+	PasswordResetExpiresAt  pgtype.Timestamptz `json:"password_reset_expires_at"`
+	EmailVerifyTokenHash    pgtype.Text        `json:"email_verify_token_hash"`
+	EmailVerifyExpiresAt    pgtype.Timestamptz `json:"email_verify_expires_at"`
 }
 
 type VerificationCode struct {

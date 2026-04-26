@@ -11,10 +11,91 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const confirmEmailVerification = `-- name: ConfirmEmailVerification :one
+UPDATE "user" SET
+    email_verified_at = COALESCE(email_verified_at, now()),
+    email_verify_token_hash = NULL,
+    email_verify_expires_at = NULL,
+    updated_at = now()
+WHERE id = $1
+RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at
+`
+
+// Marks the user's email as verified and clears the verify token columns.
+// COALESCE preserves the original verification timestamp on duplicate-safe
+// replays before the token is cleared. Single statement so a token is never
+// reusable after a successful confirm.
+func (q *Queries) ConfirmEmailVerification(ctx context.Context, id pgtype.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, confirmEmailVerification, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.AvatarUrl,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.OnboardedAt,
+		&i.OnboardingQuestionnaire,
+		&i.CloudWaitlistEmail,
+		&i.CloudWaitlistReason,
+		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
+	)
+	return i, err
+}
+
+const confirmPasswordReset = `-- name: ConfirmPasswordReset :one
+UPDATE "user" SET
+    password_hash = $2,
+    password_reset_token_hash = NULL,
+    password_reset_expires_at = NULL,
+    updated_at = now()
+WHERE id = $1
+RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at
+`
+
+type ConfirmPasswordResetParams struct {
+	ID           pgtype.UUID `json:"id"`
+	PasswordHash pgtype.Text `json:"password_hash"`
+}
+
+// Atomically updates password_hash and clears the reset token columns.
+// Single statement so a token is never reusable after a successful confirm.
+func (q *Queries) ConfirmPasswordReset(ctx context.Context, arg ConfirmPasswordResetParams) (User, error) {
+	row := q.db.QueryRow(ctx, confirmPasswordReset, arg.ID, arg.PasswordHash)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.AvatarUrl,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.OnboardedAt,
+		&i.OnboardingQuestionnaire,
+		&i.CloudWaitlistEmail,
+		&i.CloudWaitlistReason,
+		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
+	)
+	return i, err
+}
+
 const createUser = `-- name: CreateUser :one
 INSERT INTO "user" (name, email, avatar_url)
 VALUES ($1, $2, $3)
-RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state
+RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at
 `
 
 type CreateUserParams struct {
@@ -38,12 +119,65 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.CloudWaitlistEmail,
 		&i.CloudWaitlistReason,
 		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
+	)
+	return i, err
+}
+
+const createUserWithPassword = `-- name: CreateUserWithPassword :one
+INSERT INTO "user" (name, email, password_hash, email_verify_token_hash, email_verify_expires_at)
+VALUES ($1, $2, $3, $4, $5)
+RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at
+`
+
+type CreateUserWithPasswordParams struct {
+	Name                 string             `json:"name"`
+	Email                string             `json:"email"`
+	PasswordHash         pgtype.Text        `json:"password_hash"`
+	EmailVerifyTokenHash pgtype.Text        `json:"email_verify_token_hash"`
+	EmailVerifyExpiresAt pgtype.Timestamptz `json:"email_verify_expires_at"`
+}
+
+// Inserts a new user with a bcrypt password hash and an email-verify
+// token (already hashed via auth.HashToken). Used by POST /auth/signup.
+func (q *Queries) CreateUserWithPassword(ctx context.Context, arg CreateUserWithPasswordParams) (User, error) {
+	row := q.db.QueryRow(ctx, createUserWithPassword,
+		arg.Name,
+		arg.Email,
+		arg.PasswordHash,
+		arg.EmailVerifyTokenHash,
+		arg.EmailVerifyExpiresAt,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.AvatarUrl,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.OnboardedAt,
+		&i.OnboardingQuestionnaire,
+		&i.CloudWaitlistEmail,
+		&i.CloudWaitlistReason,
+		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
 	)
 	return i, err
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state FROM "user"
+SELECT id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at FROM "user"
 WHERE id = $1
 `
 
@@ -62,12 +196,18 @@ func (q *Queries) GetUser(ctx context.Context, id pgtype.UUID) (User, error) {
 		&i.CloudWaitlistEmail,
 		&i.CloudWaitlistReason,
 		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
 	)
 	return i, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state FROM "user"
+SELECT id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at FROM "user"
 WHERE email = $1
 `
 
@@ -86,6 +226,79 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.CloudWaitlistEmail,
 		&i.CloudWaitlistReason,
 		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
+	)
+	return i, err
+}
+
+const getUserByEmailVerifyTokenHash = `-- name: GetUserByEmailVerifyTokenHash :one
+SELECT id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at FROM "user"
+WHERE email_verify_token_hash = $1
+  AND email_verify_expires_at > now()
+`
+
+// Looks up the user owning a non-expired email-verify token.
+// Used by POST /auth/email-verify.
+func (q *Queries) GetUserByEmailVerifyTokenHash(ctx context.Context, emailVerifyTokenHash pgtype.Text) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByEmailVerifyTokenHash, emailVerifyTokenHash)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.AvatarUrl,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.OnboardedAt,
+		&i.OnboardingQuestionnaire,
+		&i.CloudWaitlistEmail,
+		&i.CloudWaitlistReason,
+		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
+	)
+	return i, err
+}
+
+const getUserByPasswordResetTokenHash = `-- name: GetUserByPasswordResetTokenHash :one
+SELECT id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at FROM "user"
+WHERE password_reset_token_hash = $1
+  AND password_reset_expires_at > now()
+`
+
+// Looks up the user owning a non-expired reset token. The expiry filter is
+// inclusive of "now" semantics: tokens whose expires_at is strictly in the
+// future are still valid. Used by POST /auth/password-reset/confirm.
+func (q *Queries) GetUserByPasswordResetTokenHash(ctx context.Context, passwordResetTokenHash pgtype.Text) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByPasswordResetTokenHash, passwordResetTokenHash)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.AvatarUrl,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.OnboardedAt,
+		&i.OnboardingQuestionnaire,
+		&i.CloudWaitlistEmail,
+		&i.CloudWaitlistReason,
+		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
 	)
 	return i, err
 }
@@ -96,7 +309,7 @@ UPDATE "user" SET
     cloud_waitlist_reason = $3,
     updated_at = now()
 WHERE id = $1
-RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state
+RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at
 `
 
 type JoinCloudWaitlistParams struct {
@@ -123,6 +336,12 @@ func (q *Queries) JoinCloudWaitlist(ctx context.Context, arg JoinCloudWaitlistPa
 		&i.CloudWaitlistEmail,
 		&i.CloudWaitlistReason,
 		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
 	)
 	return i, err
 }
@@ -132,7 +351,7 @@ UPDATE "user" SET
     onboarded_at = COALESCE(onboarded_at, now()),
     updated_at = now()
 WHERE id = $1
-RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state
+RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at
 `
 
 func (q *Queries) MarkUserOnboarded(ctx context.Context, id pgtype.UUID) (User, error) {
@@ -150,6 +369,12 @@ func (q *Queries) MarkUserOnboarded(ctx context.Context, id pgtype.UUID) (User, 
 		&i.CloudWaitlistEmail,
 		&i.CloudWaitlistReason,
 		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
 	)
 	return i, err
 }
@@ -159,7 +384,7 @@ UPDATE "user" SET
     onboarding_questionnaire = COALESCE($1, onboarding_questionnaire),
     updated_at = now()
 WHERE id = $2
-RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state
+RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at
 `
 
 type PatchUserOnboardingParams struct {
@@ -182,6 +407,97 @@ func (q *Queries) PatchUserOnboarding(ctx context.Context, arg PatchUserOnboardi
 		&i.CloudWaitlistEmail,
 		&i.CloudWaitlistReason,
 		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
+	)
+	return i, err
+}
+
+const setEmailVerifyToken = `-- name: SetEmailVerifyToken :one
+UPDATE "user" SET
+    email_verify_token_hash = $2,
+    email_verify_expires_at = $3,
+    updated_at = now()
+WHERE id = $1
+RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at
+`
+
+type SetEmailVerifyTokenParams struct {
+	ID                   pgtype.UUID        `json:"id"`
+	EmailVerifyTokenHash pgtype.Text        `json:"email_verify_token_hash"`
+	EmailVerifyExpiresAt pgtype.Timestamptz `json:"email_verify_expires_at"`
+}
+
+// Stores the hashed verify token + expiry. Used by POST /auth/email-verify/resend
+// and indirectly by signup (CreateUserWithPassword inlines the same columns).
+// Overwrites any existing verify token.
+func (q *Queries) SetEmailVerifyToken(ctx context.Context, arg SetEmailVerifyTokenParams) (User, error) {
+	row := q.db.QueryRow(ctx, setEmailVerifyToken, arg.ID, arg.EmailVerifyTokenHash, arg.EmailVerifyExpiresAt)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.AvatarUrl,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.OnboardedAt,
+		&i.OnboardingQuestionnaire,
+		&i.CloudWaitlistEmail,
+		&i.CloudWaitlistReason,
+		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
+	)
+	return i, err
+}
+
+const setPasswordResetToken = `-- name: SetPasswordResetToken :one
+UPDATE "user" SET
+    password_reset_token_hash = $2,
+    password_reset_expires_at = $3,
+    updated_at = now()
+WHERE id = $1
+RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at
+`
+
+type SetPasswordResetTokenParams struct {
+	ID                     pgtype.UUID        `json:"id"`
+	PasswordResetTokenHash pgtype.Text        `json:"password_reset_token_hash"`
+	PasswordResetExpiresAt pgtype.Timestamptz `json:"password_reset_expires_at"`
+}
+
+// Stores the hashed reset token + expiry. Used by POST /auth/password-reset/request.
+// Overwrites any existing reset token so only the latest emailed link works.
+func (q *Queries) SetPasswordResetToken(ctx context.Context, arg SetPasswordResetTokenParams) (User, error) {
+	row := q.db.QueryRow(ctx, setPasswordResetToken, arg.ID, arg.PasswordResetTokenHash, arg.PasswordResetExpiresAt)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.AvatarUrl,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.OnboardedAt,
+		&i.OnboardingQuestionnaire,
+		&i.CloudWaitlistEmail,
+		&i.CloudWaitlistReason,
+		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
 	)
 	return i, err
 }
@@ -191,7 +507,7 @@ UPDATE "user" SET
     starter_content_state = $2,
     updated_at = now()
 WHERE id = $1
-RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state
+RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at
 `
 
 type SetStarterContentStateParams struct {
@@ -219,6 +535,12 @@ func (q *Queries) SetStarterContentState(ctx context.Context, arg SetStarterCont
 		&i.CloudWaitlistEmail,
 		&i.CloudWaitlistReason,
 		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
 	)
 	return i, err
 }
@@ -229,7 +551,7 @@ UPDATE "user" SET
     avatar_url = COALESCE($3, avatar_url),
     updated_at = now()
 WHERE id = $1
-RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state
+RETURNING id, name, email, avatar_url, created_at, updated_at, onboarded_at, onboarding_questionnaire, cloud_waitlist_email, cloud_waitlist_reason, starter_content_state, password_hash, email_verified_at, password_reset_token_hash, password_reset_expires_at, email_verify_token_hash, email_verify_expires_at
 `
 
 type UpdateUserParams struct {
@@ -253,6 +575,12 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.CloudWaitlistEmail,
 		&i.CloudWaitlistReason,
 		&i.StarterContentState,
+		&i.PasswordHash,
+		&i.EmailVerifiedAt,
+		&i.PasswordResetTokenHash,
+		&i.PasswordResetExpiresAt,
+		&i.EmailVerifyTokenHash,
+		&i.EmailVerifyExpiresAt,
 	)
 	return i, err
 }
