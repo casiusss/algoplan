@@ -20,13 +20,13 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      name: "Multica",
-      url: "https://www.multica.ai",
+      name: "AlgoPlan",
+      url: "https://plan.algoview.com",
       sameAs: ["https://github.com/multica-ai/multica"],
     },
     {
       "@type": "SoftwareApplication",
-      name: "Multica",
+      name: "AlgoPlan",
       applicationCategory: "ProjectManagement",
       operatingSystem: "Web",
       description:

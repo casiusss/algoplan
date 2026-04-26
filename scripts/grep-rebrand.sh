@@ -22,13 +22,15 @@ set -euo pipefail
 #     - reserved-slugs.ts             "multica" anti-impersonation slug — kept (alongside new "algoplan")
 #     - "Multica → AlgoPlan"          regression-lock test descriptions referencing both names
 #     - multica-static.copilothub.ai  JSDoc example CDN hostname — documentation, not production
+#     - multica-locale                cookie name for landing-page locale persistence (D-2 ext.) — silent loss of language pref
+#     - MulticaLanding                landing component function name — file rename out of plan scope (07-02 plan body)
 #
 # See .planning/phases/07-rebrand-pass/07-PATTERNS.md for the full rules.
 
 TARGETS="apps/web apps/desktop packages/views packages/ui packages/core"
 
 # Single OR-regex of preserved patterns. Lines matching ANY of these are dropped.
-EXCLUDE='(@multica/|multica_[a-zA-Z]|multica:chat|multica:backlog|multica:navigate|MULTICA_|ai\.multica|multica-ai|multica\.git|multica-desktop-|server/cmd/multica|multica setup|multica daemon|multica agent|multica config|multica update|MulticaIcon|multica-icon\.tsx|multica-static|reserved-slugs|/multica workspaces|multica.*brand slugs are reserved|legacy brand name|`multica`|RESERVED_SLUGS.has..multica..|Multica → AlgoPlan)'
+EXCLUDE='(@multica/|multica_[a-zA-Z]|multica:chat|multica:backlog|multica:navigate|multica-locale|MULTICA_|ai\.multica|multica-ai|multica\.git|multica-desktop-|server/cmd/multica|multica setup|multica daemon|multica agent|multica config|multica update|multica CLI|MulticaIcon|MulticaLanding|multica-landing|multica-icon\.tsx|multica-static|reserved-slugs|/multica workspaces|multica.*brand slugs are reserved|legacy brand name|`multica`|RESERVED_SLUGS.has..multica..|Multica → AlgoPlan)'
 
 HITS=$(grep -rnE "[Mm]ultica" $TARGETS \
   --include="*.tsx" --include="*.ts" --include="*.json" --include="*.yml" \

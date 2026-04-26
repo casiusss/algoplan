@@ -68,10 +68,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.multica.ai"),
+  metadataBase: new URL("https://plan.algoview.com"),
   title: {
-    default: "Multica — Project Management for Human + Agent Teams",
-    template: "%s | Multica",
+    default: "AlgoPlan — Project Management for Human + Agent Teams",
+    template: "%s | AlgoPlan",
   },
   description:
     "Open-source platform that turns coding agents into real teammates. Assign tasks, track progress, compound skills.",
@@ -81,13 +81,13 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    siteName: "Multica",
+    siteName: "AlgoPlan",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    site: "@multica_hq",
-    creator: "@multica_hq",
+    site: "@algoplan_hq",
+    creator: "@algoplan_hq",
   },
   alternates: {
     canonical: "/",
