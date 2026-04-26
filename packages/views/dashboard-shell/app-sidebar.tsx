@@ -517,7 +517,7 @@ export function AppSidebar({
                     }
                   >
                     <Plus className="h-3.5 w-3.5" />
-                    Create workspace
+                    Workspace erstellen
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 {myInvitations.length > 0 && (
@@ -525,7 +525,7 @@ export function AppSidebar({
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                       <DropdownMenuLabel className="text-xs text-muted-foreground">
-                        Pending invitations
+                        Offene Einladungen
                       </DropdownMenuLabel>
                       {myInvitations.map((inv) => (
                         <div key={inv.id} className="flex items-center gap-2 px-2 py-1.5">
@@ -540,7 +540,7 @@ export function AppSidebar({
                               acceptInvitationMut.mutate(inv.id);
                             }}
                           >
-                            Join
+                            Beitreten
                           </button>
                           <button
                             type="button"
@@ -551,7 +551,7 @@ export function AppSidebar({
                               declineInvitationMut.mutate(inv.id);
                             }}
                           >
-                            Decline
+                            Ablehnen
                           </button>
                         </div>
                       ))}
@@ -562,7 +562,7 @@ export function AppSidebar({
                 <DropdownMenuGroup>
                   <DropdownMenuItem variant="destructive" onClick={logout}>
                     <LogOut className="h-3.5 w-3.5" />
-                    Log out
+                    Abmelden
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
               </DropdownMenuContent>
