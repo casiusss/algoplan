@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { User, Palette, Key, Settings, Users, FolderGit2 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@multica/ui/components/ui/tabs";
 import { useCurrentWorkspace } from "@multica/core/paths";
@@ -12,15 +12,15 @@ import { MembersTab } from "./members-tab";
 import { RepositoriesTab } from "./repositories-tab";
 
 const accountTabs = [
-  { value: "profile", label: "Profile", icon: User },
-  { value: "appearance", label: "Appearance", icon: Palette },
-  { value: "tokens", label: "API Tokens", icon: Key },
+  { value: "profile", label: "Profil", icon: User },
+  { value: "appearance", label: "Erscheinungsbild", icon: Palette },
+  { value: "tokens", label: "API-Tokens", icon: Key },
 ];
 
 const workspaceTabs = [
-  { value: "workspace", label: "General", icon: Settings },
+  { value: "workspace", label: "Allgemein", icon: Settings },
   { value: "repositories", label: "Repositories", icon: FolderGit2 },
-  { value: "members", label: "Members", icon: Users },
+  { value: "members", label: "Mitglieder", icon: Users },
 ];
 
 export interface ExtraSettingsTab {
@@ -37,16 +37,39 @@ interface SettingsPageProps {
 
 export function SettingsPage({ extraAccountTabs }: SettingsPageProps = {}) {
   const workspaceName = useCurrentWorkspace()?.name;
+  // Local controlled tab state — needed so the [Gefahrenzone] quick-jump can
+  // both swap the active tab AND scroll-into-view the destination section in
+  // the same click. Defaults match the previous `defaultValue="profile"`.
+  const [activeTab, setActiveTab] = useState("profile");
+
+  const handleGefahrenzoneJump = () => {
+    setActiveTab("workspace");
+    // Defer until React commits the tab swap so the danger-zone <section>
+    // exists in the DOM before we try to scroll to it.
+    requestAnimationFrame(() => {
+      document
+        .getElementById("danger-zone")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
 
   return (
-    <Tabs defaultValue="profile" orientation="vertical" className="flex-1 min-h-0 gap-0">
+    <Tabs
+      value={activeTab}
+      onValueChange={(v) => setActiveTab(v)}
+      orientation="vertical"
+      className="flex-1 min-h-0 gap-0"
+    >
       {/* Left nav */}
-      <div className="w-52 shrink-0 border-r overflow-y-auto p-4">
-        <h1 className="text-sm font-semibold mb-4 px-2">Settings</h1>
+      <div
+        data-testid="settings-left-nav"
+        className="w-52 shrink-0 border-r overflow-y-auto p-4 bg-sidebar"
+      >
+        <h1 className="text-sm font-semibold mb-4 px-2">Einstellungen</h1>
         <TabsList variant="line" className="flex-col items-stretch">
-          {/* My Account group */}
+          {/* Mein Konto group */}
           <span className="px-2 pb-1 pt-2 text-xs font-medium text-muted-foreground">
-            My Account
+            Mein Konto
           </span>
           {accountTabs.map((tab) => (
             <TabsTrigger key={tab.value} value={tab.value}>
@@ -62,9 +85,18 @@ export function SettingsPage({ extraAccountTabs }: SettingsPageProps = {}) {
           ))}
 
           {/* Workspace group */}
-          <span className="px-2 pb-1 pt-4 text-xs font-medium text-muted-foreground truncate">
-            {workspaceName ?? "Workspace"}
-          </span>
+          <div className="flex items-center justify-between gap-2 px-2 pb-1 pt-4">
+            <span className="text-xs font-medium text-muted-foreground truncate">
+              {workspaceName ?? "Workspace"}
+            </span>
+            <button
+              type="button"
+              onClick={handleGefahrenzoneJump}
+              className="text-xs text-muted-foreground hover:text-destructive transition-colors"
+            >
+              Gefahrenzone
+            </button>
+          </div>
           {workspaceTabs.map((tab) => (
             <TabsTrigger key={tab.value} value={tab.value}>
               <tab.icon className="h-4 w-4" />
