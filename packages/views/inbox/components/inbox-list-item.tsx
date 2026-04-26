@@ -3,6 +3,7 @@
 import { StatusIcon } from "../../issues/components";
 import { ActorAvatar } from "../../common/actor-avatar";
 import { Archive } from "lucide-react";
+import { AccentBar } from "@multica/ui/components/ui/accent-bar";
 import type { InboxItem } from "@multica/core/types";
 import { InboxDetailLabel } from "./inbox-detail-label";
 
@@ -33,10 +34,22 @@ export function InboxListItem({
   return (
     <button
       onClick={onClick}
-      className={`group flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors ${
+      data-testid="inbox-list-item"
+      data-unread={!item.read || undefined}
+      className={`group relative flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors ${
         isSelected ? "bg-accent" : "hover:bg-accent/50"
       }`}
     >
+      {/* UI-SPEC §Sub-Phase INB §Row restyle — unread leading AccentBar.
+          The atom's `vertical` orientation gives a 1-column flex; we override
+          width to 3px and pin to the row's full height via absolute inset. */}
+      {!item.read && (
+        <AccentBar
+          color="brand"
+          orientation="vertical"
+          className="absolute left-0 inset-y-0 w-[3px] h-auto rounded-none"
+        />
+      )}
       <ActorAvatar
         actorType={item.actor_type ?? item.recipient_type}
         actorId={item.actor_id ?? item.recipient_id}
@@ -45,8 +58,15 @@ export function InboxListItem({
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-1.5">
+            {/* Mobile fallback: brand-green dot inline with the title. The
+                AccentBar above is the desktop affordance; the dot keeps the
+                cue legible on narrow widths where 3px would compete with
+                row padding. */}
             {!item.read && (
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
+              <span
+                aria-hidden="true"
+                className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand sm:hidden"
+              />
             )}
             <span
               className={`truncate text-sm ${!item.read ? "font-medium" : "text-muted-foreground"}`}

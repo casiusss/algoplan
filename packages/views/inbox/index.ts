@@ -1,1 +1,7 @@
-export { InboxPage } from "./components";
+export {
+  InboxPage,
+  InboxBucketHeader,
+  InboxTypeFilter,
+  InboxListItem,
+} from "./components";
+
