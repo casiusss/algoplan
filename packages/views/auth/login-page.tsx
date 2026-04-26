@@ -21,6 +21,7 @@ import {
 import { useAuthStore } from "@multica/core/auth";
 import { workspaceKeys } from "@multica/core/workspace/queries";
 import { api, ApiError } from "@multica/core/api";
+import { useNavigationFlash } from "@multica/core/navigation";
 import type { User } from "@multica/core/types";
 import { AlgoPlanWordmark } from "./algoplan-wordmark";
 import { AppLink } from "../navigation";
@@ -141,6 +142,15 @@ export function LoginPage({
   extra,
 }: LoginPageProps) {
   const qc = useQueryClient();
+
+  // Consume the "password-updated" flash set by ResetPasswordPage on its
+  // success branch (per UI-SPEC §Hard Constraints #14: NO auto-login on
+  // password reset — the user is bounced back here and a Sonner toast
+  // confirms the password change). Sessionstorage flash survives the
+  // navigation; the hook reads-and-removes on mount so a refresh of
+  // /auth/login does NOT re-toast.
+  useNavigationFlash("password-updated");
+
   const [step, setStep] = useState<"email" | "code" | "cli_confirm">("email");
   const [subMode, setSubMode] = useState<SubMode>("otp");
   const [email, setEmail] = useState("");

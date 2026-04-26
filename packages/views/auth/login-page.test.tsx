@@ -39,6 +39,16 @@ vi.mock("@tanstack/react-query", async () => {
   return { ...actual, useQueryClient: () => ({ setQueryData: mockSetQueryData }) };
 });
 
+// Mock `@multica/core/navigation` so the cross-plan flash hook
+// (`useNavigationFlash("password-updated")`) is asserted directly without
+// pulling sonner into the test path. Cross-plan touch from Plan 06-06:
+// LoginPage now consumes the flash set by ResetPasswordPage on its success
+// branch (per UI-SPEC §Hard Constraints #14).
+const mockUseNavigationFlash = vi.hoisted(() => vi.fn());
+vi.mock("@multica/core/navigation", () => ({
+  useNavigationFlash: mockUseNavigationFlash,
+}));
+
 vi.mock("@multica/core/auth", () => ({
   useAuthStore: Object.assign(
     // Zustand hook form — component may call useAuthStore(selector)
@@ -531,6 +541,20 @@ describe("LoginPage", () => {
       />,
     );
     expect(screen.getByText(/^oder$/i)).toBeInTheDocument();
+  });
+
+  // -------------------------------------------------------------------------
+  // Cross-plan: consumes the 'password-updated' flash set by ResetPasswordPage
+  //
+  // Per UI-SPEC §Hard Constraints #14 + Plan 06-06: ResetPasswordPage's
+  // success branch calls setFlash("password-updated", "...") then redirects
+  // to /auth/login. LoginPage MUST mount useNavigationFlash on render so the
+  // toast appears once after the redirect.
+  // -------------------------------------------------------------------------
+
+  it("mounts useNavigationFlash('password-updated') on render (cross-plan flash consume)", () => {
+    render(<LoginPage onSuccess={onSuccess} />);
+    expect(mockUseNavigationFlash).toHaveBeenCalledWith("password-updated");
   });
 
   // -------------------------------------------------------------------------
