@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v0.4.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 07-03-PLAN.md (electron chrome rebrand)
-last_updated: "2026-04-26T13:48:07.502Z"
+stopped_at: Completed 07-04-PLAN.md (atomic multica:// → algoplan:// deep-link flip + TDD'd handleDeepLink extraction)
+last_updated: "2026-04-26T13:55:30Z"
 last_activity: 2026-04-26
 progress:
   total_phases: 8
   completed_phases: 7
   total_plans: 47
-  completed_plans: 45
-  percent: 96
+  completed_plans: 46
+  percent: 98
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 
 ## Current Position
 
-Phase: 7 (IN PROGRESS — Wave 0 complete; Plans 01..05 pending)
-Plan: 00 (complete — audit script `grep-rebrand.sh`, deterministic SVG→10-asset generator, 07-PATTERNS.md replacement table + exclusions + asset matrix)
-Status: Phase 7 Wave 0 complete; ready for Wave 1 (Plan 07-01 string sweep)
+Phase: 7 (IN PROGRESS — Waves 0..3 complete; only Wave 4 / Plan 07-05 pending)
+Plan: 04 (complete — atomic multica:// → algoplan:// deep-link flip; pure handleDeepLink extracted to apps/desktop/src/main/deep-link.ts with 8/8 GREEN regression-lock; rebrand audit 17 → 0)
+Status: Phase 7 ready for Wave 4 (Plan 07-05 PWA manifest + localStorage preservation regression-lock + final 6-check verification gate)
 Last activity: 2026-04-26
 
-Progress: [██████████] 96%
+Progress: [██████████] 98%
 
 ## Performance Metrics
 
@@ -71,6 +71,7 @@ Progress: [██████████] 96%
 | Phase 07 P00 | 8min | 3 tasks | 16 files |
 | Phase 07 P02 | 13min | 2 tasks | 21 files |
 | Phase 07 P03 | 8min | 3 tasks | 13 files |
+| Phase 07 P04 | 6min | 3 tasks | 12 files (atomic single-commit per D-1; 2 created, 10 modified) |
 
 ## Accumulated Context
 
@@ -115,6 +116,9 @@ Recent decisions affecting current work:
 - 07-03: PROTOCOL='algoplan' constant in main/index.ts shipped here (with electron-builder.yml protocols.schemes); apps/web auth callback strings owned by 07-04 atomic flip
 - 07-03: artifactName template multica-desktop-* PRESERVED in electron-builder.yml — Homebrew tap + electron-updater binary URLs depend on this filename pattern
 - 07-03: extended scripts/grep-rebrand.sh EXCLUDE regex with 5 documented preserved patterns (CLI binary basenames, ~/.multica config dir, bin/multica path, multica-cli- archive, multica_<os>_<arch> legacy archive); 07-PATTERNS §2 updated in lock-step
+- 07-04: ATOMIC FLIP (single commit ce5dc285) — multica:// → algoplan:// across web callback + login emit sites AND desktop main handler. Per D-1 atomicity (cross-process protocol contract); standard per-task commits and TDD two-commit cadence overridden. Production-user reinstall warning logged for v0.4.0 release notes
+- 07-04: handleDeepLink extracted from index.ts inline closure to apps/desktop/src/main/deep-link.ts (pure function, SendFn injected); PROTOCOL_NAME = "algoplan" is now SINGLE source of truth. 8/8 GREEN regression-lock test (deep-link.test.ts) explicitly asserts multica:// is REJECTED
+- 07-04: scripts/grep-rebrand.sh extended with deep-link.test.ts whole-file exclusion (every "multica" hit there is intentional negative-case fixture); 07-PATTERNS.md §2 updated in lock-step per maintenance protocol
 
 ### Pending Todos
 

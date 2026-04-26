@@ -173,7 +173,7 @@ Plans:
 - [ ] 07-01-PLAN.md — Wave 1: sweep packages/{views,ui,core} user-visible Multica strings (parallel-safe with 07-02)
 - [ ] 07-02-PLAN.md — Wave 1: sweep apps/web (root layout metadata + landing EN/ZH + auth/dashboard pages) (parallel-safe with 07-01)
 - [ ] 07-03-PLAN.md — Wave 2: sweep apps/desktop strings + electron-builder.yml metadata + main-process PROTOCOL flip + regression-lock test
-- [ ] 07-04-PLAN.md — Wave 3: atomic multica:// → algoplan:// deep-link flip (web callback + login + extracted desktop deep-link.ts + 8-test contract lock)
+- [x] 07-04-PLAN.md — Wave 3: atomic multica:// → algoplan:// deep-link flip (web callback + login + extracted desktop deep-link.ts + 8-test contract lock)
 - [ ] 07-05-PLAN.md — Wave 4: PWA manifest + asset wiring in layout + localStorage preservation regression-lock + final 6-check verification gate
 
 ## Progress
@@ -190,4 +190,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 5. Issues Views + Kanban + dnd-kit Migration | 6/6 | Complete (code-side); awaiting user live-E2E sign-off | 2026-04-25 |
 | 5.1. Auth Backend Endpoints (INSERTED) | 4/4 | Complete (27/27 integration tests GREEN) | 2026-04-26 |
 | 6. Issue Detail + Remaining Views | 0/TBD | Not started | - |
-| 7. Rebrand Pass | 1/6 | In progress (Wave 0 — audit script + asset pipeline + 07-PATTERNS.md) | 2026-04-26 |
+| 7. Rebrand Pass | 5/6 | In progress (Wave 0..3 complete — audit + assets + strings + chrome + atomic deep-link flip; Wave 4 PWA manifest + final verify pending) | 2026-04-26 |
