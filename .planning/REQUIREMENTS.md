@@ -64,7 +64,8 @@ Requirements für initialen Release. Jedes mappt zu genau einer Roadmap-Phase.
 **: `login-page.tsx`, `signup-page.tsx`, `email-verify-page.tsx`, `password-reset-page.tsx` im neuen Look — AlgoPlan-Wordmark, zentrierte Card, Inter italic für Title
 - [x] **AUTH-02
 **: Password-Strength-Meter bei Signup mittels `@zxcvbn-ts/core` (+ language pack), 4-Level-Indikator
-- [ ] **AUTH-03**: Create-Workspace Flow redesigned (Web: Route `/workspaces/new`, Desktop: `WindowOverlay`) mit gemeinsamer `NewWorkspacePage`-View
+- [x] **AUTH-03
+**: Create-Workspace Flow redesigned (Web: Route `/workspaces/new`, Desktop: `WindowOverlay`) mit gemeinsamer `NewWorkspacePage`-View
 - [x] **AUTH-04
 **: Invite-Accept-Flow redesigned (shared view, Overlay-wrap auf Desktop)
 - [x] **AUTH-05

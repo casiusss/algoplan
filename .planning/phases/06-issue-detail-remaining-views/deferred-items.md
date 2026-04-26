@@ -39,3 +39,21 @@ Out-of-scope per SCOPE BOUNDARY rule; tracked for the owning plans (06-01,
 - `packages/views/settings/components/workspace-tab.test.tsx:353` — TS2345: HTMLElement | undefined not assignable to Element.
 
 All four errors are scoped to an UNTRACKED test file (`?? packages/views/settings/components/workspace-tab.test.tsx`) that exists on the working tree but is not in any commit. Confirmed pre-existing via `git stash` baseline check before Task 2 commit. Out-of-scope for Plan 05 per the SCOPE BOUNDARY rule. The file is part of an unrelated in-progress workstream — whoever lands the matching component change should resolve them at that time.
+
+## 06-07 (AUTH wiring — web routes + desktop overlays + restyle)
+
+### Pre-existing test failures in apps/web/app/(auth)/login/page.test.tsx (not introduced by 06-07)
+
+Confirmed pre-existing via `git stash + vitest run app/(auth)/login` baseline check before Task 1 commit. The test file mocks `next/navigation` but does NOT provide a `NavigationProvider`, while the LoginPage redesign in 06-05 (commit `16c44f07`) introduced `<AppLink>` calls inside `LoginPage` that go through `useNavigation()` from `@multica/views/navigation`.
+
+- 6 of 7 LoginPage tests fail with: `useNavigation must be used within NavigationProvider` (thrown from `packages/views/navigation/context.tsx:25` via `AppLink`).
+
+All six failures are scoped to a test file owned by Plan 05's restyle (Plan 05 modified the login page contract; the test file was not updated). Out-of-scope for Plan 07 per the SCOPE BOUNDARY rule — Plan 07 only adds 5 new route files in the same directory and does not touch `login/page.tsx` or its test. The fix is to wrap the rendered LoginPage in a NavigationProvider stub in the test setup.
+
+### Pre-existing typecheck error in apps/desktop/src/renderer/src/components/pageview-tracker.tsx (not introduced by 06-07)
+
+Confirmed pre-existing via `git stash + pnpm --filter @multica/desktop run typecheck:web` baseline check. The error exists on the parent commit and is NOT caused by Plan 07.
+
+- `apps/desktop/src/renderer/src/components/pageview-tracker.tsx:60:47` — TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+
+Out-of-scope for Plan 07 per the SCOPE BOUNDARY rule — `pageview-tracker.tsx` is not in `files_modified`. The fix is to either annotate the return type as `void | undefined` or add an explicit `return undefined` at function exit.

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v0.4.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 06-05-PLAN.md
-last_updated: "2026-04-26T10:23:23.798Z"
+stopped_at: Completed 06-07-PLAN.md
+last_updated: "2026-04-26T12:03:06.315Z"
 last_activity: 2026-04-26
 progress:
   total_phases: 8
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 41
-  completed_plans: 39
-  percent: 95
+  completed_plans: 41
+  percent: 100
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-04-23)
 
 ## Current Position
 
-Phase: 6
-Plan: 00 (complete — Wave-0 atoms + dragstrip-coverage gate + zxcvbn catalog); ready for Wave-1 (06-01..06-04)
-Status: Phase 6 Wave-0 complete; Wave-1 unblocked
+Phase: 6 (COMPLETE — all 8 plans 00..07 shipped)
+Plan: 07 (complete — AUTH wiring: 5 NEW web routes at /auth/{verb}, 5 NEW desktop WindowOverlay types, navigation adapter translation, pre-workspace trio restyle)
+Status: Phase 6 complete; ready for Phase 7 (rebrand)
 Last activity: 2026-04-26
 
-Progress: [██████████] 95%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -67,6 +67,7 @@ Progress: [██████████] 95%
 | Phase 06 P05 | 15m | 3 tasks | 10 files |
 | Phase 06 P03 | 16m | 3 tasks | 17 files |
 | Phase 06 P05 | 15m | 3 tasks | 10 files |
+| Phase 06 P07 | 70min | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -99,6 +100,9 @@ Recent decisions affecting current work:
 - Plan 06-05: Sub-mode is useState boolean alongside step machine, not a third step (preserves OTP test path; one form id stays stable for autofill)
 - Plan 06-05: Idempotent endpoints (resend/forgot-password) silently swallow network errors and render success — backend always-200 contract; visible failure would leak enumeration oracle
 - Plan 06-05: api.resetPassword body uses snake_case new_password (not newPassword) — matches FROZEN Phase 5.1 Go backend contract; typed in TS to enforce at compile time
+- Phase 6 Plan 07: Web auth routes live at apps/web/app/auth/ (NOT route group) so URLs match FROZEN /auth/{verb}?token= email-link contract; Rule 1 deviation fix relocated 5 NEW routes from /(auth)/ group
+- Phase 6 Plan 07: DesktopAuthShell wrapper centralizes DragStrip mounting for ALL 5 auth WindowOverlay branches (one shell, five render branches) so DragStrip-first invariant lives in a single source
+- Phase 6 Plan 07: Navigation adapter checks /auth/verify-email-resend BEFORE /auth/verify-email (longer prefix wins, mitigates UI-SPEC §T-06-W4-AUTH-04 swallowing)
 
 ### Pending Todos
 
@@ -122,8 +126,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-26T10:23:12.738Z
-Stopped at: Completed 06-05-PLAN.md
+Last session: 2026-04-26T12:02:57.887Z
+Stopped at: Completed 06-07-PLAN.md
 Resume file: None
 
 **Planned Phase:** 01 (token-foundation-typography) — 6 plans — 2026-04-24T23:07:23.601Z
