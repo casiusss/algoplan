@@ -20,8 +20,24 @@ import {
 } from "@multica/ui/components/ui/input-otp";
 import { useAuthStore } from "@multica/core/auth";
 import { workspaceKeys } from "@multica/core/workspace/queries";
-import { api } from "@multica/core/api";
+import { api, ApiError } from "@multica/core/api";
 import type { User } from "@multica/core/types";
+import { AlgoPlanWordmark } from "./algoplan-wordmark";
+import { AppLink } from "../navigation";
+
+// ---------------------------------------------------------------------------
+// Constants
+//
+// Per UI-SPEC §Hard Constraints #13 (no user enumeration): every 401 from
+// api.login MUST surface as the SAME message to the user. The backend
+// already collapses unknown-email and wrong-password into a single 401
+// (Phase 5.1); the UI mirrors that contract here.
+// ---------------------------------------------------------------------------
+
+const ERROR_INVALID_CREDENTIALS = "E-Mail oder Passwort ist falsch.";
+const ERROR_SIGNUP_GATED = "Registrierung nicht verfügbar.";
+const ERROR_GENERIC = "Etwas ist schiefgelaufen. Bitte versuche es erneut.";
+const ERROR_OTP_INVALID = "Ungültiger oder abgelaufener Code.";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -42,7 +58,10 @@ interface CliCallbackConfig {
 }
 
 interface LoginPageProps {
-  /** Logo element rendered above the title */
+  /** Logo element rendered above the title. When omitted, defaults to
+   *  <AlgoPlanWordmark size="lg" /> per Phase 6 AUTH-01. Pass an explicit
+   *  ReactNode to override (e.g. legacy MulticaIcon during transitional
+   *  phases). */
   logo?: ReactNode;
   /** Called after successful login. The workspace list is seeded into React
    *  Query before this fires, so the caller can compute a destination URL. */
@@ -61,6 +80,8 @@ interface LoginPageProps {
    *  would be absurd). */
   extra?: ReactNode;
 }
+
+type SubMode = "otp" | "password";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -92,6 +113,20 @@ export function validateCliCallback(cliCallback: string): boolean {
   }
 }
 
+/**
+ * Map an ApiError from api.login() into a user-facing message that does NOT
+ * leak which credential side failed. Per UI-SPEC §Hard Constraints #13: any
+ * 401 produces the SAME message; we branch only on err.status, never on a
+ * sub-reason.
+ */
+function loginErrorMessage(err: unknown): string {
+  if (err instanceof ApiError) {
+    if (err.status === 401) return ERROR_INVALID_CREDENTIALS;
+    if (err.status === 403) return ERROR_SIGNUP_GATED;
+  }
+  return ERROR_GENERIC;
+}
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -107,7 +142,9 @@ export function LoginPage({
 }: LoginPageProps) {
   const qc = useQueryClient();
   const [step, setStep] = useState<"email" | "code" | "cli_confirm">("email");
+  const [subMode, setSubMode] = useState<SubMode>("otp");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -116,6 +153,12 @@ export function LoginPage({
   // Tracks how the existing session was detected so handleCliAuthorize
   // uses the matching token source (cookie → issueCliToken, localStorage → direct).
   const authSourceRef = useRef<"cookie" | "localStorage">("cookie");
+
+  // Default header logo: AlgoPlanWordmark per AUTH-01. Callers may override
+  // with their own ReactNode (e.g. a legacy brand icon during transition).
+  const headerLogo = logo ?? (
+    <AlgoPlanWordmark size="lg" className="mx-auto" />
+  );
 
   // Check for existing session when CLI callback is present.
   // Prioritises cookie auth (= current browser session) to avoid authorising
@@ -164,7 +207,7 @@ export function LoginPage({
     async (e?: React.FormEvent) => {
       e?.preventDefault();
       if (!email) {
-        setError("Email is required");
+        setError("E-Mail ist erforderlich.");
         return;
       }
       setLoading(true);
@@ -178,13 +221,44 @@ export function LoginPage({
         setError(
           err instanceof Error
             ? err.message
-            : "Failed to send code. Make sure the server is running.",
+            : "Code konnte nicht gesendet werden. Stelle sicher, dass der Server läuft.",
         );
       } finally {
         setLoading(false);
       }
     },
     [email],
+  );
+
+  const handlePasswordLogin = useCallback(
+    async (e?: React.FormEvent) => {
+      e?.preventDefault();
+      if (!email || !password) return;
+      setLoading(true);
+      setError("");
+      try {
+        await api.login({ email, password });
+        // Backend has set the multica_auth cookie. Seed the workspace list into
+        // the Query cache so the caller's onSuccess can read it synchronously
+        // to compute a destination URL.
+        const wsList = await api.listWorkspaces();
+        qc.setQueryData(workspaceKeys.list(), wsList);
+        // Fetch the user so the auth store reflects the new session before
+        // navigation. Mirrors the OTP path's verifyCode flow.
+        const user = await api.getMe();
+        useAuthStore.setState({ user });
+        onTokenObtained?.();
+        onSuccess();
+      } catch (err) {
+        // Per UI-SPEC §Hard Constraints #13: branch on err.status only.
+        // The 401 message is a CONSTANT — the caller cannot determine which
+        // credential side failed.
+        setError(loginErrorMessage(err));
+      } finally {
+        setLoading(false);
+      }
+    },
+    [email, password, onSuccess, onTokenObtained, qc],
   );
 
   const handleVerify = useCallback(
@@ -214,7 +288,7 @@ export function LoginPage({
         onSuccess();
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Invalid or expired code",
+          err instanceof Error ? err.message : ERROR_OTP_INVALID,
         );
         setCode("");
         setLoading(false);
@@ -231,7 +305,7 @@ export function LoginPage({
       setCooldown(60);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to resend code",
+        err instanceof Error ? err.message : "Code konnte nicht erneut gesendet werden.",
       );
     }
   };
@@ -257,7 +331,7 @@ export function LoginPage({
       onTokenObtained?.();
       redirectToCliCallback(cliCallback.url, token, cliCallback.state);
     } catch {
-      setError("Failed to authorize CLI. Please log in again.");
+      setError("CLI-Autorisierung fehlgeschlagen. Bitte erneut anmelden.");
       setExistingUser(null);
       setStep("email");
       setLoading(false);
@@ -291,14 +365,16 @@ export function LoginPage({
       <div className="flex min-h-svh items-center justify-center">
         <Card className="w-full max-w-sm">
           <CardHeader className="text-center">
-            {logo && <div className="mx-auto mb-4">{logo}</div>}
-            <CardTitle className="text-2xl">Authorize CLI</CardTitle>
+            <div className="mx-auto mb-4">{headerLogo}</div>
+            <CardTitle className="text-2xl italic font-semibold">
+              CLI autorisieren
+            </CardTitle>
             <CardDescription>
-              Allow the CLI to access Multica as{" "}
+              CLI als{" "}
               <span className="font-medium text-foreground">
                 {existingUser.email}
-              </span>
-              ?
+              </span>{" "}
+              auf AlgoPlan zugreifen lassen?
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
@@ -308,7 +384,7 @@ export function LoginPage({
               className="w-full"
               size="lg"
             >
-              {loading ? "Authorizing..." : "Authorize"}
+              {loading ? "Wird autorisiert…" : "Autorisieren"}
             </Button>
             <Button
               variant="ghost"
@@ -318,7 +394,7 @@ export function LoginPage({
                 setStep("email");
               }}
             >
-              Use a different account
+              Anderes Konto verwenden
             </Button>
           </CardContent>
         </Card>
@@ -335,11 +411,14 @@ export function LoginPage({
       <div className="flex min-h-svh items-center justify-center">
         <Card className="w-full max-w-sm">
           <CardHeader className="text-center">
-            {logo && <div className="mx-auto mb-4">{logo}</div>}
-            <CardTitle className="text-2xl">Check your email</CardTitle>
+            <div className="mx-auto mb-4">{headerLogo}</div>
+            <CardTitle className="text-2xl italic font-semibold">
+              Code prüfen
+            </CardTitle>
             <CardDescription>
-              We sent a verification code to{" "}
-              <span className="font-medium text-foreground">{email}</span>
+              Wir haben einen Bestätigungscode an{" "}
+              <span className="font-medium text-foreground">{email}</span>{" "}
+              gesendet.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-4">
@@ -371,7 +450,9 @@ export function LoginPage({
                 disabled={cooldown > 0}
                 className="text-primary underline-offset-4 hover:underline disabled:text-muted-foreground disabled:no-underline disabled:cursor-not-allowed"
               >
-                {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
+                {cooldown > 0
+                  ? `Erneut senden in ${cooldown}s`
+                  : "Code erneut senden"}
               </button>
             </div>
           </CardContent>
@@ -386,7 +467,7 @@ export function LoginPage({
                 setError("");
               }}
             >
-              Back
+              Zurück
             </Button>
           </CardFooter>
         </Card>
@@ -395,32 +476,73 @@ export function LoginPage({
   }
 
   // -------------------------------------------------------------------------
-  // Email step
+  // Email step (with OTP / password sub-mode)
   // -------------------------------------------------------------------------
+
+  const isPasswordMode = subMode === "password";
+  const primaryCtaLabel = isPasswordMode
+    ? loading
+      ? "Wird angemeldet…"
+      : "Anmelden"
+    : loading
+      ? "Wird gesendet…"
+      : "Code anfordern";
+  const submitDisabled =
+    loading || !email || (isPasswordMode && !password);
 
   return (
     <div className="flex min-h-svh items-center justify-center">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          {logo && <div className="mx-auto mb-4">{logo}</div>}
-          <CardTitle className="text-2xl">Sign in to Multica</CardTitle>
+          <div className="mx-auto mb-4">{headerLogo}</div>
+          <CardTitle className="text-2xl italic font-semibold">
+            Willkommen zurück
+          </CardTitle>
           <CardDescription>
-            Enter your email to get a login code
+            Melde dich mit deinem Passwort an oder fordere einen Anmeldecode an.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form id="login-form" onSubmit={handleSendCode} className="space-y-4">
+          <form
+            id="login-form"
+            onSubmit={isPasswordMode ? handlePasswordLogin : handleSendCode}
+            className="space-y-4"
+          >
             <div className="space-y-2">
-              <Label htmlFor="login-email">Email</Label>
+              <Label htmlFor="login-email">E-Mail</Label>
               <Input
                 id="login-email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="du@beispiel.de"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoFocus
                 required
               />
+            </div>
+            {isPasswordMode && (
+              <div className="space-y-2">
+                <Label htmlFor="login-password">Passwort</Label>
+                <Input
+                  id="login-password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+            <div className="flex items-center justify-end text-xs">
+              <button
+                type="button"
+                onClick={() => {
+                  setSubMode((m) => (m === "otp" ? "password" : "otp"));
+                  setError("");
+                }}
+                className="text-muted-foreground underline-offset-4 hover:underline"
+              >
+                {isPasswordMode ? "Code anfordern" : "Mit Passwort anmelden"}
+              </button>
             </div>
             {error && (
               <p className="text-sm text-destructive">{error}</p>
@@ -433,9 +555,9 @@ export function LoginPage({
             form="login-form"
             className="w-full"
             size="lg"
-            disabled={!email || loading}
+            disabled={submitDisabled}
           >
-            {loading ? "Sending code..." : "Continue"}
+            {primaryCtaLabel}
           </Button>
           {(google || onGoogleLogin) && (
             <>
@@ -444,7 +566,9 @@ export function LoginPage({
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">or</span>
+                  <span className="bg-card px-2 text-muted-foreground">
+                    oder
+                  </span>
                 </div>
               </div>
               <Button
@@ -473,10 +597,27 @@ export function LoginPage({
                     fill="#EA4335"
                   />
                 </svg>
-                Continue with Google
+                Mit Google fortfahren
               </Button>
             </>
           )}
+          <p className="text-xs text-muted-foreground text-center">
+            Noch kein Konto?{" "}
+            <AppLink
+              href="/auth/signup"
+              className="font-medium text-foreground underline-offset-4 hover:underline"
+            >
+              Konto erstellen
+            </AppLink>
+          </p>
+          <p className="text-xs text-muted-foreground text-center">
+            <AppLink
+              href="/auth/forgot-password"
+              className="font-medium text-foreground underline-offset-4 hover:underline"
+            >
+              Passwort vergessen?
+            </AppLink>
+          </p>
           {extra && <div className="w-full pt-1 text-center">{extra}</div>}
         </CardFooter>
       </Card>
