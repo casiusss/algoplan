@@ -29,7 +29,7 @@ const {
   mockSetTheme: vi.fn(),
   mockTheme: { current: "system" as "light" | "dark" | "system" },
   mockPathname: { current: "/ws-test/issues" as string },
-  mockGetShareableUrl: vi.fn((p: string) => `https://app.multica/${p}`),
+  mockGetShareableUrl: vi.fn((p: string) => `https://app.algoplan/${p}`),
   mockWorkspaces: {
     current: [] as Array<{ id: string; name: string; slug: string }>,
   },
@@ -142,7 +142,7 @@ describe("SearchCommand", () => {
     mockSetTheme.mockReset();
     mockTheme.current = "system";
     mockPathname.current = "/ws-test/issues";
-    mockGetShareableUrl.mockReset().mockImplementation((p: string) => `https://app.multica/${p}`);
+    mockGetShareableUrl.mockReset().mockImplementation((p: string) => `https://app.algoplan/${p}`);
     mockWorkspaces.current = [];
     mockCurrentWorkspace.current = null;
     mockOpenModal.mockReset();
@@ -299,7 +299,7 @@ describe("SearchCommand", () => {
     await user.click(linkItem);
 
     expect(mockGetShareableUrl).toHaveBeenCalledWith("/ws-test/issues/issue-1");
-    expect(mockClipboardWrite).toHaveBeenCalledWith("https://app.multica//ws-test/issues/issue-1");
+    expect(mockClipboardWrite).toHaveBeenCalledWith("https://app.algoplan//ws-test/issues/issue-1");
     expect(mockToastSuccess).toHaveBeenCalledWith("Link copied");
 
     // Reopen palette and test identifier copy

@@ -16,15 +16,19 @@ set -euo pipefail
 #     - multica.git                   repo URL fragment — out of scope (D-4)
 #     - multica-desktop-              electron-builder artifactName template — internal release filename
 #     - server/cmd/multica            CLI binary path — kept per planner Q1
+#     - multica setup / daemon / ...  CLI subcommand strings (rendered in onboarding/runtime UI)
+#                                     — kept per planner Q1 (CLI binary `multica` stays)
 #     - MulticaIcon / multica-icon    aesthetic asterisk component — kept verbatim
 #     - reserved-slugs.ts             "multica" anti-impersonation slug — kept (alongside new "algoplan")
+#     - "Multica → AlgoPlan"          regression-lock test descriptions referencing both names
+#     - multica-static.copilothub.ai  JSDoc example CDN hostname — documentation, not production
 #
 # See .planning/phases/07-rebrand-pass/07-PATTERNS.md for the full rules.
 
 TARGETS="apps/web apps/desktop packages/views packages/ui packages/core"
 
 # Single OR-regex of preserved patterns. Lines matching ANY of these are dropped.
-EXCLUDE='(@multica/|multica_[a-zA-Z]|multica:chat|multica:backlog|multica:navigate|MULTICA_|ai\.multica|multica-ai|multica\.git|multica-desktop-|server/cmd/multica|MulticaIcon|multica-icon\.tsx|reserved-slugs)'
+EXCLUDE='(@multica/|multica_[a-zA-Z]|multica:chat|multica:backlog|multica:navigate|MULTICA_|ai\.multica|multica-ai|multica\.git|multica-desktop-|server/cmd/multica|multica setup|multica daemon|multica agent|multica config|multica update|MulticaIcon|multica-icon\.tsx|multica-static|reserved-slugs|Multica → AlgoPlan)'
 
 HITS=$(grep -rnE "[Mm]ultica" $TARGETS \
   --include="*.tsx" --include="*.ts" --include="*.json" --include="*.yml" \
