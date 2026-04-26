@@ -262,12 +262,106 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// PasswordResetRequestRequest is the body schema for
+// POST /auth/password-reset/request.
+type PasswordResetRequestRequest struct {
+	Email string `json:"email"`
+}
+
+// passwordResetIssuanceWindow is the lifetime stamped into
+// password_reset_expires_at when issuing a reset token. The handler uses
+// this constant to reconstruct the issuance timestamp for rate-limit
+// comparisons (the only column we have on disk is the expiry, but
+// because we always set expiry = now + window, issuedAt is just
+// expiry - window — deterministic, no clock-skew sensitivity). Mirrors
+// the emailVerifyIssuanceWindow / cooldown pair in auth_email_verify.go.
+const passwordResetIssuanceWindow = 1 * time.Hour
+
+// passwordResetRequestCooldown is the minimum gap between two reset-
+// request calls for the same email. Per-email rate limit only; per-IP
+// is out of scope for Phase 5.1 (Open Q §1, accepted).
+const passwordResetRequestCooldown = 60 * time.Second
+
+// passwordResetRequestOKMessage is the canonical response body for ALL
+// success paths (unknown email, fresh token issued). Same shape
+// regardless of state — defeats email-existence enumeration via
+// response inspection.
+const passwordResetRequestOKMessage = "If an account exists for this email, a reset link has been sent."
+
 // PasswordResetRequest handles POST /auth/password-reset/request.
-// Plan 03 implements: lookup user, rate-limit, generate reset token,
-// store hash + 1h expiry, send reset email. Idempotent response shape
-// regardless of email existence.
+// Public endpoint with idempotent response shape: 200 returned whether
+// or not the email exists. Only failure modes that indicate a malformed
+// request (400), too-frequent retries (429), or DB outage (500) leak.
+//
+// Flow: decode {email}, lookup user. If unknown, return 200 without
+// touching the DB (no enumeration, no email-send, no dummy bcrypt —
+// parity with OTP SendCode per Open Q §4 RESOLVED). Otherwise check
+// the per-email 60s cooldown by reconstructing issuedAt from
+// password_reset_expires_at - passwordResetIssuanceWindow; if too
+// recent, return 429. Otherwise generate a fresh auth.GenerateAuthToken,
+// store its hash with 1h expiry via Queries.SetPasswordResetToken,
+// then call EmailService.SendPasswordResetEmail (best-effort; email-
+// send failures are logged but do not change the 200 response).
 func (h *Handler) PasswordResetRequest(w http.ResponseWriter, r *http.Request) {
-	writeError(w, http.StatusNotImplemented, "not implemented")
+	var req PasswordResetRequestRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+	email := strings.ToLower(strings.TrimSpace(req.Email))
+	if email == "" {
+		writeError(w, http.StatusBadRequest, "email is required")
+		return
+	}
+
+	user, err := h.Queries.GetUserByEmail(r.Context(), email)
+	if err != nil {
+		if isNotFound(err) {
+			// OWASP: same response shape as the known-email path — no
+			// DB write, no email send, no dummy bcrypt.
+			writeJSON(w, http.StatusOK, map[string]string{"message": passwordResetRequestOKMessage})
+			return
+		}
+		writeError(w, http.StatusInternalServerError, "failed to lookup user")
+		return
+	}
+
+	// Per-email rate limit: 60s. Reconstruct issuance timestamp from
+	// expiry minus the known issuance window — deterministic, not
+	// sensitive to clock skew or future expiry-window arithmetic
+	// changes.
+	if user.PasswordResetExpiresAt.Valid {
+		issuedAt := user.PasswordResetExpiresAt.Time.Add(-passwordResetIssuanceWindow)
+		if time.Since(issuedAt) < passwordResetRequestCooldown {
+			writeError(w, http.StatusTooManyRequests, "please wait before requesting another reset")
+			return
+		}
+	}
+
+	resetToken, err := auth.GenerateAuthToken()
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "failed to generate token")
+		return
+	}
+	resetTokenHash := auth.HashToken(resetToken)
+
+	if _, err := h.Queries.SetPasswordResetToken(r.Context(), db.SetPasswordResetTokenParams{
+		ID:                     user.ID,
+		PasswordResetTokenHash: pgtype.Text{String: resetTokenHash, Valid: true},
+		PasswordResetExpiresAt: pgtype.Timestamptz{Time: time.Now().Add(passwordResetIssuanceWindow), Valid: true},
+	}); err != nil {
+		writeError(w, http.StatusInternalServerError, "failed to store reset token")
+		return
+	}
+
+	// Best-effort: the row exists either way and the user can request
+	// another link after the cooldown if delivery fails. Same rationale
+	// as Signup's SendSignupVerification call.
+	if err := h.EmailService.SendPasswordResetEmail(email, resetToken); err != nil {
+		slog.Error("failed to send password reset email", "email", email, "error", err)
+	}
+
+	writeJSON(w, http.StatusOK, map[string]string{"message": passwordResetRequestOKMessage})
 }
 
 // PasswordResetConfirm handles POST /auth/password-reset/confirm.
