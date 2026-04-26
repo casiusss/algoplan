@@ -163,7 +163,7 @@ func newAPIClient(cmd *cobra.Command) (*cli.APIClient, error) {
 	token := resolveToken(cmd)
 
 	if serverURL == "" {
-		return nil, fmt.Errorf("server URL not set: use --server-url flag, ALGOPLAN_SERVER_URL env, or 'multica config set server_url <url>'")
+		return nil, fmt.Errorf("server URL not set: use --server-url flag, ALGOPLAN_SERVER_URL env, or 'algoplan config set server_url <url>'")
 	}
 
 	client := cli.NewAPIClient(serverURL, workspaceID, token)
@@ -187,7 +187,7 @@ func resolveServerURL(cmd *cobra.Command) string {
 	if err == nil && cfg.ServerURL != "" {
 		return normalizeAPIBaseURL(cfg.ServerURL)
 	}
-	fmt.Fprintln(os.Stderr, "No server configured. Run 'multica setup' first.")
+	fmt.Fprintln(os.Stderr, "No server configured. Run 'algoplan setup' first.")
 	os.Exit(1)
 	return "" // unreachable
 }
@@ -204,7 +204,7 @@ func normalizeAPIBaseURL(raw string) string {
 // inside a daemon-managed agent task (daemon sets ALGOPLAN_AGENT_ID and
 // ALGOPLAN_TASK_ID in the agent env). In that context the workspace must be
 // provided explicitly by the daemon — falling back to user-global
-// ~/.multica/config.json would let the agent act on whatever workspace the
+// ~/.algoplan/config.json would let the agent act on whatever workspace the
 // user last configured, which is how cross-workspace contamination happens
 // when multiple workspaces share a host.
 func inAgentExecutionContext() bool {
@@ -235,7 +235,7 @@ func requireWorkspaceID(cmd *cobra.Command) (string, error) {
 		if inAgentExecutionContext() {
 			return "", fmt.Errorf("workspace_id is required: ALGOPLAN_WORKSPACE_ID must be set by the daemon in agent execution context (no fallback to user config)")
 		}
-		return "", fmt.Errorf("workspace_id is required: use --workspace-id flag, set ALGOPLAN_WORKSPACE_ID env, or run 'multica config set workspace_id <id>'")
+		return "", fmt.Errorf("workspace_id is required: use --workspace-id flag, set ALGOPLAN_WORKSPACE_ID env, or run 'algoplan config set workspace_id <id>'")
 	}
 	return id, nil
 }

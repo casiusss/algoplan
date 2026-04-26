@@ -202,9 +202,9 @@ func UpdateViaDownload(targetVersion string) (string, error) {
 	}
 
 	// Extract the binary from the archive.
-	binaryName := "multica"
+	binaryName := "algoplan"
 	if runtime.GOOS == "windows" {
-		binaryName = "multica.exe"
+		binaryName = "algoplan.exe"
 	}
 	var binaryData []byte
 	if runtime.GOOS == "windows" {
@@ -218,7 +218,7 @@ func UpdateViaDownload(targetVersion string) (string, error) {
 
 	// Atomic replace: write to temp file, then rename over the original.
 	dir := filepath.Dir(exePath)
-	tmpFile, err := os.CreateTemp(dir, "multica-update-*")
+	tmpFile, err := os.CreateTemp(dir, "algoplan-update-*")
 	if err != nil {
 		return "", fmt.Errorf("create temp file: %w", err)
 	}

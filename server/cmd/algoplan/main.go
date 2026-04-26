@@ -17,22 +17,22 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "multica",
-	Short: "Multica CLI — local agent runtime and management tool",
-	Long:  "Work seamlessly with Multica from the command line.",
+	Use:   "algoplan",
+	Short: "AlgoPlan CLI — local agent runtime and management tool",
+	Long:  "Work seamlessly with AlgoPlan from the command line.",
 	SilenceUsage:  true,
 	SilenceErrors: true,
 }
 
 func init() {
 	rootCmd.Version = fmt.Sprintf("%s (commit: %s, built: %s)\ngo: %s, os/arch: %s/%s", version, commit, date, runtime.Version(), runtime.GOOS, runtime.GOARCH)
-	rootCmd.SetVersionTemplate("multica {{.Version}}\n")
+	rootCmd.SetVersionTemplate("algoplan {{.Version}}\n")
 
 	// Tag every CLI HTTP request with this binary's build version so the
 	// server can split logs/metrics by client version.
 	cli.ClientVersion = version
 
-	rootCmd.PersistentFlags().String("server-url", "", "Multica server URL (env: ALGOPLAN_SERVER_URL)")
+	rootCmd.PersistentFlags().String("server-url", "", "AlgoPlan server URL (env: ALGOPLAN_SERVER_URL)")
 	rootCmd.PersistentFlags().String("workspace-id", "", "Workspace ID (env: ALGOPLAN_WORKSPACE_ID)")
 	rootCmd.PersistentFlags().String("profile", "", "Configuration profile name (e.g. dev) — isolates config, daemon state, and workspaces")
 
@@ -79,6 +79,20 @@ func init() {
 }
 
 func main() {
+	// Migrate ~/.multica/ → ~/.algoplan/ before loading any config.
+	// This must run before rootCmd.Execute() so that any config loading
+	// within command handlers finds data in the new location.
+	home, homeErr := os.UserHomeDir()
+	if homeErr == nil {
+		res, mvErr := cli.MigrateConfigDir(home)
+		if mvErr != nil {
+			fmt.Fprintf(os.Stderr, "warning: config dir migration failed: %v\n", mvErr)
+		} else if res.Migrated {
+			fmt.Fprintf(os.Stderr, "info: migrated CLI config %s → %s/%s/ (legacy preserved at %s)\n",
+				cli.LegacyConfigDirName, home, cli.AlgoPlanConfigDirName, res.LegacyMovedTo)
+		}
+	}
+
 	cli.CleanupStaleUpdateArtifacts()
 	if err := rootCmd.Execute(); err != nil {
 		if err != errSilent {

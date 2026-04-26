@@ -8,8 +8,6 @@ import (
 	"path/filepath"
 )
 
-const defaultCLIConfigPath = ".multica/config.json"
-
 // CLIConfig holds persistent CLI settings.
 type CLIConfig struct {
 	ServerURL   string `json:"server_url,omitempty"`
@@ -24,30 +22,30 @@ func CLIConfigPath() (string, error) {
 }
 
 // CLIConfigPathForProfile returns the config file path for the given profile.
-// An empty profile returns the default path (~/.multica/config.json).
-// A named profile returns ~/.multica/profiles/<name>/config.json.
+// An empty profile returns the default path (~/.algoplan/config.json).
+// A named profile returns ~/.algoplan/profiles/<name>/config.json.
 func CLIConfigPathForProfile(profile string) (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", fmt.Errorf("resolve CLI config path: %w", err)
 	}
 	if profile == "" {
-		return filepath.Join(home, defaultCLIConfigPath), nil
+		return filepath.Join(home, AlgoPlanConfigDirName, "config.json"), nil
 	}
-	return filepath.Join(home, ".multica", "profiles", profile, "config.json"), nil
+	return filepath.Join(home, AlgoPlanConfigDirName, "profiles", profile, "config.json"), nil
 }
 
 // ProfileDir returns the base directory for a profile's state files (pid, log).
-// An empty profile returns ~/.multica/. A named profile returns ~/.multica/profiles/<name>/.
+// An empty profile returns ~/.algoplan/. A named profile returns ~/.algoplan/profiles/<name>/.
 func ProfileDir(profile string) (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", fmt.Errorf("resolve profile dir: %w", err)
 	}
 	if profile == "" {
-		return filepath.Join(home, ".multica"), nil
+		return filepath.Join(home, AlgoPlanConfigDirName), nil
 	}
-	return filepath.Join(home, ".multica", "profiles", profile), nil
+	return filepath.Join(home, AlgoPlanConfigDirName, "profiles", profile), nil
 }
 
 // LoadCLIConfig reads the CLI config from disk (default profile).

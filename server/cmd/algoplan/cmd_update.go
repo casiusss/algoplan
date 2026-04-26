@@ -12,7 +12,7 @@ import (
 
 var updateCmd = &cobra.Command{
 	Use:   "update",
-	Short: "Update multica to the latest version",
+	Short: "Update algoplan to the latest version",
 	RunE:  runUpdate,
 }
 

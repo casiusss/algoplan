@@ -108,10 +108,10 @@ func init() {
 	})
 }
 
-var rootHelpTemplate = `Work seamlessly with Multica from the command line.
+var rootHelpTemplate = `Work seamlessly with AlgoPlan from the command line.
 
 USAGE
-  multica <command> <subcommand> [flags]
+  algoplan <command> <subcommand> [flags]
 {{range .Groups}}
 {{.Title}}
 {{formatCommandList (commandsInGroup $.Commands .ID)}}
@@ -119,10 +119,10 @@ USAGE
 FLAGS
 {{.LocalFlags.FlagUsages}}
 EXAMPLES
-  $ multica login
-  $ multica issue list --output json
-  $ multica daemon start
-  $ multica agent list --output json
+  $ algoplan login
+  $ algoplan issue list --output json
+  $ algoplan daemon start
+  $ algoplan agent list --output json
 
 ENVIRONMENT VARIABLES
   ALGOPLAN_SERVER_URL    Override the default server URL
@@ -132,7 +132,7 @@ ENVIRONMENT VARIABLES
   still work with a deprecation warning. Planned for removal in v0.6.0 or v0.7.0.
 
 LEARN MORE
-  Use ` + "`multica <command> <subcommand> --help`" + ` for more information about a command.
+  Use ` + "`algoplan <command> <subcommand> --help`" + ` for more information about a command.
 `
 
 var subHelpTemplate = `{{.Short}}
@@ -172,5 +172,5 @@ EXAMPLES
 {{- end}}
 
 LEARN MORE
-  Use ` + "`multica <command> <subcommand> --help`" + ` for more information about a command.
+  Use ` + "`algoplan <command> <subcommand> --help`" + ` for more information about a command.
 `
