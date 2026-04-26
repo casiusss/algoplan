@@ -19,7 +19,7 @@ mac:
   target:
     - dmg
     - zip
-  # Hardcoded name avoids the `@multica/desktop-*` subdirectory that
+  # Hardcoded name avoids the `@algoplan/desktop-*` subdirectory that
   # `${name}` produces for scoped package names.
   # Naming scheme: multica-desktop-<version>-<platform>-<arch>.<ext>
   # so the filename alone surfaces kind, version, platform, and CPU arch.

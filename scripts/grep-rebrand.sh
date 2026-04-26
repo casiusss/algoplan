@@ -36,8 +36,12 @@ set -euo pipefail
 
 TARGETS="apps/web apps/desktop packages/views packages/ui packages/core"
 
+# Phase 8 D-1 (2026-04-27): Removed @multica/ alternative from EXCLUDE.
+# All workspace packages renamed to @algoplan/*; @multica/ is no longer a
+# valid pattern in source. Re-introduction must surface as a leak.
+
 # Single OR-regex of preserved patterns. Lines matching ANY of these are dropped.
-EXCLUDE='(@multica/|multica_[a-zA-Z]|multica_\$|multica_<|multica:chat|multica:backlog|multica:navigate|multica-locale|MULTICA_|ai\.multica|multica-ai|multica\.git|multica-desktop-|multica-cli-|server/cmd/multica|multica setup|multica daemon|multica agent|multica config|multica update|multica CLI|"multica"|"multica\.exe"|\.multica/|\.multica"|\.multica,|\.multica`|\.multica .|bin/multica|MulticaIcon|MulticaLanding|multica-landing|multica-icon\.tsx|multica-static|reserved-slugs|/multica workspaces|multica.*brand slugs are reserved|legacy brand name|`multica`|RESERVED_SLUGS.has..multica..|Multica → AlgoPlan|not multica|repo: multica|repo..multica|"multica\.git")'
+EXCLUDE='(multica_[a-zA-Z]|multica_\$|multica_<|multica:chat|multica:backlog|multica:navigate|multica-locale|MULTICA_|ai\.multica|multica-ai|multica\.git|multica-desktop-|multica-cli-|server/cmd/multica|multica setup|multica daemon|multica agent|multica config|multica update|multica CLI|"multica"|"multica\.exe"|\.multica/|\.multica"|\.multica,|\.multica`|\.multica .|bin/multica|MulticaIcon|MulticaLanding|multica-landing|multica-icon\.tsx|multica-static|reserved-slugs|/multica workspaces|multica.*brand slugs are reserved|legacy brand name|`multica`|RESERVED_SLUGS.has..multica..|Multica → AlgoPlan|not multica|repo: multica|repo..multica|"multica\.git")'
 
 HITS=$(grep -rnE "[Mm]ultica" $TARGETS \
   --include="*.tsx" --include="*.ts" --include="*.json" --include="*.yml" \

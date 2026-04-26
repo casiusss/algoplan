@@ -12,10 +12,10 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@multica/ui/components",
-    "ui": "@multica/ui/components/ui",
-    "hooks": "@multica/ui/hooks",
-    "lib": "@multica/ui/lib",
-    "utils": "@multica/ui/lib/utils"
+    "components": "@algoplan/ui/components",
+    "ui": "@algoplan/ui/components/ui",
+    "hooks": "@algoplan/ui/hooks",
+    "lib": "@algoplan/ui/lib",
+    "utils": "@algoplan/ui/lib/utils"
   }
 }
