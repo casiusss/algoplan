@@ -153,6 +153,15 @@ func NewRouter(pool *pgxpool.Pool, hub *realtime.Hub, bus *events.Bus, analytics
 	r.Post("/auth/google", h.GoogleLogin)
 	r.Post("/auth/logout", h.Logout)
 
+	// Phase 5.1 password auth + email verification (public).
+	// Routes mounted in Plan 00; bodies filled in by Plans 01/02/03.
+	r.Post("/auth/signup", h.Signup)
+	r.Post("/auth/login", h.Login)
+	r.Post("/auth/password-reset/request", h.PasswordResetRequest)
+	r.Post("/auth/password-reset/confirm", h.PasswordResetConfirm)
+	r.Post("/auth/email-verify", h.EmailVerify)
+	r.Post("/auth/email-verify/resend", h.ResendEmailVerify)
+
 	// Public API
 	r.Get("/api/config", h.GetConfig)
 

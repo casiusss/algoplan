@@ -3,6 +3,7 @@ package auth
 import (
 	"crypto/rand"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"os"
@@ -50,4 +51,16 @@ func GenerateDaemonToken() (string, error) {
 func HashToken(token string) string {
 	h := sha256.Sum256([]byte(token))
 	return hex.EncodeToString(h[:])
+}
+
+// GenerateAuthToken creates an opaque 256-bit URL-safe token suitable for
+// password-reset and email-verify links. Returns 43 chars of base64url
+// (no padding). Pair with HashToken to store the digest in DB while keeping
+// the plaintext token only in the email link.
+func GenerateAuthToken() (string, error) {
+	b := make([]byte, 32) // 256 bits
+	if _, err := rand.Read(b); err != nil {
+		return "", fmt.Errorf("generate auth token: %w", err)
+	}
+	return base64.RawURLEncoding.EncodeToString(b), nil
 }

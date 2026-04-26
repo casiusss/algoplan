@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"html"
+	"log/slog"
 	"os"
 	"strings"
 	"unicode"
@@ -108,6 +109,30 @@ func buildInvitationParams(from, to, inviterName, workspaceName, inviteURL strin
 				<p style="color: #666; font-size: 14px;">You'll need to log in to accept or decline the invitation.</p>
 			</div>`, safeWorkspace, safeInviter, safeWorkspace, inviteURL),
 	}
+}
+
+// SendSignupVerification queues the verification email triggered from
+// POST /auth/signup. Stub for Phase 5.1 Plan 00 — Plan 01 fills in the
+// Resend wiring and adds buildSignupVerificationParams.
+func (s *EmailService) SendSignupVerification(to, verifyToken string) error {
+	slog.Info("[STUB] SendSignupVerification", "to", to, "token_len", len(verifyToken))
+	return nil
+}
+
+// SendPasswordResetEmail queues the reset email triggered from
+// POST /auth/password-reset/request. Stub for Phase 5.1 Plan 00 —
+// Plan 03 fills in the Resend wiring and adds buildPasswordResetParams.
+func (s *EmailService) SendPasswordResetEmail(to, resetToken string) error {
+	slog.Info("[STUB] SendPasswordResetEmail", "to", to, "token_len", len(resetToken))
+	return nil
+}
+
+// SendEmailVerification queues the verify-email resend triggered from
+// POST /auth/email-verify/resend. Stub for Phase 5.1 Plan 00 —
+// Plan 02 fills in the Resend wiring and adds buildEmailVerifyParams.
+func (s *EmailService) SendEmailVerification(to, verifyToken string) error {
+	slog.Info("[STUB] SendEmailVerification", "to", to, "token_len", len(verifyToken))
+	return nil
 }
 
 // sanitizeSubjectField prepares user-controlled text for the email Subject line.
