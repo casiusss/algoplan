@@ -142,7 +142,8 @@ export function InboxPage() {
     setSelectedKey(item.issue_id ?? item.id);
     if (!item.read) {
       markReadMutation.mutate(item.id, {
-        onError: () => toast.error("Failed to mark as read"),
+        onError: () =>
+          toast.error("Konnte nicht als gelesen markiert werden"),
       });
     }
   };
@@ -151,7 +152,7 @@ export function InboxPage() {
     const archived = items.find((i) => i.id === id);
     if (archived && (archived.issue_id ?? archived.id) === selectedKey) setSelectedKey("");
     archiveMutation.mutate(id, {
-      onError: () => toast.error("Failed to archive"),
+      onError: () => toast.error("Konnte nicht archiviert werden"),
     });
   };
 
@@ -172,7 +173,7 @@ export function InboxPage() {
   const handleArchiveAll = () => {
     setSelectedKey("");
     archiveAllMutation.mutate(undefined, {
-      onError: () => toast.error("Failed to archive all"),
+      onError: () => toast.error("Konnte nicht alle archivieren"),
     });
   };
 
@@ -180,14 +181,16 @@ export function InboxPage() {
     const readKeys = items.filter((i) => i.read).map((i) => i.issue_id ?? i.id);
     if (readKeys.includes(selectedKey)) setSelectedKey("");
     archiveAllReadMutation.mutate(undefined, {
-      onError: () => toast.error("Failed to archive read items"),
+      onError: () =>
+        toast.error("Gelesene Einträge konnten nicht archiviert werden"),
     });
   };
 
   const handleArchiveCompleted = () => {
     setSelectedKey("");
     archiveCompletedMutation.mutate(undefined, {
-      onError: () => toast.error("Failed to archive completed"),
+      onError: () =>
+        toast.error("Erledigte Einträge konnten nicht archiviert werden"),
     });
   };
 
