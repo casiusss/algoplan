@@ -22,7 +22,7 @@ import { decideVersionAction } from "./version-decision";
 
 const DEFAULT_HEALTH_PORT = 19514;
 const POLL_INTERVAL_MS = 5_000;
-const PREFS_PATH = join(homedir(), ".multica", "desktop_prefs.json");
+const PREFS_PATH = join(homedir(), ".algoplan", "desktop_prefs.json");
 const LOG_TAIL_RETRY_MS = 2_000;
 const LOG_TAIL_MAX_RETRIES = 5;
 
@@ -302,14 +302,14 @@ function findCliOnPath(): string | null {
  * Returns the path to the CLI binary bundled inside the Desktop app.
  *
  * - Dev (`electron-vite dev`): `app.getAppPath()` → `apps/desktop`, resolving
- *   to `apps/desktop/resources/bin/multica`. `bundle-cli.mjs` populates this
+ *   to `apps/desktop/resources/bin/algoplan`. `bundle-cli.mjs` populates this
  *   before dev starts, so iterating on Go changes is "make build → restart".
  * - Packaged: `app.getAppPath()` → `<AlgoPlan.app>/Contents/Resources/app.asar`.
  *   electron-builder's `asarUnpack: resources/**` extracts the binary to
  *   `app.asar.unpacked/`, so we swap the path segment to execute it.
  */
 function bundledCliPath(): string {
-  const binName = process.platform === "win32" ? "multica.exe" : "multica";
+  const binName = process.platform === "win32" ? "algoplan.exe" : "algoplan";
   return join(app.getAppPath(), "resources", "bin", binName).replace(
     "app.asar",
     "app.asar.unpacked",
