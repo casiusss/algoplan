@@ -44,7 +44,7 @@ export default function RuntimesPage({ topSlot, bootstrapping }: RuntimesPagePro
   const { data: runtimes = [], isLoading: fetching } = useQuery(runtimeListOptions(wsId, ownerParam));
 
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
-    id: "multica_runtimes_layout",
+    id: "algoplan_runtimes_layout",
   });
 
   // Re-fetch on daemon register/deregister events.

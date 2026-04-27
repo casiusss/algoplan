@@ -50,10 +50,10 @@ describe("electron-builder.yml — AlgoPlan brand identity (Phase 7 regression l
     expect(config.publish.repo).toBe("multica");
   });
 
-  it("artifactName template is unchanged (release filename — Homebrew + auto-update consume this)", () => {
-    expect(config.mac.artifactName).toMatch(/^multica-desktop-/);
-    expect(config.dmg.artifactName).toMatch(/^multica-desktop-/);
-    expect(config.win.artifactName).toMatch(/^multica-desktop-/);
-    expect(config.linux.artifactName).toMatch(/^multica-desktop-/);
+  it("artifactName template uses algoplan-desktop- prefix", () => {
+    expect(config.mac.artifactName).toMatch(/^algoplan-desktop-/);
+    expect(config.dmg.artifactName).toMatch(/^algoplan-desktop-/);
+    expect(config.win.artifactName).toMatch(/^algoplan-desktop-/);
+    expect(config.linux.artifactName).toMatch(/^algoplan-desktop-/);
   });
 });

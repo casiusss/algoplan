@@ -11,7 +11,7 @@ const dictionaryFactories: Record<Locale, (allowSignup: boolean) => LandingDict>
   zh: createZhDict,
 };
 
-const COOKIE_NAME = "multica-locale";
+const COOKIE_NAME = "algoplan-locale";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 type LocaleContextValue = {

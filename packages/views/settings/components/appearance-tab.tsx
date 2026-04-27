@@ -86,7 +86,7 @@ const themeOptions = [
 ];
 
 export function AppearanceTab() {
-  // useTheme is the Phase 1 wrapper that pins storageKey="multica_theme".
+  // useTheme is the Phase 1 wrapper that pins storageKey="algoplan_theme".
   // The Phase 4 sidebar DarkModeToggle reads the same hook, so toggling
   // either surface flips both — verified by the sync-with-sidebar test.
   const { theme, setTheme } = useTheme();

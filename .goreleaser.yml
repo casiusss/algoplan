@@ -30,21 +30,8 @@ builds:
       - arm64
 
 archives:
-  # Legacy archive name kept so already-released CLIs (whose `multica update`
-  # looks for `multica_{os}_{arch}.{ext}`) can keep self-updating. The literal
-  # "multica_" prefix is intentional — it must NOT use {{ .ProjectName }} which
-  # would now render "algoplan_". Remove once pre-v0.5.0 binaries are no longer
-  # in use. Phase 8 D-1 (2026-04-27).
-  - id: legacy
-    formats:
-      - tar.gz
-    format_overrides:
-      - goos: windows
-        formats:
-          - zip
-    name_template: "multica_{{ .Os }}_{{ .Arch }}"
-  # Versioned archive name used by current CLI / install scripts /
-  # desktop bootstrap going forward. Renders as algoplan-cli-<version>-<os>-<arch>.
+  # Versioned archive name used by CLI / install scripts / desktop bootstrap.
+  # Renders as algoplan-cli-<version>-<os>-<arch>.
   - id: versioned
     formats:
       - tar.gz

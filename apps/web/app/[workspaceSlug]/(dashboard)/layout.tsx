@@ -2,7 +2,7 @@
 
 import { DashboardShell } from "@algoplan/views/dashboard-shell";
 import { useCurrentWorkspace } from "@algoplan/core/paths";
-import { MulticaIcon } from "@algoplan/ui/components/common/multica-icon";
+import { AlgoPlanIcon } from "@algoplan/ui/components/common/algoplan-icon";
 import { SearchCommand, SearchTrigger } from "@algoplan/views/search";
 import { ChatFab, ChatWindow } from "@algoplan/views/chat";
 import { StarterContentPrompt } from "@algoplan/views/onboarding";
@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <DashboardShell
       wsId={workspace?.id}
-      loadingIndicator={<MulticaIcon className="size-6" />}
+      loadingIndicator={<AlgoPlanIcon className="size-6" />}
       searchSlot={<SearchTrigger />}
       extra={
         <>

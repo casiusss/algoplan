@@ -79,8 +79,8 @@ export function DaemonSettingsTab() {
             {cliInstalled === null
               ? "Checking…"
               : cliInstalled
-                ? "multica CLI is installed and available in PATH."
-                : "multica CLI not found. Install it to enable daemon management."}
+                ? "algoplan CLI is installed and available in PATH."
+                : "algoplan CLI not found. Install it to enable daemon management."}
           </p>
           {cliInstalled === false && (
             <Button

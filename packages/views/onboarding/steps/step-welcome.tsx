@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ArrowRight, Download, Loader2 } from "lucide-react";
 import { Button, buttonVariants } from "@algoplan/ui/components/ui/button";
-import { MulticaIcon } from "@algoplan/ui/components/common/multica-icon";
+import { AlgoPlanIcon } from "@algoplan/ui/components/common/algoplan-icon";
 import { captureDownloadIntent } from "@algoplan/core/analytics";
 import { cn } from "@algoplan/ui/lib/utils";
 import { DragStrip } from "@algoplan/views/platform";
@@ -77,7 +77,7 @@ export function StepWelcome({
         <div className="flex flex-1 flex-col justify-center px-6 pb-12 sm:px-10 md:px-20 lg:px-20 xl:px-24">
           <div className="flex w-full max-w-[540px] flex-col gap-8">
             <div className="flex items-center gap-2.5">
-              <MulticaIcon className="size-5 text-foreground" noSpin />
+              <AlgoPlanIcon className="size-5 text-foreground" noSpin />
               <span className="font-serif text-xl font-medium tracking-tight">
                 Welcome to AlgoPlan
               </span>

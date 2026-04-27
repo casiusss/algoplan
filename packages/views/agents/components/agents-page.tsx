@@ -35,7 +35,7 @@ export function AgentsPage() {
   const { data: runtimes = [], isLoading: runtimesLoading } = useQuery(runtimeListOptions(wsId));
   const { data: members = [] } = useQuery(memberListOptions(wsId));
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
-    id: "multica_agents_layout",
+    id: "algoplan_agents_layout",
   });
 
   const filteredAgents = useMemo(

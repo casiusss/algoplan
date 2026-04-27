@@ -7,9 +7,9 @@ const { mockTheme, mockSetTheme } = vi.hoisted(() => ({
   mockSetTheme: vi.fn(),
 }));
 
-// AppearanceTab MUST consume the Phase 1 theme-provider wrapper that pins
-// storageKey="algoplan_theme" (renamed from multica_theme in Phase 8 D-2) — same hook as the Phase 4 sidebar
-// DarkModeToggle. This mock simulates next-themes via the wrapper.
+// AppearanceTab MUST consume the theme-provider wrapper that pins
+// storageKey="algoplan_theme" — same hook as the sidebar DarkModeToggle.
+// This mock simulates next-themes via the wrapper.
 vi.mock("@algoplan/ui/components/common/theme-provider", () => ({
   useTheme: () => ({
     theme: mockTheme.current,

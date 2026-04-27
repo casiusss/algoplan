@@ -10,7 +10,6 @@ import { QueryProvider } from "../provider";
 import { createLogger } from "../logger";
 import { defaultStorage } from "./storage";
 import { AuthInitializer } from "./auth-initializer";
-import { migrateLocalStorage } from "../migrations";
 import type { CoreProviderProps, ClientIdentity } from "./types";
 import type { StorageAdapter } from "../types/storage";
 
@@ -28,11 +27,6 @@ function initCore(
   identity?: ClientIdentity,
 ) {
   if (initialized) return;
-
-  // Run localStorage key migration before any reads so the app finds
-  // algoplan_* keys even when the browser stored them under legacy names
-  // from v0.4.x. This is idempotent and runs in ~O(n) on the LEGACY_KEY_MAP.
-  migrateLocalStorage(storage);
 
   const api = new ApiClient(apiBaseUrl, {
     logger: createLogger("api"),

@@ -124,7 +124,7 @@ export function InboxPage() {
   }, [loading, selectedKey, selected, replace, wsPaths, setSelectedKey]);
 
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
-    id: "multica_inbox_layout",
+    id: "algoplan_inbox_layout",
   });
 
   const isMobile = useIsMobile();
@@ -286,7 +286,7 @@ export function InboxPage() {
       key={selected.issue_id}
       issueId={selected.issue_id}
       defaultSidebarOpen={false}
-      layoutId="multica_inbox_issue_detail_layout"
+      layoutId="algoplan_inbox_issue_detail_layout"
       highlightCommentId={selected.details?.comment_id ?? undefined}
       onDelete={() => {
         // Issue deletion CASCADE-deletes the inbox item server-side, and the

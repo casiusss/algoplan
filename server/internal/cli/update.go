@@ -48,13 +48,8 @@ func releaseAssetCandidates(targetVersion, goos, goarch string) []string {
 	tag := normalizeReleaseTag(targetVersion)
 	version := strings.TrimPrefix(tag, "v")
 	ext := releaseArchiveExtension(goos)
-	// Prefer the new algoplan-cli-* archive name (v0.5.0+); fall back to
-	// multica-cli-* (pre-v0.5.0 releases) and then the very-legacy
-	// multica_{os}_{arch} name so old binaries can still self-update.
 	return []string{
 		fmt.Sprintf("algoplan-cli-%s-%s-%s.%s", version, goos, goarch, ext),
-		fmt.Sprintf("multica-cli-%s-%s-%s.%s", version, goos, goarch, ext),
-		fmt.Sprintf("multica_%s_%s.%s", goos, goarch, ext),
 	}
 }
 

@@ -1,6 +1,6 @@
 import { LoginPage } from "@algoplan/views/auth";
 import { DragStrip } from "@algoplan/views/platform";
-import { MulticaIcon } from "@algoplan/ui/components/common/multica-icon";
+import { AlgoPlanIcon } from "@algoplan/ui/components/common/algoplan-icon";
 
 const WEB_URL = import.meta.env.VITE_APP_URL || "http://localhost:3000";
 
@@ -17,7 +17,7 @@ export function DesktopLoginPage() {
     <div className="flex h-screen flex-col">
       <DragStrip />
       <LoginPage
-        logo={<MulticaIcon bordered size="lg" />}
+        logo={<AlgoPlanIcon bordered size="lg" />}
         onSuccess={() => {
           // Auth store update triggers AppContent re-render → shows DesktopShell.
           // Initial workspace navigation happens in routes.tsx via IndexRedirect.

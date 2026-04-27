@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { WorkspaceSlugProvider, paths } from "@algoplan/core/paths";
@@ -8,7 +8,6 @@ import {
 } from "@algoplan/core/workspace";
 import { setCurrentWorkspace } from "@algoplan/core/platform";
 import { useAuthStore } from "@algoplan/core/auth";
-import { useWorkspaceStorageMigration } from "@algoplan/core/migrations";
 import { useWorkspaceSeen } from "@algoplan/views/workspace/use-workspace-seen";
 import { useTabStore } from "@/stores/tab-store";
 
@@ -49,14 +48,6 @@ export function WorkspaceRouteLayout() {
     ...workspaceListOptions(),
     enabled: !!user,
   });
-
-  // PHASE-8 D-2: migrate workspace-scoped legacy localStorage keys (multica_*:<slug> →
-  // algoplan_*:<slug>) once per process when the workspace list is available.
-  const wsListSlugs = useMemo(
-    () => (wsList ?? []).map((w) => w.slug),
-    [wsList],
-  );
-  useWorkspaceStorageMigration(wsListSlugs);
 
   // Feed the URL slug into the platform singleton so the API client's
   // X-Workspace-Slug header and persist namespace follow the active tab.

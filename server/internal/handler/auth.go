@@ -151,7 +151,7 @@ func (h *Handler) findOrCreateUser(ctx context.Context, email string) (user db.U
 const signupSourceMaxLen = 512
 
 func signupSourceFromRequest(r *http.Request) string {
-	c, err := r.Cookie("multica_signup_source")
+	c, err := r.Cookie("algoplan_signup_source")
 	if err != nil || c == nil {
 		return ""
 	}

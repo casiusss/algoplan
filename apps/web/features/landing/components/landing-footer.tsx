@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MulticaIcon } from "@algoplan/ui/components/common/multica-icon";
+import { AlgoPlanIcon } from "@algoplan/ui/components/common/algoplan-icon";
 import { cn } from "@algoplan/ui/lib/utils";
 import { useAuthStore } from "@algoplan/core/auth";
 import { captureDownloadIntent } from "@algoplan/core/analytics";
@@ -21,7 +21,7 @@ export function LandingFooter() {
           {/* Left — newsletter / CTA */}
           <div className="lg:w-[340px] lg:shrink-0">
             <Link href="#product" className="flex items-center gap-3">
-              <MulticaIcon className="size-5 text-white" noSpin />
+              <AlgoPlanIcon className="size-5 text-white" noSpin />
               <span className="text-[18px] font-semibold tracking-[0.04em] lowercase">
                 algoplan
               </span>
@@ -119,7 +119,7 @@ export function LandingFooter() {
         {/* Giant logo */}
         <div className="relative overflow-hidden pb-4">
           <div className="flex items-end gap-6 sm:gap-8">
-            <MulticaIcon
+            <AlgoPlanIcon
               className="size-[clamp(4rem,12vw,10rem)] shrink-0 text-white"
               noSpin
             />

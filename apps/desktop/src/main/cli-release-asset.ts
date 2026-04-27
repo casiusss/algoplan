@@ -1,4 +1,4 @@
-const RELEASE_ARCHIVE_PREFIX = "multica-cli-";
+const RELEASE_ARCHIVE_PREFIX = "algoplan-cli-";
 
 function platformArchiveDescriptor(
   platform: NodeJS.Platform = process.platform,
@@ -34,10 +34,6 @@ export function selectPlatformReleaseAssetName(
     arch,
   );
   const names = [...assetNames];
-
-  // Prefer the versioned `multica-cli-<v>-<os>-<arch>.<ext>` name; fall
-  // back to the legacy `multica_<os>_<arch>.<ext>` so older releases that
-  // only ship the legacy archive keep working.
   const suffix = `-${os}-${mappedArch}.${ext}`;
   const matches = names.filter(
     (name) =>
@@ -51,11 +47,6 @@ export function selectPlatformReleaseAssetName(
     throw new Error(
       `multiple release assets matched current platform ${suffix}: ${matches.join(", ")}`,
     );
-  }
-
-  const legacyName = `multica_${os}_${mappedArch}.${ext}`;
-  if (names.includes(legacyName)) {
-    return legacyName;
   }
 
   throw new Error(`no release asset found for current platform: ${suffix}`);

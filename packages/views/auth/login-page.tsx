@@ -61,7 +61,7 @@ interface CliCallbackConfig {
 interface LoginPageProps {
   /** Logo element rendered above the title. When omitted, defaults to
    *  <AlgoPlanWordmark size="lg" /> per Phase 6 AUTH-01. Pass an explicit
-   *  ReactNode to override (e.g. legacy MulticaIcon during transitional
+   *  ReactNode to override (e.g. legacy AlgoPlanIcon during transitional
    *  phases). */
   logo?: ReactNode;
   /** Called after successful login. The workspace list is seeded into React
@@ -188,7 +188,7 @@ export function LoginPage({
       })
       .catch(() => {
         // Cookie auth failed — fall back to localStorage token
-        const token = localStorage.getItem("multica_token");
+        const token = localStorage.getItem("algoplan_token");
         if (!token) return;
 
         api.setToken(token);
@@ -201,7 +201,7 @@ export function LoginPage({
           })
           .catch(() => {
             api.setToken(null);
-            localStorage.removeItem("multica_token");
+            localStorage.removeItem("algoplan_token");
           });
       });
   }, [cliCallback]);
@@ -248,7 +248,7 @@ export function LoginPage({
       setError("");
       try {
         await api.login({ email, password });
-        // Backend has set the multica_auth cookie. Seed the workspace list into
+        // Backend has set the algoplan_auth cookie. Seed the workspace list into
         // the Query cache so the caller's onSuccess can read it synchronously
         // to compute a destination URL.
         const wsList = await api.listWorkspaces();
@@ -280,7 +280,7 @@ export function LoginPage({
         if (cliCallback) {
           // CLI path: get token directly for the redirect URL
           const { token } = await api.verifyCode(email, value);
-          localStorage.setItem("multica_token", token);
+          localStorage.setItem("algoplan_token", token);
           api.setToken(token);
           onTokenObtained?.();
           redirectToCliCallback(cliCallback.url, token, cliCallback.state);
@@ -329,7 +329,7 @@ export function LoginPage({
 
       if (authSourceRef.current === "localStorage") {
         // Session was detected via localStorage — reuse that token directly.
-        const stored = localStorage.getItem("multica_token");
+        const stored = localStorage.getItem("algoplan_token");
         if (!stored) throw new Error("token missing");
         token = stored;
       } else {

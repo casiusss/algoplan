@@ -129,7 +129,7 @@ export function createEnDict(allowSignup: boolean): LandingDict {
       {
         title: "Install the CLI & connect your machine",
         description:
-          "Run multica setup to configure, authenticate, and start the daemon. It auto-detects Claude Code, Codex, OpenClaw, and OpenCode on your machine \u2014 plug in and go.",
+          "Run algoplan setup to configure, authenticate, and start the daemon. It auto-detects Claude Code, Codex, OpenClaw, and OpenCode on your machine \u2014 plug in and go.",
       },
       {
         title: "Create your first agent",
@@ -314,7 +314,7 @@ export function createEnDict(allowSignup: boolean): LandingDict {
         changes: [],
         features: [
           "Desktop app cross-platform packaging — macOS, Windows, and Linux artifacts from a single release pipeline",
-          "`multica update` self-update command — upgrade the CLI and local daemon without reinstalling",
+          "`algoplan update` self-update command — upgrade the CLI and local daemon without reinstalling",
           "Issue board paginates every status column, not only Done — large backlogs stay responsive",
         ],
         fixes: [
@@ -331,7 +331,7 @@ export function createEnDict(allowSignup: boolean): LandingDict {
         title: "Per-Agent Models, Kimi Runtime & Self-Host Auth",
         changes: [],
         features: [
-          "Per-agent `model` field with a provider-aware dropdown — pick the LLM model for each agent from the UI or via `multica agent create/update --model`, with live discovery from each runtime's CLI",
+          "Per-agent `model` field with a provider-aware dropdown — pick the LLM model for each agent from the UI or via `algoplan agent create/update --model`, with live discovery from each runtime's CLI",
           "Kimi CLI as a new agent runtime (Moonshot AI's `kimi-cli` over ACP), with model selection, auto-approved tool permissions, and streaming tool-call rendering",
           "Expand toggle on inline comment and reply editors for composing long text",
         ],
@@ -479,7 +479,7 @@ export function createEnDict(allowSignup: boolean): LandingDict {
         title: "One-Click Setup, Self-Hosting & Stability",
         changes: [],
         features: [
-          "One-click install & setup — `curl | bash` installs CLI, `--with-server` bootstraps full self-hosting, `multica setup` configures your environment",
+          "One-click install & setup — `curl | bash` installs CLI, `--with-server` bootstraps full self-hosting, `algoplan setup` configures your environment",
           "Self-hosted storage — local file fallback when S3 is unavailable, plus custom S3 endpoint support (MinIO)",
           "Inline property editing (priority, status, lead) on project list page",
         ],
@@ -625,7 +625,7 @@ export function createEnDict(allowSignup: boolean): LandingDict {
           "Load all open issues without pagination limit; closed issues paginate on scroll",
           "JWT and CloudFront cookie expiration extended from 72 hours to 30 days",
           "Remember last selected workspace after re-login",
-          "Daemon ensures multica CLI is on PATH in agent task environment",
+          "Daemon ensures algoplan CLI is on PATH in agent task environment",
           "PR template and CLI install guide for agent-driven setup",
         ],
       },

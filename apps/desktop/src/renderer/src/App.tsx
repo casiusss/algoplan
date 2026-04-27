@@ -6,7 +6,7 @@ import { workspaceKeys, workspaceListOptions } from "@algoplan/core/workspace/qu
 import { api } from "@algoplan/core/api";
 import { useHasOnboarded } from "@algoplan/core/paths";
 import { ThemeProvider } from "@algoplan/ui/components/common/theme-provider";
-import { MulticaIcon } from "@algoplan/ui/components/common/multica-icon";
+import { AlgoPlanIcon } from "@algoplan/ui/components/common/algoplan-icon";
 import { Toaster } from "sonner";
 import { DesktopLoginPage } from "./pages/login";
 import { DesktopShell } from "./components/desktop-layout";
@@ -30,7 +30,7 @@ function AppContent() {
   const [bootstrapping, setBootstrapping] = useState(false);
 
   // Tell the main process which backend URL we talk to, so daemon-manager
-  // can pick the matching CLI profile (server_url from ~/.multica config).
+  // can pick the matching CLI profile (server_url from ~/.algoplan config).
   useEffect(() => {
     window.daemonAPI.setTargetApiUrl(DAEMON_TARGET_API_URL);
   }, []);
@@ -72,7 +72,7 @@ function AppContent() {
   // Sync token and start the daemon whenever the user logs in.
   useEffect(() => {
     if (!user) return;
-    const token = localStorage.getItem("multica_token");
+    const token = localStorage.getItem("algoplan_token");
     if (!token) return;
     const userId = user.id;
     (async () => {
@@ -162,7 +162,7 @@ function AppContent() {
   if (isLoading || bootstrapping) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <MulticaIcon className="size-6 animate-pulse" />
+        <AlgoPlanIcon className="size-6 animate-pulse" />
       </div>
     );
   }

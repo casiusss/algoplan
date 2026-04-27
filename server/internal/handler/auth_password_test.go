@@ -103,7 +103,7 @@ func postJSON(t *testing.T, h func(http.ResponseWriter, *http.Request), path str
 
 // TestSignup_Success: POST /auth/signup creates a user with bcrypt'd
 // password_hash, an email-verify token, returns LoginResponse with JWT,
-// and sets multica_auth + multica_csrf cookies.
+// and sets algoplan_auth + algoplan_csrf cookies.
 func TestSignup_Success(t *testing.T) {
 	const email = "signup-success@example.com"
 	t.Cleanup(func() {
@@ -507,7 +507,7 @@ func TestPasswordResetConfirm_Invalid(t *testing.T) {
 }
 
 // TestPasswordResetConfirm_NoAutoLogin: response MUST NOT include a JWT
-// or Set-Cookie multica_auth — adversary may have brief inbox access.
+// or Set-Cookie algoplan_auth — adversary may have brief inbox access.
 func TestPasswordResetConfirm_NoAutoLogin(t *testing.T) {
 	const email = "reset-confirm-noautologin@example.com"
 	_, plainToken := resetUserWithToken(t, email, time.Hour)

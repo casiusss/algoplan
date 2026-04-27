@@ -8,10 +8,6 @@ import type { MetadataRoute } from "next";
 // browser/installed-PWA chrome blends with the app's dark default surface.
 // background_color is the splash background shown before first paint —
 // kept white to match the light-theme initial state on cold launch.
-//
-// Phase 8 D-2: localStorage keys have been migrated to algoplan_* / algoplan:*
-// via migrateLocalStorage (boot) + useWorkspaceStorageMigration (workspace mount).
-// This file does NOT touch localStorage. Storage is owned by each respective store.
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "AlgoPlan",

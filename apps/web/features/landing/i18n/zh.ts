@@ -129,7 +129,7 @@ export function createZhDict(allowSignup: boolean): LandingDict {
       {
         title: "\u5b89\u88c5 CLI \u5e76\u8fde\u63a5\u4f60\u7684\u673a\u5668",
         description:
-          "运行 multica setup 一键完成配置、认证和启动。守护进程自动检测你机器上的 Claude Code、Codex、OpenClaw 和 OpenCode——插上就用。",
+          "运行 algoplan setup 一键完成配置、认证和启动。守护进程自动检测你机器上的 Claude Code、Codex、OpenClaw 和 OpenCode——插上就用。",
       },
       {
         title: "\u521b\u5efa\u4f60\u7684\u7b2c\u4e00\u4e2a Agent",
@@ -314,7 +314,7 @@ export function createZhDict(allowSignup: boolean): LandingDict {
         changes: [],
         features: [
           "桌面应用跨平台打包——同一条发布流水线产出 macOS、Windows 和 Linux 安装包",
-          "新增 `multica update` 自更新命令——无需重装即可升级 CLI 和本地 Daemon",
+          "新增 `algoplan update` 自更新命令——无需重装即可升级 CLI 和本地 Daemon",
           "Issue 看板所有状态列都支持分页（不再只是 Done 列），大积压下依然流畅",
         ],
         fixes: [
@@ -331,7 +331,7 @@ export function createZhDict(allowSignup: boolean): LandingDict {
         title: "Agent 模型选择、Kimi Runtime 与自部署登录",
         changes: [],
         features: [
-          "Agent 新增 `model` 字段及按 Provider 聚合的模型下拉框——可在界面或通过 `multica agent create/update --model` 为每个 Agent 选择 LLM 模型，并从各 Runtime CLI 实时发现可用模型",
+          "Agent 新增 `model` 字段及按 Provider 聚合的模型下拉框——可在界面或通过 `algoplan agent create/update --model` 为每个 Agent 选择 LLM 模型，并从各 Runtime CLI 实时发现可用模型",
           "新增 Kimi CLI Agent Runtime（Moonshot AI 的 `kimi-cli`，基于 ACP），支持模型选择、自动授权工具权限以及流式工具调用渲染",
           "评论和回复编辑器新增放大按钮，便于撰写长文本",
         ],
@@ -479,7 +479,7 @@ export function createZhDict(allowSignup: boolean): LandingDict {
         title: "一键安装、自部署与稳定性",
         changes: [],
         features: [
-          "一键安装与配置——`curl | bash` 安装 CLI，`--with-server` 完整自部署，`multica setup` 配置连接环境",
+          "一键安装与配置——`curl | bash` 安装 CLI，`--with-server` 完整自部署，`algoplan setup` 配置连接环境",
           "自部署存储——无 S3 时本地文件存储回退，支持自定义 S3 端点（MinIO）",
           "项目列表页支持行内编辑属性（优先级、状态、负责人）",
         ],
@@ -625,7 +625,7 @@ export function createZhDict(allowSignup: boolean): LandingDict {
           "打开的 Issue 不再分页限制全量加载，已关闭的 Issue 滚动分页",
           "JWT 和 CloudFront Cookie 有效期从 72 小时延长至 30 天",
           "重新登录后记住上次选择的工作区",
-          "守护进程确保 Agent 任务环境中 multica CLI 在 PATH 上",
+          "守护进程确保 Agent 任务环境中 algoplan CLI 在 PATH 上",
           "新增 PR 模板和面向 Agent 的 CLI 安装指南",
         ],
       },

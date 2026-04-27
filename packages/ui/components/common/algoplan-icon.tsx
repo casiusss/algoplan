@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { cn } from "../../lib/utils";
 
-interface MulticaIconProps extends React.ComponentProps<"span"> {
+interface AlgoPlanIconProps extends React.ComponentProps<"span"> {
   /**
    * If true, play a one-time entrance spin animation.
    */
@@ -31,14 +31,14 @@ const borderedSizes = {
  * Uses currentColor so it adapts to light/dark themes automatically.
  * Clip-path polygon traced from the original SVG path coordinates.
  */
-export function MulticaIcon({
+export function AlgoPlanIcon({
   className,
   animate = false,
   noSpin = false,
   bordered = false,
   size = "sm",
   ...props
-}: MulticaIconProps) {
+}: AlgoPlanIconProps) {
   const [entranceDone, setEntranceDone] = useState(!animate);
 
   useEffect(() => {

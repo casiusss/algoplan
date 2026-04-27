@@ -647,7 +647,7 @@ export default function SkillsPage() {
   const [selectedId, setSelectedId] = useState<string>("");
   const [showCreate, setShowCreate] = useState(false);
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
-    id: "multica_skills_layout",
+    id: "algoplan_skills_layout",
   });
 
   useEffect(() => {

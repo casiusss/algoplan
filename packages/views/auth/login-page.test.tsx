@@ -579,7 +579,7 @@ describe("LoginPage", () => {
   // -------------------------------------------------------------------------
 
   it("shows cli_confirm step ('CLI autorisieren') when existing session + cliCallback", async () => {
-    localStorage.setItem("multica_token", "existing-jwt");
+    localStorage.setItem("algoplan_token", "existing-jwt");
     mockApiGetMe
       .mockRejectedValueOnce(new Error("no cookie"))
       .mockResolvedValueOnce({
@@ -614,7 +614,7 @@ describe("LoginPage", () => {
   });
 
   it("CLI authorize button redirects to callback URL", async () => {
-    localStorage.setItem("multica_token", "existing-jwt");
+    localStorage.setItem("algoplan_token", "existing-jwt");
     mockApiGetMe
       .mockRejectedValueOnce(new Error("no cookie"))
       .mockResolvedValueOnce({
@@ -646,7 +646,7 @@ describe("LoginPage", () => {
   });
 
   it("'Anderes Konto verwenden' returns to email step", async () => {
-    localStorage.setItem("multica_token", "existing-jwt");
+    localStorage.setItem("algoplan_token", "existing-jwt");
     mockApiGetMe
       .mockRejectedValueOnce(new Error("no cookie"))
       .mockResolvedValueOnce({

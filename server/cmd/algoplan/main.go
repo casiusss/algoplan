@@ -79,20 +79,6 @@ func init() {
 }
 
 func main() {
-	// Migrate ~/.multica/ → ~/.algoplan/ before loading any config.
-	// This must run before rootCmd.Execute() so that any config loading
-	// within command handlers finds data in the new location.
-	home, homeErr := os.UserHomeDir()
-	if homeErr == nil {
-		res, mvErr := cli.MigrateConfigDir(home)
-		if mvErr != nil {
-			fmt.Fprintf(os.Stderr, "warning: config dir migration failed: %v\n", mvErr)
-		} else if res.Migrated {
-			fmt.Fprintf(os.Stderr, "info: migrated CLI config %s → %s/%s/ (legacy preserved at %s)\n",
-				cli.LegacyConfigDirName, home, cli.AlgoPlanConfigDirName, res.LegacyMovedTo)
-		}
-	}
-
 	cli.CleanupStaleUpdateArtifacts()
 	if err := rootCmd.Execute(); err != nil {
 		if err != errSilent {

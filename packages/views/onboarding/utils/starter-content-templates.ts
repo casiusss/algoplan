@@ -378,7 +378,7 @@ export function buildSelfServeSubIssues(
         `   \`\`\``,
         `2. Then run setup (signs you in and starts a background daemon):`,
         `   \`\`\``,
-        `   multica setup`,
+        `   algoplan setup`,
         `   \`\`\``,
         `   The daemon keeps running after you close the terminal — you don't have to leave anything open.`,
         ``,
