@@ -121,6 +121,12 @@ These mirror `scripts/grep-rebrand.sh` `EXCLUDE` regex. **When a new exclusion i
 | `multica` reserved slug in `packages/core/paths/reserved-slugs.ts:31` | Anti-impersonation guard — prevents users creating workspace slug `multica`. KEEP and ADD `algoplan` alongside (per Plan 07-01 task). | (security) |
 | `apps/docs/`                                 | Out-of-phase scope — separate publishing pipeline (fumadocs).           | (scope)    |
 | `apps/showroom/`                             | Storybook stories — not production user-facing.                         | (scope)    |
+| `migrations/localstorage` (whole-file)       | Plan 08-00 helper module legitimately contains LEGACY_KEY_MAP entries with multica_* strings — those ARE the legacy names being migrated | Phase 8 D-2 |
+| `internal/config/env` (whole-file)           | Plan 08-01 env shim + tests reference MULTICA_ in deprecation warnings and t.Setenv calls | Phase 8 D-3 |
+| `internal/cli/configdir` (whole-file)        | Plan 08-02 config-dir helper + tests reference `.multica/` legacy directory path | Phase 8 D-4 |
+| `multica_(auth\|csrf\|signup_source)` cookie names | Server-set HttpOnly cookies; rename deferred to v0.6.0 to avoid mid-deploy session loss for active users | Phase 8 D-3 deferral |
+| `use-workspace-storage-migration` (whole-file) | Plan 08-04b workspace-scoped key migration helper + tests; file-level comments describe the legacy multica_*:<slug> keys being migrated (not production writes) | Phase 8 D-2 |
+| `PHASE-8 D-` comment markers                 | Code comments in wire-up sites (layout.tsx, workspace-route-layout.tsx) document Phase 8 D-2 deferral context — not production multica strings | Phase 8 D-2 |
 
 ### Production URL note (USER DECISION 2)
 
