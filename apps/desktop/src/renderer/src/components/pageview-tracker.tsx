@@ -65,5 +65,15 @@ function overlayPath(overlay: WindowOverlay): string {
       return "/onboarding";
     case "invite":
       return `/invite/${overlay.invitationId}`;
+    case "signup":
+      return "/auth/signup";
+    case "verify-email":
+      return overlay.token ? `/auth/verify-email?token=${overlay.token}` : "/auth/verify-email";
+    case "verify-email-resend":
+      return "/auth/verify-email-resend";
+    case "forgot-password":
+      return "/auth/forgot-password";
+    case "reset-password":
+      return overlay.token ? `/auth/reset-password?token=${overlay.token}` : "/auth/reset-password";
   }
 }

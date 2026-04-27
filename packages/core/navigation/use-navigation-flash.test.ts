@@ -22,7 +22,7 @@ beforeEach(() => {
 describe("setFlash / consumeFlash", () => {
   it("setFlash writes to sessionStorage under a namespaced key", () => {
     setFlash("password-reset", "Passwort aktualisiert.");
-    expect(sessionStorage.getItem("multica_flash:password-reset")).toBe(
+    expect(sessionStorage.getItem("algoplan_flash:password-reset")).toBe(
       "Passwort aktualisiert.",
     );
   });
@@ -30,7 +30,7 @@ describe("setFlash / consumeFlash", () => {
   it("consumeFlash returns the value AND removes the entry", () => {
     setFlash("toast-key", "hi");
     expect(consumeFlash("toast-key")).toBe("hi");
-    expect(sessionStorage.getItem("multica_flash:toast-key")).toBeNull();
+    expect(sessionStorage.getItem("algoplan_flash:toast-key")).toBeNull();
   });
 
   it("consumeFlash returns null when no flash is set", () => {

@@ -13,7 +13,7 @@ export function ThemeProvider({
       defaultTheme="system"
       enableSystem
       disableTransitionOnChange
-      storageKey="multica_theme"
+      storageKey="algoplan_theme"
       {...props}
     >
       <TooltipProvider delay={500}>

@@ -2,29 +2,49 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-// Phase 7 D-2 regression lock — see .planning/phases/07-rebrand-pass/07-CONTEXT.md
+// Phase 8 D-2 update: Plan 08-04 renamed these keys from multica:chat:* to
+// algoplan:chat:* and shipped a one-shot migration in
+// packages/core/migrations/localstorage.ts (LEGACY_KEY_MAP / WORKSPACE_SCOPED_LEGACY_KEY_MAP).
+// This test is updated to assert the renamed keys ARE present in store.ts,
+// and to cross-check that the migration covers the legacy multica:chat:* keys
+// so no user data is silently lost on upgrade.
 //
-// Why a source-text assertion (not a runtime test):
-// These keys are stored in user browsers TODAY. Renaming any of them migrates
-// nothing — it silently abandons every user's chat selection / drafts /
-// layout. There is no upgrade path because the new key is empty on first read,
-// so the app falls back to defaults as if the user never used it.
-//
-// A runtime test would only verify the store reads/writes whatever key the
-// store currently uses (tautology). A source-text assertion is the only thing
-// that fails on rename, blocking the merge before the data loss ships.
-//
-// If a future plan legitimately needs to rename these keys, it MUST also ship
-// a one-shot migration that copies old key -> new key in storage-cleanup or
-// a dedicated migration step, AND update this test to point at the migrated
-// key. Removing the assertion without a migration is a data-loss bug.
-describe("packages/core/chat/store.ts — multica:chat:* localStorage keys (Phase 7 D-2 regression lock)", () => {
+// Original Phase 7 D-2 regression-lock intent:
+// If store.ts is ever renamed again without a migration, the source-text assertion
+// below will fail on the ALGOPLAN key — forcing the author to ship a migration.
+describe("packages/core/chat/store.ts — chat localStorage keys (Phase 8 D-2 update)", () => {
   const source = readFileSync(join(__dirname, "store.ts"), "utf-8");
+  const migrationSource = readFileSync(
+    join(__dirname, "../migrations/localstorage.ts"),
+    "utf-8",
+  );
 
-  // These keys are storing user data (selected agent, session, drafts, layout
-  // dimensions, focus mode). Renaming any of them = silent data loss for every
-  // existing user. CONTEXT D-2 explicitly preserves them.
-  const PRESERVED_CHAT_KEYS = [
+  // Plan 08-04 renamed these keys. Store must use the new algoplan:chat:* names.
+  const CURRENT_CHAT_KEYS = [
+    "algoplan:chat:selectedAgentId",
+    "algoplan:chat:activeSessionId",
+    "algoplan:chat:drafts",
+    "algoplan:chat:width",
+    "algoplan:chat:height",
+    "algoplan:chat:expanded",
+    "algoplan:chat:focusMode",
+  ];
+
+  it.each(CURRENT_CHAT_KEYS)(
+    "store.ts uses current key '%s' (Phase 8 D-2)",
+    (key) => {
+      expect(source).toContain(key);
+    },
+  );
+
+  it("store.ts does NOT use legacy multica:chat:* keys (migrated in Plan 08-04)", () => {
+    // Legacy keys must only appear in the migration helper, not in production store.
+    expect(source).not.toMatch(/multica:chat:/);
+  });
+
+  // Cross-check: the migration helper must cover the legacy names so no user
+  // data is silently lost on upgrade from v0.4.x to v0.5.0.
+  const LEGACY_CHAT_KEYS = [
     "multica:chat:selectedAgentId",
     "multica:chat:activeSessionId",
     "multica:chat:drafts",
@@ -34,14 +54,10 @@ describe("packages/core/chat/store.ts — multica:chat:* localStorage keys (Phas
     "multica:chat:focusMode",
   ];
 
-  it.each(PRESERVED_CHAT_KEYS)(
-    "preserves localStorage key '%s' verbatim (Phase 7 D-2)",
+  it.each(LEGACY_CHAT_KEYS)(
+    "migration helper covers legacy key '%s' (data-loss guard)",
     (key) => {
-      expect(source).toContain(key);
+      expect(migrationSource).toContain(key);
     },
   );
-
-  it("does NOT introduce algoplan:chat:* renamed keys", () => {
-    expect(source).not.toMatch(/algoplan:chat:/);
-  });
 });
