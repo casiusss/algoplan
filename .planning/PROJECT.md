@@ -1,12 +1,29 @@
-# AlgoPlan — Frontend Redesign & Rebrand
+# AlgoPlan — AI-native Issue Platform
 
 ## What This Is
 
-Kompletter Frontend-Redesign der Multica-Plattform inklusive Rebrand zu **AlgoPlan** (app-facing). Die bestehende Linear-artige Issue-Plattform wird visuell auf eine neue Board-zentrierte Identität umgestellt: Algorivo OKLCH Palette (brand-green #008757 auf neutralem Surface, near-white #fafbfc light / near-black #0f1318 dark), Inter als Schriftfamilie (inkl. italic für Headlines), neues Kanban-Board als alternative Issue-View, neuer Komponenten-Showroom. Code-Internals (Paketnamen `@multica/*`, DB-Schemas, CLI-Binary, Repo) bleiben unverändert — nur die User-facing Oberfläche wird getauscht.
+AlgoPlan ist eine AI-native Linear-Alternative für 2-10 Personen Teams. Agenten sind First-Class-Citizens — sie ziehen Issues aus dem Backlog, arbeiten sie ab, dokumentieren ihre Arbeit und übergeben sauber an menschliche Reviewer. Stack: Go-Backend (Chi/sqlc/pgvector), Next.js Web + Electron Desktop, beide auf shared `@multica/views` + `@multica/core` + `@multica/ui` Packages. v0.5.0 hat den Frontend-Redesign + Rebrand zu AlgoPlan abgeschlossen; v0.6.0 schärft den Agent-Workflow.
 
 ## Core Value
 
-**Beide Apps (`apps/web` + `apps/desktop`) tragen konsistent die neue AlgoPlan-Identität — jede existierende User-facing View ist im neuen Designsystem umgesetzt.** Wenn einzelne Views (Auth, Issues, Settings, Inbox, Workspace-Mgmt) im alten Look bleiben, scheitert der Redesign sichtbar.
+**Agenten und Menschen teilen sich denselben Issue-Workflow ohne Reibung.** Ein Agent zieht Issues, arbeitet sie ab, übergibt strukturierte Acceptance-Tests an den Reviewer; der Reviewer hakt ab oder failt direkt am Issue, zieht es per Drag-&-Drop in „Done". Wenn der Hand-off zwischen Agent und Reviewer unklar bleibt (was wurde gebaut, wie verifiziere ich es?), bricht das Vertrauensmodell.
+
+## Current Milestone: v0.6.0 Agent Review Loop
+
+**Goal:** Agenten erzeugen am Ende ihrer Arbeit strukturierte Acceptance-Tests, der Reviewer hakt sie am Issue ab und zieht das Issue per Drag-&-Drop durch das Board. Beim Erstellen helfen AI-Refinement-Buttons, Issue-Descriptions zu schärfen.
+
+**Target features:**
+- Acceptance-Test JSON-Contract: Agent emittiert nach Status-Wechsel `in_progress → in_review` eine validierbare Test-Liste
+- Acceptance-Test GUI-Checklist: Mensch-Reviewer hakt am Issue ab, Status-Toggle `pending → passed | failed`
+- Drag-&-Drop Board: Issues per Drag zwischen Status-Spalten ziehen, optimistische Server-Mutation
+- Auto-Pickup verifiziert: Agent zieht selbständig zugewiesene Issues mit Status `todo`
+- Description-Refinement: Sparkle-Button im Issue-Form mit zwei Modi (Quick-Polish via inline LLM, Full-Spec via spawned Agent mit Bild-/Anhang-Support)
+
+**Key context:**
+- Reviewer-Modell: nur Mensch hakt ab (kein Agent-Self-Pass) — v0.7+ Diskussion
+- Soft-Gate: failende Tests blocken Done nicht, sind nur Warning
+- Test-Generierung-Kontext: Diff (primär) + Issue-Description (sekundär)
+- Retroaktiv: nein — nur neu erzeugte Issues ab Release
 
 ## Requirements
 
@@ -27,80 +44,67 @@ Kompletter Frontend-Redesign der Multica-Plattform inklusive Rebrand zu **AlgoPl
 
 ### Active
 
-<!-- Frontend redesign scope — hypotheses until shipped -->
+<!-- v0.6.0 Agent Review Loop — hypotheses until shipped -->
 
-**Foundation & Tokens**
-- [ ] Neues Farbsystem (Algorivo-derived OKLCH-Palette: brand-green #008757 primary, near-white/-black backgrounds, weiße/dark Cards) via CSS-Variablen in `packages/ui/styles/`
-- [ ] Inter-Font als Primary-Font inkl. italic-Variante für Display-Headlines (mit System-Fallback)
-- [ ] Light- und Dark-Mode als vollwertige Themes
-- [ ] Semantische Design-Tokens (`bg-background`, `bg-sidebar`, `bg-canvas`, `text-muted-foreground`…) — keine hardcoded Tailwind-Farben
-- [ ] Colored Tag/Chip-Komponenten (Priority P0-P3, Kategorien Backend/Frontend/Launch/Legal/DevOps, Launch-Blocker-Badge)
-- [ ] Avatar-Komponente mit generierten farbigen Initial-Kreisen
+**Acceptance-Test Datenmodell + API**
+- [ ] DB-Tabelle `acceptance_tests(id, issue_id, title, description, category, status, position, created_by_agent_id, ...)` mit Status-Enum `pending|passed|failed`
+- [ ] JSON-Schema-Contract definiert + server-side validiert (Title, Description, Category)
+- [ ] `POST /issues/:id/acceptance-tests` (Agent-Auth via PAT, idempotent via external_id)
+- [ ] `PATCH /acceptance-tests/:id` (Status-Toggle, Reviewer-Auth)
+- [ ] WS-Event `acceptance_test.created|updated` broadcastet im Workspace-Channel
 
-**Komponenten-Showroom**
-- [ ] Neue App/Route als Storybook-Showroom für alle Shadcn-/AlgoPlan-Komponenten (Review vor App-Integration)
-- [ ] Alle getauschten Komponenten sind im Showroom gelistet und interaktiv prüfbar
+**Agent-Hook „on transition to In Review"**
+- [ ] Agent-Daemon hookt Status-Wechsel `in_progress → in_review` und triggert Test-Generierung
+- [ ] Prompt-Template versioniert in `server/internal/agents/acceptance/prompt.md` (Diff + Issue-Description als Context)
+- [ ] LLM-Output JSON-Schema-validiert; 1 Retry bei kaputtem JSON, sonst Issue-Comment statt Block
+- [ ] Tests werden via API persistiert, Issue erhält Comment-Eintrag „N Acceptance-Tests erstellt"
 
-**Dashboard-Shell**
-- [ ] Dashboard-Layout mit neuer Sidebar (Team-Liste, Kategorien-Chips, Priority-Grid, View-Filter, Dark-Mode-Toggle)
-- [ ] Topbar mit AlgoPlan-Branding, Priority-Filter-Chips, Blocker-Badge, Search, Label-Dropdown, primärer Task-CTA
-- [ ] Phase-Timeline-Bar (Progress-Anzeige, erstmal visuell mit Mock-Daten — Logik nachträglich)
-- [ ] Desktop: Tab-Bar passt ins neue Chrome (DragStrip bleibt funktional auf macOS)
+**Acceptance-Test GUI-Checklist**
+- [ ] Neue Section „Akzeptanzkriterien" auf Issue-Detail-View (zwischen Description und Comments)
+- [ ] Checkbox je Test mit Title + expandable Description, Status-Badge `pending|passed|failed`
+- [ ] Reviewer-Action: pass/fail-Toggle mit optionaler Failure-Note
+- [ ] Optimistic Update + WS-Invalidate
+- [ ] Soft-Gate-Warning: rote Banner-Notice wenn Issue auf Done gezogen wird, aber pending/failed Tests existieren
 
-**Kanban-Board-View (neu)**
-- [ ] Kanban-Board mit Status-Columns (Backlog / To Do / In Progress / Review / Done)
-- [ ] Drag-&-Drop zwischen Columns ändert Issue-Status (Server-Update via Mutation, optimistic)
-- [ ] Inline-Task-Add pro Column (Input + "Task hinzufügen"/"Abbrechen")
-- [ ] Task-Card mit colored accent bars (Tag-Farben), Titel, Meta (ID, Estimate), Avatar
-- [ ] View-Toggle Board ↔ List pro Issues-Page (UI-Preference pro User persistiert)
+**Drag-&-Drop Board (Cross-Column)**
+- [ ] Bestehendes `@dnd-kit/react@0.4.0` Board um Cross-Column-Drag erweitern
+- [ ] Drop in andere Column triggert Status-Update-Mutation optimistisch
+- [ ] WS-Echo invalidiert sauber ohne Re-Render-Storm
+- [ ] Soft-Gate-Warning beim Drop nach Done bei pending/failed Tests
 
-**Issues-Listen- & Detail-Views**
-- [ ] Bestehende Issues-List im neuen Look (Typografie, Colored Bars, Cards)
-- [ ] Issue-Detail-Modal redesigned (Tags-Chip-Row, Status/Priority/Kategorie/Effort rechts, Assignee-Cards, Kommentar-Section, Footer mit Delete/Esc/Fertig)
-- [ ] Priority als segmented Control P0/P1/P2/P3
-- [ ] Effort als segmented Control S/M/L/XL (erstmal Mock — Logik später)
-- [ ] Launch-Blocker-Toggle (erstmal Mock — Logik später)
+**Auto-Pickup verifizieren**
+- [ ] E2E-Test: Agent mit `assignee_type=agent`, Issue auf `todo` → Daemon pickt automatisch, transitioniert zu `in_progress`
+- [ ] Settings-Toggle pro Agent: „Auto-Pickup aktiv" (default an)
+- [ ] Logging: Pickup-Events sichtbar in Agent-Activity-Feed
 
-**Auth & Pre-Workspace Flows**
-- [ ] Login, Signup, Email-Verify, Password-Reset Views im neuen Look
-- [ ] Create-Workspace Flow (Web: Route, Desktop: WindowOverlay) redesigned
-- [ ] Invite-Accept Flow redesigned
-- [ ] Logo/Wordmark "AlgoPlan" auf allen Pre-Workspace-Views
-
-**Workspace-Interne Views**
-- [ ] Inbox-View redesigned
-- [ ] Settings (User-, Workspace-, Member-Settings) redesigned
-- [ ] Workspace-Management (Switcher, Leave, Delete) redesigned
-- [ ] Agents-View redesigned (Assignee-Auswahl, Agent-Profile)
-- [ ] Error-/Empty-States (NoAccess, 404, leeres Board) redesigned
-
-**Rebrand (app-facing)**
-- [ ] Alle User-facing Strings "Multica" → "AlgoPlan"
-- [ ] App-Logo / Wordmark / Favicon / OG-Images neu
-- [ ] HTML-Titel / Meta-Description
-- [ ] Electron-Window-Title, macOS-Menu, Dock-Icon
+**AI Description-Refinement**
+- [ ] Sparkle-/Star-Button im Issue-Erstell-Form (neben Description-Textarea), erscheint sobald Description nicht leer ist
+- [ ] Klick öffnet Mode-Auswahl: „Quick-Polish" (inline LLM-Rewrite) vs „Full-Spec erstellen" (Agent-Task)
+- [ ] Quick-Polish: serverseitiger LLM-Call (`POST /issues/refine-description`), liefert Diff-Vorschau, User akzeptiert/ablehnt
+- [ ] Full-Spec: triggert Spawn eines dedizierten Agenten als neue Sub-Task; Original-Issue bleibt im Form-State, Agent arbeitet asynchron, schreibt Vollständige Spec inkl. Bild-Beschreibung in Issue-Description zurück
+- [ ] Bild-/Attachment-Support: Drag-&-Drop oder Paste in Description leitet Bilder als multipart in den Agenten-Context weiter
+- [ ] Loading-State + Cancel-Möglichkeit; bei Full-Spec Toast „Agent arbeitet, schreibt Spec in 1-3 Min zurück"
 
 ### Out of Scope
 
-**Konzepte aus den Mocks — vollständig aus v1 entfernt (v2+):**
-- **Phase-Timeline-Bar** — User hat abgewählt; kein Widget ohne Phase-Logik
-- **Effort-Segmented-Control S/M/L/XL** — User hat Mock abgewählt; UI-only ohne Backend wertlos
-- **Launch-Blocker-Toggle** — User hat Mock abgewählt; UI-only ohne Backend wertlos
-- **Top-Performer-Widget** — kein Metrik-Backend
-- **Kategorien-Taxonomie** (Backend/Frontend/Launch/Legal/DevOps) — nur als Mock-Labels im Design, keine First-Class-Struktur
+**v0.6.0 — Agent Review Loop bewusst nicht enthalten:**
+- **Agent-Self-Pass / Agent-hakt-Tests-ab** — User-Entscheidung: nur Mensch reviewt in v0.6, Diskussion v0.7+
+- **Hard-Gate** (Done blockiert ohne 100% passed Tests) — Soft-Gate (Warning) reicht; Hard-Gate wäre v0.7+ Policy-Diskussion
+- **Retroaktive Test-Generierung** für bestehende Issues — nur neue Issues ab Release
+- **Multi-Agent-Voting** auf Tests — ein Agent generiert, ein Mensch reviewt
+- **Test-Templates / Test-Library** — Generierung ist rein LLM-driven, keine kuratierte Pattern-DB
+- **Acceptance-Test-Editing durch Agent nach Erstellung** — Tests sind nach Erstellung Read-only für Agent; Reviewer kann editieren
 
-**Code-Internals bleiben:**
+**Code-Internals bleiben** (v0.5.0 Carve-out, weiterhin gültig):
 - Paketnamen `@multica/*` NICHT umbenannt — Umbenennung wäre invasive Refactor-Welle ohne User-Value
-- DB-Namen, Migrationen, sqlc-generierter Code bleiben auf `multica`
-- CLI-Binary `multica`, GoReleaser-Config, Homebrew-Tap bleiben auf `multica`
-- Repo-Name `multica` bleibt
-- GitHub-Release-Tag-Schema bleibt
+- Go-Modul-Pfad `github.com/multica-ai/multica/server` bleibt
+- DB-Namen, Migrationen, sqlc-generierter Code bleiben auf `multica`-Schema-Naming
+- API-Cloud-URL `api.multica.ai` bleibt (Cloud-Mode, falls jemals aktiviert)
 
 **Nicht Teil dieses Milestones:**
-- Backend-Änderungen (neue Felder, Migrationen, neue Endpoints) — reiner Frontend-/UI-Milestone
-- Neues Auth-Modell / Permissions-Redesign — visueller Refresh der bestehenden Flows
-- E2E-Test-Rewrite — bestehende E2E-Tests werden an neue Selektoren angepasst, keine Neuarchitektur
-- Mobile-/Responsive-Optimierung über existierende Breakpoints hinaus — Desktop-first wie bisher
+- Mobile-/Responsive-Anpassungen über bestehende Desktop-first-Breakpoints hinaus
+- Permissions-Redesign / RBAC — bestehende Member-Roles reichen für Review
+- E2E-Suite-Refactor — neue E2E-Tests kommen für die neuen Flows, alte bleiben unverändert
 
 ## Context
 
@@ -141,7 +145,16 @@ Kompletter Frontend-Redesign der Multica-Plattform inklusive Rebrand zu **AlgoPl
 | Phase-Progress / Effort / Launch-Blocker / Top-Performer = Mock-only | Backend-Erweiterungen würden Scope verdoppeln; UI vorbereiten, Logik später | — Pending |
 | Standard Granularität (5-8 Phasen) | Balance zwischen Foundation-first-Sequenzierung und vertikal-vollständigen Feature-Drops | — Pending |
 | Both Modes (Light + Dark) von Anfang an | Token-System muss Dark mitdenken, nachträglich doppelte Arbeit | — Pending |
-| Algorivo OKLCH-Palette adoptiert (FND-01); FND-04 CI-Regel gedroppt (D-19) | Brand-direction-shift weg von mint-sage hin zu Algorivo brand-green; user explicit "CI-Regel unnötig" | — Pending Phase 1 ship |
+| Algorivo OKLCH-Palette adoptiert (FND-01); FND-04 CI-Regel gedroppt (D-19) | Brand-direction-shift weg von mint-sage hin zu Algorivo brand-green; user explicit "CI-Regel unnötig" | ✓ Shipped v0.5.0 |
+
+### v0.6.0 — pending
+| Decision | Rationale | Outcome |
+|----------|-----------|---------|
+| Reviewer = nur Mensch (kein Agent-Self-Pass) | Vertrauensmodell braucht Mensch-im-Loop bevor Agenten sich selbst reviewen; v0.7+ separater Diskurs | — Pending |
+| Soft-Gate (Warning, kein Block) bei Done-Drop mit pending/failed Tests | Reviewer-Workflow soll fließen; Hard-Gate wäre rigide Policy-Entscheidung für später | — Pending |
+| Test-Generierungs-Kontext = Diff (primär) + Issue-Description (sekundär) | Diff zeigt was wirklich gebaut wurde, Description ergänzt Intent | — Pending |
+| Retroaktive Test-Generierung = nein, nur neue Issues ab Release | Vermeidet Backfill-Kosten + LLM-Quota; alte Issues bleiben unverändert | — Pending |
+| Description-Refinement: zwei Modi (Quick-Polish vs Full-Spec via spawned Agent) | Quick = inline LLM-Call für schnellen Polish; Full-Spec = echte Agent-Task (eigenes Issue), erlaubt Bilder + längere Verarbeitung | — Pending |
 
 ## Evolution
 
