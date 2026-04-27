@@ -64,7 +64,7 @@ selfhost: ## Create .env if needed, then pull and start the official self-hosted
 		fi; \
 		echo "==> Generated random JWT_SECRET"; \
 	fi
-	@echo "==> Pulling official Multica images..."
+	@echo "==> Pulling official AlgoPlan images..."
 	@if ! docker compose -f docker-compose.selfhost.yml pull; then \
 		echo ""; \
 		echo "Official images for tag '$${ALGOPLAN_IMAGE_TAG:-latest}' are not published yet."; \
@@ -72,7 +72,7 @@ selfhost: ## Create .env if needed, then pull and start the official self-hosted
 		echo "  make selfhost-build"; \
 		exit 1; \
 	fi
-	@echo "==> Starting Multica via Docker Compose..."
+	@echo "==> Starting AlgoPlan via Docker Compose..."
 	docker compose -f docker-compose.selfhost.yml up -d
 	@echo "==> Waiting for backend to be ready..."
 	@for i in $$(seq 1 30); do \
@@ -83,19 +83,20 @@ selfhost: ## Create .env if needed, then pull and start the official self-hosted
 	done
 	@if curl -sf http://localhost:$${PORT:-8080}/health > /dev/null 2>&1; then \
 		echo ""; \
-		echo "✓ Multica is running!"; \
+		echo "✓ AlgoPlan is running!"; \
 		echo "  Frontend: http://localhost:$${FRONTEND_PORT:-3000}"; \
 		echo "  Backend:  http://localhost:$${PORT:-8080}"; \
 		echo ""; \
-		echo "Images: $${ALGOPLAN_BACKEND_IMAGE:-ghcr.io/multica-ai/multica-backend}:$${ALGOPLAN_IMAGE_TAG:-latest}"; \
-		echo "        $${ALGOPLAN_WEB_IMAGE:-ghcr.io/multica-ai/multica-web}:$${ALGOPLAN_IMAGE_TAG:-latest}"; \
+		echo "Images: $${ALGOPLAN_BACKEND_IMAGE:-ghcr.io/multica-ai/algoplan-backend}:$${ALGOPLAN_IMAGE_TAG:-latest}"; \
+		echo "        $${ALGOPLAN_WEB_IMAGE:-ghcr.io/multica-ai/algoplan-web}:$${ALGOPLAN_IMAGE_TAG:-latest}"; \
 		echo ""; \
 		echo "Log in: configure RESEND_API_KEY in .env for email codes,"; \
 		echo "        or set APP_ENV=development in .env (private networks only) to enable code 888888."; \
 		echo ""; \
 		echo "Next — install the CLI and connect your machine:"; \
-		echo "  brew install multica-ai/tap/multica"; \
-		echo "  multica setup self-host"; \
+		echo "  go install github.com/multica-ai/multica/server/cmd/algoplan@latest"; \
+		echo "  # OR download release binaries from https://github.com/multica-ai/multica/releases"; \
+		echo "  algoplan setup self-host"; \
 	else \
 		echo ""; \
 		echo "Services are still starting. Check logs:"; \
@@ -114,7 +115,7 @@ selfhost-build: ## Build backend/web from the current checkout and start the sel
 		fi; \
 		echo "==> Generated random JWT_SECRET"; \
 	fi
-	@echo "==> Building Multica from the current checkout..."
+	@echo "==> Building AlgoPlan from the current checkout..."
 	docker compose -f docker-compose.selfhost.yml -f docker-compose.selfhost.build.yml up -d --build
 	@echo "==> Waiting for backend to be ready..."
 	@for i in $$(seq 1 30); do \
@@ -125,7 +126,7 @@ selfhost-build: ## Build backend/web from the current checkout and start the sel
 	done
 	@if curl -sf http://localhost:$${PORT:-8080}/health > /dev/null 2>&1; then \
 		echo ""; \
-		echo "✓ Multica is running!"; \
+		echo "✓ AlgoPlan is running!"; \
 		echo "  Frontend: http://localhost:$${FRONTEND_PORT:-3000}"; \
 		echo "  Backend:  http://localhost:$${PORT:-8080}"; \
 		echo ""; \
@@ -133,11 +134,12 @@ selfhost-build: ## Build backend/web from the current checkout and start the sel
 		echo "        or set APP_ENV=development in .env (private networks only) to enable code 888888."; \
 		echo ""; \
 		echo "Built images locally via docker-compose.selfhost.build.yml."; \
-		echo "Local tags: multica-backend:dev and multica-web:dev."; \
+		echo "Local tags: algoplan-backend:dev and algoplan-web:dev."; \
 		echo ""; \
 		echo "Next — install the CLI and connect your machine:"; \
-		echo "  brew install multica-ai/tap/multica"; \
-		echo "  multica setup self-host"; \
+		echo "  go install github.com/multica-ai/multica/server/cmd/algoplan@latest"; \
+		echo "  # OR download release binaries from https://github.com/multica-ai/multica/releases"; \
+		echo "  algoplan setup self-host"; \
 	else \
 		echo ""; \
 		echo "Services are still starting. Check logs:"; \
@@ -145,7 +147,7 @@ selfhost-build: ## Build backend/web from the current checkout and start the sel
 	fi
 
 selfhost-stop: ## Stop the self-hosted Docker Compose stack
-	@echo "==> Stopping Multica services..."
+	@echo "==> Stopping AlgoPlan services..."
 	docker compose -f docker-compose.selfhost.yml down
 	@echo "✓ All services stopped."
 

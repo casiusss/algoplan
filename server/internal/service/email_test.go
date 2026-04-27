@@ -269,3 +269,15 @@ func TestBuildEmailVerifyParams(t *testing.T) {
 		t.Errorf("Body missing expiry mention: %s", p.Html)
 	}
 }
+
+// TestEmailServiceDefaultFrom is a W-04 regression lock.
+// It asserts that NewEmailService returns noreply@algoplan.ai as the default
+// sender when the RESEND_FROM_EMAIL environment variable is not set. A future
+// refactor that reverts the address will cause this test to fail explicitly.
+func TestEmailServiceDefaultFrom(t *testing.T) {
+	t.Setenv("RESEND_FROM_EMAIL", "")
+	svc := NewEmailService()
+	if svc.fromEmail != "noreply@algoplan.ai" {
+		t.Fatalf("expected default fromEmail=noreply@algoplan.ai when RESEND_FROM_EMAIL unset; got %q", svc.fromEmail)
+	}
+}

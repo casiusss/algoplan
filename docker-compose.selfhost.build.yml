@@ -3,13 +3,13 @@
 
 services:
   backend:
-    image: multica-backend:dev
+    image: algoplan-backend:dev
     build:
       context: .
       dockerfile: Dockerfile
 
   frontend:
-    image: multica-web:dev
+    image: algoplan-web:dev
     build:
       context: .
       dockerfile: Dockerfile.web

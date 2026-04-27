@@ -25,7 +25,7 @@ func NewEmailService() *EmailService {
 	apiKey := os.Getenv("RESEND_API_KEY")
 	from := os.Getenv("RESEND_FROM_EMAIL")
 	if from == "" {
-		from = "noreply@multica.ai"
+		from = "noreply@algoplan.ai"
 	}
 
 	var client *resend.Client
