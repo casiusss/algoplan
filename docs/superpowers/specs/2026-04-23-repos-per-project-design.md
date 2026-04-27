@@ -266,13 +266,18 @@ click-to-copy.
 
 ## CLI Changes
 
-### `server/cmd/multica/cmd_project.go`
+### `server/cmd/algoplan/cmd_project.go`
 
-- `multica project create --repo-url <url>` (new required flag,
+(Note: the legacy `multica` binary is a deprecation shim since v0.5.0 that
+forwards to `algoplan`; new flags are added on the real CLI in
+`server/cmd/algoplan/`. The shim keeps `multica project ...` invocations
+working until v0.6.0.)
+
+- `algoplan project create --repo-url <url>` (new required flag,
   breaking change — document in release notes).
-- `multica project update <id> --repo-url <url>` (new optional flag).
+- `algoplan project update <id> --repo-url <url>` (new optional flag).
 - Both pass URL as-is; server normalizes.
-- `multica project get <id> --output json` already returns all
+- `algoplan project get <id> --output json` already returns all
   fields, no change needed beyond the new JSON key.
 
 ## Audit Trail
@@ -392,7 +397,7 @@ Table-driven tests for `NormalizeRepoURL`:
 
 | Risk | Mitigation |
 |---|---|
-| Admin forgets to set `workspace.repos` → migration aborts → downtime | Pre-migration preflight script shipped with release notes: `multica admin check-migrations` |
+| Admin forgets to set `workspace.repos` → migration aborts → downtime | Pre-migration preflight script shipped with release notes: `algoplan admin check-migrations` |
 | Slug collision between projects (two "Foo" projects) | Fallback to UUID prefix; slug generator uses `<title-slug>-<short-id>` if conflict detected on insert |
 | Daemon on older version sees unknown `project_id` field | JSON unmarshal in Go tolerates unknown fields by default; old daemons ignore new fields harmlessly |
 | User sets a `repo_url` they can't actually clone | Out of scope (no reach check). Daemon surfaces clone errors in task result comment. |

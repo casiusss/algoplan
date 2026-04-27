@@ -1130,13 +1130,13 @@ git commit -m "feat(daemon): per-workspace/project worktree path layout"
 ### Task 12: `--repo-url` flag on `project create|update`
 
 **Files:**
-- Modify: `server/cmd/multica/cmd_project.go`
-- Modify: `server/cmd/multica/cmd_project_test.go`
+- Modify: `server/cmd/algoplan/cmd_project.go`
+- Modify: `server/cmd/algoplan/cmd_project_test.go`
 
 - [ ] **Step 1: Write failing test**
 
 ```go
-// server/cmd/multica/cmd_project_test.go
+// server/cmd/algoplan/cmd_project_test.go
 func TestProjectCreate_RequiresRepoURL(t *testing.T) {
 	cmd := newProjectCreateCmd()
 	cmd.SetArgs([]string{"--title", "X"})
@@ -1159,13 +1159,13 @@ func TestProjectUpdate_RepoURLFlag(t *testing.T) {
 - [ ] **Step 2: Run — expect FAIL**
 
 ```
-cd server && go test ./cmd/multica -run TestProjectCreate_RequiresRepoURL -v
-cd server && go test ./cmd/multica -run TestProjectUpdate_RepoURLFlag -v
+cd server && go test ./cmd/algoplan -run TestProjectCreate_RequiresRepoURL -v
+cd server && go test ./cmd/algoplan -run TestProjectUpdate_RepoURLFlag -v
 ```
 
 - [ ] **Step 3: Add flags + wire into request body**
 
-Edit `server/cmd/multica/cmd_project.go`. In the create command:
+Edit `server/cmd/algoplan/cmd_project.go`. In the create command:
 
 ```go
 projectCreateCmd.Flags().String("repo-url", "", "Git repository URL (required)")
@@ -1187,13 +1187,13 @@ Analogous change on update: add `projectUpdateCmd.Flags().String("repo-url", "",
 - [ ] **Step 4: Run — expect PASS**
 
 ```
-cd server && go test ./cmd/multica -run TestProject -v
+cd server && go test ./cmd/algoplan -run TestProject -v
 ```
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add server/cmd/multica/cmd_project.go server/cmd/multica/cmd_project_test.go
+git add server/cmd/algoplan/cmd_project.go server/cmd/algoplan/cmd_project_test.go
 git commit -m "feat(cli): add --repo-url flag to project create/update"
 ```
 
@@ -1616,8 +1616,8 @@ Expected: `typecheck`, `pnpm test`, `go test ./...`, and Playwright all green.
 - [ ] **Step 2: Manual smoke of daemon flow**
 
 1. Ensure backend + frontend running (ports 8090 / 3010 in this checkout).
-2. `multica login` + `multica daemon start` (interactive).
-3. Create a new project via CLI: `multica project create --title "Daemon Smoke" --repo-url "https://github.com/<your>/<repo>.git"`.
+2. `algoplan login` + `algoplan daemon start` (interactive).
+3. Create a new project via CLI: `algoplan project create --title "Daemon Smoke" --repo-url "https://github.com/<your>/<repo>.git"`.
 4. Create an issue in that project assigned to an agent that uses a local runtime.
 5. Verify daemon logs show the project's repo being cloned into `~/.multica/worktrees/<workspace>/<project-slug>/<task-id>/` — not a workspace-wide path.
 
