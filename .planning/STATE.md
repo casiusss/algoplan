@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v0.4.0
+milestone: v0.5.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 07-05-PLAN.md (Plan 07-05 + Phase 7 close-out)
-last_updated: "2026-04-26T23:04:48.325Z"
-last_activity: 2026-04-26 -- Phase 08 execution started
+status: completed
+stopped_at: Phase 8 hard-cut complete; v0.5.0 ready to tag
+last_updated: "2026-04-27T10:15:00.000Z"
+last_activity: 2026-04-27 -- Phase 08 hard-cut applied (migrations removed)
 progress:
   total_phases: 9
-  completed_phases: 8
-  total_plans: 57
-  completed_plans: 48
-  percent: 84
+  completed_phases: 9
+  total_plans: 67
+  completed_plans: 67
+  percent: 100
 ---
 
 # Project State
@@ -21,14 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-23)
 
 **Core value:** Both apps (`apps/web` + `apps/desktop`) consistently carry the new AlgoPlan identity — every existing user-facing view is implemented in the new design system
-**Current focus:** Phase 08 — internal-rebrand-completion
+**Current focus:** Milestone v0.5.0 — completed (hard-cut rebrand)
 
 ## Current Position
 
-Phase: 08 (internal-rebrand-completion) — EXECUTING
-Plan: 1 of 10
-Status: Executing Phase 08
-Last activity: 2026-04-26 -- Phase 08 execution started
+Phase: 08 (internal-rebrand-completion) — COMPLETED
+Status: Milestone v0.5.0 closed, ready for tag push
+Last activity: 2026-04-27 -- Phase 08 hard-cut applied (migrations removed)
 
 Progress: [██████████] 100%
 
