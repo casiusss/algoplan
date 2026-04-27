@@ -1,29 +1,11 @@
-import type { Metadata } from "next";
-import { MulticaLanding } from "@/features/landing/components/multica-landing";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { RedirectIfAuthenticated } from "@/features/landing/components/redirect-if-authenticated";
 
-export const metadata: Metadata = {
-  title: {
-    absolute: "AlgoPlan — Project Management for Human + Agent Teams",
-  },
-  description:
-    "Open-source platform that turns coding agents into real teammates. Assign tasks, track progress, compound skills.",
-  openGraph: {
-    title: "AlgoPlan — Project Management for Human + Agent Teams",
-    description:
-      "Manage your human + agent workforce in one place.",
-    url: "/",
-  },
-  alternates: {
-    canonical: "/",
-  },
-};
-
-export default function LandingPage() {
-  return (
-    <>
-      <RedirectIfAuthenticated />
-      <MulticaLanding />
-    </>
-  );
+export default async function RootPage() {
+  const c = await cookies();
+  if (!c.has("algoplan_logged_in")) {
+    redirect("/login");
+  }
+  return <RedirectIfAuthenticated />;
 }

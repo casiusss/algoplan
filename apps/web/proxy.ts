@@ -19,7 +19,7 @@ const LEGACY_ROUTE_SEGMENTS = new Set([
 // Next.js 16 renamed `middleware` → `proxy`. The runtime API is identical.
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const hasSession = req.cookies.has("multica_logged_in");
+  const hasSession = req.cookies.has("algoplan_logged_in");
   const lastSlug = req.cookies.get("last_workspace_slug")?.value;
 
   // --- Legacy URL redirect: /issues/... → /{slug}/issues/... ---
@@ -47,18 +47,22 @@ export function proxy(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // --- Root path: redirect logged-in users to their last workspace ---
+  // --- Root path: redirect to /login or to last workspace ---
   if (pathname === "/") {
-    if (!hasSession) return NextResponse.next();
+    const url = req.nextUrl.clone();
+
+    if (!hasSession) {
+      url.pathname = "/login";
+      return NextResponse.redirect(url);
+    }
 
     if (lastSlug) {
-      const url = req.nextUrl.clone();
       url.pathname = `/${lastSlug}/issues`;
       return NextResponse.redirect(url);
     }
 
-    // No last_workspace_slug cookie → let landing page pick the first workspace
-    // client-side (features/landing/components/redirect-if-authenticated.tsx).
+    // Logged-in but no last_workspace_slug cookie → page renders
+    // RedirectIfAuthenticated, which client-side picks a workspace.
     return NextResponse.next();
   }
 
