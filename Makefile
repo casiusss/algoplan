@@ -1,4 +1,4 @@
-.PHONY: help makehelp dev server daemon cli multica algoplan build test migrate-up migrate-down sqlc seed clean setup start stop check worktree-env setup-main start-main stop-main check-main setup-worktree start-worktree stop-worktree check-worktree db-up db-down db-reset selfhost selfhost-build selfhost-stop
+.PHONY: help makehelp dev server daemon cli algoplan build test migrate-up migrate-down sqlc seed clean setup start stop check worktree-env setup-main start-main stop-main check-main setup-worktree start-worktree stop-worktree check-worktree db-up db-down db-reset selfhost selfhost-stop
 
 MAIN_ENV_FILE ?= .env
 WORKTREE_ENV_FILE ?= .env.worktree
@@ -52,58 +52,7 @@ makehelp: help ## Alias for `make help`
 # ---------- Self-hosting (Docker Compose) ----------
 ##@ Self-hosting
 
-selfhost: ## Create .env if needed, then pull and start the official self-hosted images
-	@if [ ! -f .env ]; then \
-		echo "==> Creating .env from .env.example..."; \
-		cp .env.example .env; \
-		JWT=$$(openssl rand -hex 32); \
-		if [ "$$(uname)" = "Darwin" ]; then \
-			sed -i '' "s/^JWT_SECRET=.*/JWT_SECRET=$$JWT/" .env; \
-		else \
-			sed -i "s/^JWT_SECRET=.*/JWT_SECRET=$$JWT/" .env; \
-		fi; \
-		echo "==> Generated random JWT_SECRET"; \
-	fi
-	@echo "==> Pulling official AlgoPlan images..."
-	@if ! docker compose -f docker-compose.selfhost.yml pull; then \
-		echo ""; \
-		echo "Official images for tag '$${ALGOPLAN_IMAGE_TAG:-latest}' are not published yet."; \
-		echo "If this is before the first GHCR release, build from the current checkout:"; \
-		echo "  make selfhost-build"; \
-		exit 1; \
-	fi
-	@echo "==> Starting AlgoPlan via Docker Compose..."
-	docker compose -f docker-compose.selfhost.yml up -d
-	@echo "==> Waiting for backend to be ready..."
-	@for i in $$(seq 1 30); do \
-		if curl -sf http://localhost:$${PORT:-8080}/health > /dev/null 2>&1; then \
-			break; \
-		fi; \
-		sleep 2; \
-	done
-	@if curl -sf http://localhost:$${PORT:-8080}/health > /dev/null 2>&1; then \
-		echo ""; \
-		echo "✓ AlgoPlan is running!"; \
-		echo "  Frontend: http://localhost:$${FRONTEND_PORT:-3000}"; \
-		echo "  Backend:  http://localhost:$${PORT:-8080}"; \
-		echo ""; \
-		echo "Images: $${ALGOPLAN_BACKEND_IMAGE:-ghcr.io/multica-ai/algoplan-backend}:$${ALGOPLAN_IMAGE_TAG:-latest}"; \
-		echo "        $${ALGOPLAN_WEB_IMAGE:-ghcr.io/multica-ai/algoplan-web}:$${ALGOPLAN_IMAGE_TAG:-latest}"; \
-		echo ""; \
-		echo "Log in: configure RESEND_API_KEY in .env for email codes,"; \
-		echo "        or set APP_ENV=development in .env (private networks only) to enable code 888888."; \
-		echo ""; \
-		echo "Next — install the CLI and connect your machine:"; \
-		echo "  go install github.com/multica-ai/multica/server/cmd/algoplan@latest"; \
-		echo "  # OR download release binaries from https://github.com/multica-ai/multica/releases"; \
-		echo "  algoplan setup self-host"; \
-	else \
-		echo ""; \
-		echo "Services are still starting. Check logs:"; \
-		echo "  docker compose -f docker-compose.selfhost.yml logs"; \
-	fi
-
-selfhost-build: ## Build backend/web from the current checkout and start the self-hosted stack
+selfhost: ## Build and start the self-hosted stack from the current checkout
 	@if [ ! -f .env ]; then \
 		echo "==> Creating .env from .env.example..."; \
 		cp .env.example .env; \
@@ -116,7 +65,7 @@ selfhost-build: ## Build backend/web from the current checkout and start the sel
 		echo "==> Generated random JWT_SECRET"; \
 	fi
 	@echo "==> Building AlgoPlan from the current checkout..."
-	docker compose -f docker-compose.selfhost.yml -f docker-compose.selfhost.build.yml up -d --build
+	docker compose -f docker-compose.selfhost.yml up -d --build
 	@echo "==> Waiting for backend to be ready..."
 	@for i in $$(seq 1 30); do \
 		if curl -sf http://localhost:$${PORT:-8080}/health > /dev/null 2>&1; then \
@@ -132,9 +81,6 @@ selfhost-build: ## Build backend/web from the current checkout and start the sel
 		echo ""; \
 		echo "Log in: configure RESEND_API_KEY in .env for email codes,"; \
 		echo "        or set APP_ENV=development in .env (private networks only) to enable code 888888."; \
-		echo ""; \
-		echo "Built images locally via docker-compose.selfhost.build.yml."; \
-		echo "Local tags: algoplan-backend:dev and algoplan-web:dev."; \
 		echo ""; \
 		echo "Next — install the CLI and connect your machine:"; \
 		echo "  go install github.com/multica-ai/multica/server/cmd/algoplan@latest"; \
@@ -271,10 +217,6 @@ daemon: ## Restart the local agent daemon using the CLI's stored auth/session
 cli: ## Run the algoplan CLI with ARGS or ALGOPLAN_ARGS from source
 	@$(MAKE) algoplan ALGOPLAN_ARGS="$(ALGOPLAN_ARGS)"
 
-multica: ## Backwards-compat alias for `make algoplan`. Schedule removal in v0.6.0.
-	@echo "warning: 'make multica' is deprecated; use 'make algoplan'" >&2
-	@$(MAKE) algoplan ALGOPLAN_ARGS="$(ALGOPLAN_ARGS)"
-
 algoplan: ## Run the algoplan CLI entrypoint directly from the Go source tree
 	cd server && go run ./cmd/algoplan $(ALGOPLAN_ARGS)
 
@@ -282,10 +224,9 @@ VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 COMMIT  ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 DATE    ?= $(shell date -u '+%Y-%m-%dT%H:%M:%SZ')
 
-build: ## Build the server, CLI, shim, and migrate binaries into server/bin
+build: ## Build the server, CLI, and migrate binaries into server/bin
 	cd server && go build -o bin/server ./cmd/server
 	cd server && go build -ldflags "-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)" -o bin/algoplan ./cmd/algoplan
-	cd server && go build -o bin/multica ./cmd/multica
 	cd server && go build -o bin/migrate ./cmd/migrate
 
 test: ## Run Go tests after ensuring the target DB exists and migrations are applied

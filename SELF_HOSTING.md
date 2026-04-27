@@ -54,9 +54,7 @@ make selfhost
 
 `make selfhost` automatically creates `.env` from the example, generates a random `JWT_SECRET`, and starts all services via Docker Compose.
 
-By default it pulls the latest stable release images from GHCR. To build the backend/web from your current checkout instead, run `make selfhost-build`.
-If the selected GHCR tag has not been published yet, `make selfhost` now tells you to fall back to `make selfhost-build`.
-`make selfhost-build` uses local `multica-backend:dev` / `multica-web:dev` tags, so it does not overwrite the pulled `:latest` images.
+It builds the backend and frontend Docker images directly from your local checkout — no public image registry is required.
 
 Once ready:
 
@@ -165,12 +163,11 @@ This reconfigures the CLI for multica.ai, re-authenticates, and restarts the dae
 ## Upgrading
 
 ```bash
-docker compose -f docker-compose.selfhost.yml pull
-docker compose -f docker-compose.selfhost.yml up -d
+git pull
+docker compose -f docker-compose.selfhost.yml up -d --build
 ```
 
-Pin `MULTICA_IMAGE_TAG` in `.env` to an exact version like `v0.2.4` if you want to stay on a specific release. Migrations run automatically on backend startup.
-If the selected GHCR tag has not been published yet, fall back to `make selfhost-build` or `docker compose -f docker-compose.selfhost.yml -f docker-compose.selfhost.build.yml up -d --build`.
+Migrations run automatically on backend startup.
 
 ---
 
@@ -190,11 +187,10 @@ Edit `.env` — at minimum, change `JWT_SECRET`:
 JWT_SECRET=$(openssl rand -hex 32)
 ```
 
-Then start everything:
+Then build and start everything:
 
 ```bash
-docker compose -f docker-compose.selfhost.yml pull
-docker compose -f docker-compose.selfhost.yml up -d
+docker compose -f docker-compose.selfhost.yml up -d --build
 ```
 
 ## Manual CLI Configuration

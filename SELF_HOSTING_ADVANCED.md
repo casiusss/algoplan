@@ -246,7 +246,7 @@ When using separate domains for frontend and backend, set these environment vari
 FRONTEND_ORIGIN=https://app.example.com
 CORS_ALLOWED_ORIGINS=https://app.example.com
 
-# Frontend (only if you are building the web image from source via docker-compose.selfhost.build.yml)
+# Frontend — these are baked into the web image at build time, so rebuild after changing them
 REMOTE_API_URL=https://api.example.com
 NEXT_PUBLIC_API_URL=https://api.example.com
 NEXT_PUBLIC_WS_URL=wss://api.example.com/ws
@@ -281,12 +281,12 @@ HTTP requests (issues, comments, uploads) work on LAN out of the box — Next.js
    NEXT_PUBLIC_WS_URL=ws://<lan-ip>:8080/ws
 
    # Rebuild the web image so the build-time value is baked in
-   docker compose -f docker-compose.selfhost.yml -f docker-compose.selfhost.build.yml up -d --build
+   docker compose -f docker-compose.selfhost.yml up -d --build
    ```
 
-   `NEXT_PUBLIC_WS_URL` is a build-time variable (see `Dockerfile.web`), so setting it only in `environment:` on the pre-built image has no effect — you must use the `selfhost.build.yml` override that rebuilds the image.
+   `NEXT_PUBLIC_WS_URL` is a build-time variable (see `Dockerfile.web`), so setting it only in `environment:` on a pre-built image has no effect — you must rebuild.
 
-> **Note:** If you need to hard-code a different public API / WebSocket endpoint into the web image for any other reason, use the same source-build override: `docker compose -f docker-compose.selfhost.yml -f docker-compose.selfhost.build.yml up -d --build`.
+> **Note:** If you need to hard-code a different public API / WebSocket endpoint into the web image for any other reason, rebuild with `docker compose -f docker-compose.selfhost.yml up -d --build`.
 
 ## Health Check
 
@@ -302,9 +302,8 @@ Use this for load balancer health checks or monitoring.
 ## Upgrading
 
 ```bash
-docker compose -f docker-compose.selfhost.yml pull
-docker compose -f docker-compose.selfhost.yml up -d
+git pull
+docker compose -f docker-compose.selfhost.yml up -d --build
 ```
 
-Pin `MULTICA_IMAGE_TAG` in `.env` to an exact release like `v0.2.4` if you want to stay on a specific version. Migrations run automatically on backend startup. They are idempotent — running them multiple times has no effect.
-If the selected GHCR tag has not been published yet, fall back to `docker compose -f docker-compose.selfhost.yml -f docker-compose.selfhost.build.yml up -d --build`.
+Migrations run automatically on backend startup. They are idempotent — running them multiple times has no effect.

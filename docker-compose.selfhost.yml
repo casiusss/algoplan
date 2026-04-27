@@ -29,7 +29,9 @@ services:
       retries: 5
 
   backend:
-    image: ${ALGOPLAN_BACKEND_IMAGE:-ghcr.io/multica-ai/algoplan-backend}:${ALGOPLAN_IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       postgres:
         condition: service_healthy
@@ -59,7 +61,13 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: ${ALGOPLAN_WEB_IMAGE:-ghcr.io/multica-ai/algoplan-web}:${ALGOPLAN_IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        REMOTE_API_URL: http://backend:8080
+        NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL:-}
+        NEXT_PUBLIC_APP_VERSION: ${ALGOPLAN_APP_VERSION:-dev}
     depends_on:
       - backend
     ports:
