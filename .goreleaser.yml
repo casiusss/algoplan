@@ -1,12 +1,19 @@
 version: 2
 
-project_name: multica
+# Phase 8 D-6 (2026-04-27): Homebrew publish is DEFERRED for v0.5.0.
+# The legacy multica-ai/homebrew-tap is read-only for this fork.
+# When an algoplan-ai org or fork-owned tap exists, restore a brews block
+# targeting it. Until then, users install via:
+#   - go install github.com/multica-ai/multica/server/cmd/algoplan@latest
+#   - Download release binaries from the GitHub Releases page
+
+project_name: algoplan
 
 builds:
-  - id: multica
-    main: ./cmd/multica
+  - id: algoplan
+    main: ./cmd/algoplan
     dir: server
-    binary: multica
+    binary: algoplan
     ldflags:
       - -s -w
       - -X main.version={{.Version}}
@@ -24,8 +31,10 @@ builds:
 
 archives:
   # Legacy archive name kept so already-released CLIs (whose `multica update`
-  # looks for `multica_{os}_{arch}.{ext}`) can keep self-updating. Remove
-  # once those versions are no longer in use.
+  # looks for `multica_{os}_{arch}.{ext}`) can keep self-updating. The literal
+  # "multica_" prefix is intentional — it must NOT use {{ .ProjectName }} which
+  # would now render "algoplan_". Remove once pre-v0.5.0 binaries are no longer
+  # in use. Phase 8 D-1 (2026-04-27).
   - id: legacy
     formats:
       - tar.gz
@@ -33,9 +42,9 @@ archives:
       - goos: windows
         formats:
           - zip
-    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    name_template: "multica_{{ .Os }}_{{ .Arch }}"
   # Versioned archive name used by current CLI / install scripts /
-  # desktop bootstrap going forward.
+  # desktop bootstrap going forward. Renders as algoplan-cli-<version>-<os>-<arch>.
   - id: versioned
     formats:
       - tar.gz
@@ -55,21 +64,3 @@ changelog:
       - "^docs:"
       - "^test:"
       - "^chore:"
-
-brews:
-  - name: multica
-    ids:
-      - versioned
-    repository:
-      owner: multica-ai
-      name: homebrew-tap
-      branch: main
-      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
-    directory: Formula
-    homepage: "https://github.com/multica-ai/multica"
-    description: "Multica CLI — local agent runtime and management tool for the Multica platform"
-    license: "Apache-2.0"
-    install: |
-      bin.install "multica"
-    test: |
-      system "#{bin}/multica", "version"
