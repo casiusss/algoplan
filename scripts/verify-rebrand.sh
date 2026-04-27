@@ -171,8 +171,8 @@ check ".env.example RESEND_FROM_EMAIL uses algoplan.ai" \
     "grep -q 'noreply@algoplan.ai' .env.example"
 
 # Hard-exclusion preservation (D-8):
-check "D-8: multica-ai/multica git remote URL preserved in update.go" \
-    "grep -q 'multica-ai/multica' server/internal/cli/update.go"
+check "Update CLI URL points at fork (casiusss/algoplan) in update.go" \
+    "grep -q 'casiusss/algoplan' server/internal/cli/update.go"
 
 check "D-8: multica.ai cloud URL preserved in cmd_setup.go" \
     "grep -q 'api.multica.ai' server/cmd/algoplan/cmd_setup.go"
@@ -183,8 +183,8 @@ check "D-8: Go module declaration github.com/multica-ai/multica preserved in go.
 check "D-8: .planning historical artifacts untouched" \
     "test -f .planning/phases/07-rebrand-pass/07-PHASE-SUMMARY.md && grep -q 'Multica' .planning/phases/07-rebrand-pass/07-PHASE-SUMMARY.md"
 
-check "Cookie names preserved per Plan 08-05 deferral (multica_auth)" \
-    "grep -q 'multica_auth' server/internal/auth/cookie.go"
+check "Cookie names rebranded to algoplan (algoplan_auth)" \
+    "grep -q 'algoplan_auth' server/internal/auth/cookie.go && ! grep -q 'multica_auth' server/internal/auth/cookie.go"
 
 check "Cookie names preserved per Plan 08-05 deferral (multica_csrf)" \
     "grep -q 'multica_csrf' server/internal/auth/cookie.go"

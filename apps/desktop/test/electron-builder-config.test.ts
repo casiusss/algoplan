@@ -45,9 +45,9 @@ describe("electron-builder.yml — AlgoPlan brand identity (Phase 7 regression l
     ]);
   });
 
-  it("publish remote is unchanged (multica-ai/multica per D-4 — out of phase scope)", () => {
-    expect(config.publish.owner).toBe("multica-ai");
-    expect(config.publish.repo).toBe("multica");
+  it("publish remote points to fork (casiusss/algoplan)", () => {
+    expect(config.publish.owner).toBe("casiusss");
+    expect(config.publish.repo).toBe("algoplan");
   });
 
   it("artifactName template uses algoplan-desktop- prefix", () => {
