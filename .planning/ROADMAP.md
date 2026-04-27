@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5.1: Auth Backend Endpoints** (INSERTED) - Signup, password-reset request/confirm, email-verify, resend verification — backend Go endpoints + DB schema for AUTH-02..05 unblock
 - [x] **Phase 6: Issue Detail + Remaining Views** - Issue detail, auth flows, inbox, settings, agents, workspace, error states
 - [x] **Phase 7: Rebrand Pass** - Strings, assets, metadata, deep-link scheme, Electron chrome, test updates
-- [ ] **Phase 8: Internal Rebrand Completion** - `@multica/*` packages, `multica_*` localStorage, `MULTICA_*` env vars, `multica` CLI binary, `~/.multica/` config dir, Docker images, GoReleaser, Homebrew tap, default email FROM — with backwards-compat migration shims
+- [x] **Phase 8: Internal Rebrand Completion** - `@multica/*` packages, `multica_*` localStorage, `MULTICA_*` env vars, `multica` CLI binary, `~/.multica/` config dir, Docker images, GoReleaser, Homebrew tap, default email FROM — with backwards-compat migration shims
 
 ## Phase Details
 
@@ -219,4 +219,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 5.1. Auth Backend Endpoints (INSERTED) | 4/4 | Complete (27/27 integration tests GREEN) | 2026-04-26 |
 | 6. Issue Detail + Remaining Views | 0/TBD | Not started | - |
 | 7. Rebrand Pass | 6/6 | Complete (v0.4.0 shipped 2026-04-26) | 2026-04-26 |
-| 8. Internal Rebrand Completion | 0/10 | Plans created (planner; revision 1) | - |
+| 8. Internal Rebrand Completion | 10/10 | Verified — 5/6 SC pass, SC-5 awaits v0.5.0 tag push, SC-1 carry-over (1 pre-existing login-test NavigationProvider mock missing since Phase 7) | 2026-04-26 |
